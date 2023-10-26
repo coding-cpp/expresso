@@ -18,6 +18,7 @@ add_executable(${PROJECT_NAME}
   ./src/main.cpp
   ./src/server.cpp
   ./src/router.cpp
+  ./src/response.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

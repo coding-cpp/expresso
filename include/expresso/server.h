@@ -16,6 +16,8 @@ private:
   void acceptConnections();
   void handleConnection(int clientSocket);
 
+  Request makeRequest(std::string &request);
+
 public:
   Server();
   ~Server();

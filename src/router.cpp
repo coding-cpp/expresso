@@ -17,7 +17,8 @@ void Router::setBasePath(std::string basePath) {
 
 std::string Router::getBasePath() { return this->basePath; }
 
-void Router::get(std::string path, void (*handler)(int clientSocket)) {
+void Router::get(std::string path,
+                 void (*handler)(Request &request, Response &response)) {
   if (path[0] != '/') {
     std::cout << "[ERROR] Router path must start with a '/'" << std::endl;
     return;
@@ -27,7 +28,8 @@ void Router::get(std::string path, void (*handler)(int clientSocket)) {
   return;
 }
 
-void Router::post(std::string path, void (*handler)(int clientSocket)) {
+void Router::post(std::string path,
+                  void (*handler)(Request &request, Response &response)) {
   if (path[0] != '/') {
     std::cout << "[ERROR] Router path must start with a '/'" << std::endl;
     return;
@@ -37,7 +39,8 @@ void Router::post(std::string path, void (*handler)(int clientSocket)) {
   return;
 }
 
-void Router::put(std::string path, void (*handler)(int clientSocket)) {
+void Router::put(std::string path,
+                 void (*handler)(Request &request, Response &response)) {
   if (path[0] != '/') {
     std::cout << "[ERROR] Router path must start with a '/'" << std::endl;
     return;
@@ -47,7 +50,8 @@ void Router::put(std::string path, void (*handler)(int clientSocket)) {
   return;
 }
 
-void Router::patch(std::string path, void (*handler)(int clientSocket)) {
+void Router::patch(std::string path,
+                   void (*handler)(Request &request, Response &response)) {
   if (path[0] != '/') {
     std::cout << "[ERROR] Router path must start with a '/'" << std::endl;
     return;
@@ -57,7 +61,8 @@ void Router::patch(std::string path, void (*handler)(int clientSocket)) {
   return;
 }
 
-void Router::del(std::string path, void (*handler)(int clientSocket)) {
+void Router::del(std::string path,
+                 void (*handler)(Request &request, Response &response)) {
   if (path[0] != '/') {
     std::cout << "[ERROR] Router path must start with a '/'" << std::endl;
     return;
@@ -67,7 +72,8 @@ void Router::del(std::string path, void (*handler)(int clientSocket)) {
   return;
 }
 
-void Router::options(std::string path, void (*handler)(int clientSocket)) {
+void Router::options(std::string path,
+                     void (*handler)(Request &request, Response &response)) {
   if (path[0] != '/') {
     std::cout << "[ERROR] Router path must start with a '/'" << std::endl;
     return;
@@ -77,39 +83,45 @@ void Router::options(std::string path, void (*handler)(int clientSocket)) {
   return;
 }
 
-void Router::handleRequest(int clientSocket, std::string method,
-                           std::string path) {
-  if (path[path.size() - 1] == '/') {
-    path = path.substr(0, path.size() - 1);
-  }
-
-  if (method == "GET" && this->getMap.find(path) != this->getMap.end()) {
-    this->getMap[path](clientSocket);
-  } else if (method == "POST" &&
-             this->postMap.find(path) != this->postMap.end()) {
-    this->postMap[path](clientSocket);
-  } else if (method == "PUT" && this->putMap.find(path) != this->putMap.end()) {
-    this->putMap[path](clientSocket);
-  } else if (method == "PATCH" &&
-             this->patchMap.find(path) != this->patchMap.end()) {
-    this->patchMap[path](clientSocket);
-  } else if (method == "DELETE" &&
-             this->delMap.find(path) != this->delMap.end()) {
-    this->delMap[path](clientSocket);
-  } else if (method == "OPTIONS" &&
-             this->optionsMap.find(path) != this->optionsMap.end()) {
-    this->optionsMap[path](clientSocket);
+void Router::handleRequest(Request &request, Response &response) {
+  if (request.method == "GET" &&
+      this->getMap.find(request.path) != this->getMap.end()) {
+    this->getMap[request.path](request, response);
+  } else if (request.method == "POST" &&
+             this->postMap.find(request.path) != this->postMap.end()) {
+    this->postMap[request.path](request, response);
+  } else if (request.method == "PUT" &&
+             this->putMap.find(request.path) != this->putMap.end()) {
+    this->putMap[request.path](request, response);
+  } else if (request.method == "PATCH" &&
+             this->patchMap.find(request.path) != this->patchMap.end()) {
+    this->patchMap[request.path](request, response);
+  } else if (request.method == "DELETE" &&
+             this->delMap.find(request.path) != this->delMap.end()) {
+    this->delMap[request.path](request, response);
+  } else if (request.method == "OPTIONS" &&
+             this->optionsMap.find(request.path) != this->optionsMap.end()) {
+    this->optionsMap[request.path](request, response);
+  } else if (this->paramRouter != nullptr) {
+    request.body.ids[this->param] =
+        request.path.substr(0, request.path.find('/'));
+    if (request.path.find('/') == std::string::npos) {
+      request.path = "";
+    } else {
+      request.path = request.path.substr(request.path.find('/') + 1,
+                                         request.path.length());
+    }
+    this->paramRouter->handleRequest(request, response);
   } else {
-    std::string response = "404 Not Found";
-
-    std::string header = "HTTP/1.1 404 Not Found\r\n";
-    header += "Content-Type: text/plain\r\n";
-    header += "Content-Length: " + std::to_string(response.length()) + "\r\n";
-    header += "\r\n";
-
-    send(clientSocket, header.c_str(), header.length(), 0);
-    send(clientSocket, response.c_str(), response.length(), 0);
+    response.status(404).json("Not Found");
   }
+
+  return;
+}
+
+void Router::setParamRouter(Router *router, std::string param) {
+  this->paramRouter = router;
+  this->param = param;
 
   return;
 }

@@ -65,21 +65,25 @@ void Server::acceptConnections() {
 }
 
 void Server::handleConnection(int clientSocket) {
-  char request[4096];
-  memset(request, 0, sizeof(request));
-  recv(clientSocket, request, sizeof(request) - 1, 0);
+  char charRequest[4096];
+  memset(charRequest, 0, sizeof(charRequest));
+  recv(clientSocket, charRequest, sizeof(charRequest) - 1, 0);
+
+  std::string request = charRequest;
 
   char charMethod[16];
   char charPath[4096];
-  sscanf(request, "%s /%s HTTP/1.1", charMethod, charPath);
+  sscanf(charRequest, "%s /%s HTTP/1.1", charMethod, charPath);
 
   std::string method = charMethod;
   std::string path = charPath;
   std::string routerPath = path.substr(0, path.find('/'));
+  routerPath = routerPath.substr(0, routerPath.find('?'));
 
   if (this->routerMap.find(routerPath) != this->routerMap.end()) {
-    this->routerMap[routerPath].handleRequest(
-        clientSocket, method, path.substr(routerPath.length(), path.length()));
+    Request req = this->makeRequest(request);
+    Response res(clientSocket);
+    this->routerMap[routerPath].handleRequest(req, res);
   } else {
     std::string response = "404 Not Found";
 
@@ -94,19 +98,68 @@ void Server::handleConnection(int clientSocket) {
 
   close(clientSocket);
 
-  //   if (router.getMap.find("/") != router.getMap.end()) {
-  //     router.getMap["/"](clientSocket);
-  //   } else {
-  //     std::string response = "404 Not Found";
-
-  //     std::string header = "HTTP/1.1 404 Not Found\r\n";
-  //     header += "Content-Type: text/plain\r\n";
-  //     header += "Content-Length: " + std::to_string(response.length()) +
-  //     "\r\n"; header += "\r\n";
-
-  //     send(clientSocket, header.c_str(), header.length(), 0);
-  //     send(clientSocket, response.c_str(), response.length(), 0);
-  //   }
-
   return;
+}
+
+Request Server::makeRequest(std::string &request) {
+  Request req;
+  char method[16];
+  char path[4096];
+  sscanf(request.c_str(), "%s /%s HTTP/1.1", method, path);
+
+  req.method = method;
+  req.path = path;
+
+  // Headers
+  size_t start = request.find('\n', 0) + 1;
+  while (start < request.size()) {
+    size_t end = request.find('\n', start);
+    if (end == std::string::npos) {
+      end = request.size();
+    }
+
+    size_t separator = request.find(':', start);
+    if (separator != std::string::npos) {
+      std::string key = request.substr(start, separator - start);
+      std::string value = request.substr(separator + 2, end - separator - 2);
+      req.headers[key] = value;
+    }
+
+    start = end + 1;
+  }
+
+  // Params
+  start = req.path.find('?', 0);
+  if (start != std::string::npos) {
+    start += 1;
+    while (start < req.path.size()) {
+      size_t separator = req.path.find('=', start);
+      if (separator != std::string::npos) {
+        std::string key = req.path.substr(start, separator - start);
+        start = separator + 1;
+
+        size_t end = req.path.find('&', start);
+        if (end == std::string::npos) {
+          end = req.path.size();
+        }
+
+        std::string value = req.path.substr(start, end - start);
+        req.body.params[key] = value;
+
+        start = end + 1;
+      }
+    }
+  }
+
+  req.path = req.path.substr(0, req.path.find('?'));
+  if (req.path[req.path.size() - 1] == '/') {
+    req.path = req.path.substr(0, req.path.size() - 1);
+  }
+  if (req.path.find('/') == std::string::npos) {
+    req.path = "";
+  } else {
+    req.path = req.path.substr(req.path.find('/') + 1, req.path.size());
+  }
+
+  return req;
 }
