@@ -34,3 +34,6 @@
 # Folders
 .vscode
 build
+
+# Secrets
+*.env

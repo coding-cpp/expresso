@@ -1,3 +1,4 @@
+#include <expresso/process.h>
 #include <expresso/server.h>
 
 void helloHandler(Request &request, Response &response) {
@@ -7,15 +8,18 @@ void helloHandler(Request &request, Response &response) {
 }
 
 int main(int argc, char **argv) {
-
+  Process process("../.env");
   Server app;
+  Router helloRouter;
 
-  Router hello;
-  hello.setBasePath("/hello");
-  hello.get("/", &helloHandler);
-  app.use(&hello);
+  helloRouter.setBasePath("/hello");
+  helloRouter.get("/", &helloHandler);
+  app.use(&helloRouter);
 
-  app.run(8000);
+  int PORT =
+      int(process.getEnv("PORT").empty() ? 8000
+                                         : std::stoi(process.getEnv("PORT")));
+  app.run(PORT);
 
   return EXIT_SUCCESS;
 }
