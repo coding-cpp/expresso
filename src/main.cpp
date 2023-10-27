@@ -3,12 +3,12 @@
 
 void helloHandler(Request &request, Response &response) {
   std::string _response = "Hello, World!";
-  response.status(200).json(_response);
+  response.status(StatusCode::OK).json(_response);
   return;
 }
 
 int main(int argc, char **argv) {
-  Process process("../.env");
+  Process process("/home/adit/github/expresso/.env");
   Server app;
   Router helloRouter;
 
