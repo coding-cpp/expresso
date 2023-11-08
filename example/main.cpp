@@ -8,7 +8,7 @@ void helloHandler(Request &request, Response &response) {
 }
 
 int main(int argc, char **argv) {
-  Process process("/home/adit/github/expresso/.env");
+  Process process("../.env");
   Server app;
   Router helloRouter;
 

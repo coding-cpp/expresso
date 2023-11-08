@@ -15,11 +15,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(USE_INSTALL_RESOURCE_PATH "Set resource path to install location" OFF)
 
 add_executable(${PROJECT_NAME}
-  ./src/main.cpp
   ./src/server.cpp
   ./src/router.cpp
   ./src/response.cpp
   ./src/process.cpp
+
+  ./example/main.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
