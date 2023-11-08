@@ -15,6 +15,8 @@ Response Response::status(int statusCode) {
 }
 
 void Response::json(std::string response) {
+  response = response + "\r\n";
+
   std::string header = "HTTP/1.1 " + std::to_string(this->statusCode) + " \r\n";
   // header += "Content-Type: text/plain\r\n";
   header += "Content-Length: " + std::to_string(response.length()) + "\r\n";
