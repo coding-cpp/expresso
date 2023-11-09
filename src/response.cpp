@@ -14,7 +14,7 @@ Response Response::status(int statusCode) {
   return *this;
 }
 
-void Response::json(std::string response) {
+void Response::send(std::string response) {
   response = response + "\r\n";
 
   std::string header = "HTTP/1.1 " + std::to_string(this->statusCode) + " \r\n";
@@ -22,8 +22,8 @@ void Response::json(std::string response) {
   header += "Content-Length: " + std::to_string(response.length()) + "\r\n";
   header += "\r\n";
 
-  send(this->socket, header.c_str(), header.length(), 0);
-  send(this->socket, response.c_str(), response.length(), 0);
+  sys::send_wrapper(this->socket, header.c_str(), header.length(), 0);
+  sys::send_wrapper(this->socket, response.c_str(), response.length(), 0);
 
   return;
 }

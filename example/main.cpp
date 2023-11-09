@@ -3,7 +3,7 @@
 
 void helloHandler(Request &request, Response &response) {
   std::string _response = "Hello, World!";
-  response.status(StatusCode::OK).json(_response);
+  response.status(StatusCode::OK).send(_response);
   return;
 }
 

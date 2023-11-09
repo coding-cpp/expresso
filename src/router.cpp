@@ -113,7 +113,7 @@ void Router::handleRequest(Request &request, Response &response) {
     }
     this->paramRouter->handleRequest(request, response);
   } else {
-    response.status(StatusCode::NOT_FOUND).json("Not Found");
+    response.status(StatusCode::NOT_FOUND).send("Not Found");
   }
 
   return;

@@ -3,7 +3,8 @@
 #include <string>
 
 #include <netinet/in.h>
-#include <sys/socket.h>
+
+#include <expresso/sys.h>
 
 class Response {
 private:
@@ -15,5 +16,5 @@ public:
   ~Response();
 
   Response status(int statusCode);
-  void json(std::string response);
+  void send(std::string response);
 };
