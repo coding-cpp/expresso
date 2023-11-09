@@ -4,7 +4,6 @@
 #include <map>
 
 #include <netinet/in.h>
-#include <sys/socket.h>
 
 #include <expresso/request.h>
 #include <expresso/response.h>

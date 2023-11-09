@@ -8,7 +8,7 @@
 
 class Server {
 private:
-  int _socket;
+  int socket;
   struct sockaddr_in address;
 
   std::map<std::string, Router> routerMap;

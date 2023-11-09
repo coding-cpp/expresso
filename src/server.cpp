@@ -1,8 +1,8 @@
 #include <expresso/server.h>
 
 Server::Server() {
-  this->_socket = socket(AF_INET, SOCK_STREAM, 0);
-  if (this->_socket < 0) {
+  this->socket = sys::socket_wrapper(AF_INET, SOCK_STREAM, 0);
+  if (this->socket < 0) {
     std::cerr << "[ERROR] Socket not created!" << std::endl;
     exit(1);
   }
@@ -14,7 +14,7 @@ Server::Server() {
 }
 
 Server::~Server() {
-  close(this->_socket);
+  close(this->socket);
 
   return;
 }
@@ -28,12 +28,12 @@ void Server::use(Router *router) {
 void Server::run(int port) {
   this->address.sin_port = htons(port);
 
-  if (bind(this->_socket, (struct sockaddr *)&this->address,
+  if (bind(this->socket, (struct sockaddr *)&this->address,
            sizeof(this->address)) < 0) {
     std::cerr << "[ERROR] Unable to bind socket!" << std::endl;
     exit(1);
   }
-  if (listen(this->_socket, 5) < 0) {
+  if (listen(this->socket, 5) < 0) {
     std::cerr << "[ERROR] Unable to listen on socket!" << std::endl;
     exit(1);
   }
@@ -48,7 +48,7 @@ void Server::acceptConnections() {
   while (true) {
     struct sockaddr_in clientAddress;
     socklen_t clientAddressLength = sizeof(clientAddress);
-    int clientSocket = accept(this->_socket, (struct sockaddr *)&clientAddress,
+    int clientSocket = accept(this->socket, (struct sockaddr *)&clientAddress,
                               &clientAddressLength);
 
     if (clientSocket < 0) {
@@ -85,7 +85,7 @@ void Server::handleConnection(int clientSocket) {
     Response res(clientSocket);
     this->routerMap[routerPath].handleRequest(req, res);
   } else {
-    std::string response = "404 Not Found";
+    std::string response = "404 Not Found\r\n";
 
     std::string header = "HTTP/1.1 404 Not Found\r\n";
     header += "Content-Type: text/plain\r\n";
