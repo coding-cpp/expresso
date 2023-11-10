@@ -3,6 +3,8 @@
 #include <map>
 #include <string>
 
+#include <expresso/sterlize.h>
+
 typedef struct {
   std::map<std::string, std::string> params;
   std::map<std::string, std::string> ids;

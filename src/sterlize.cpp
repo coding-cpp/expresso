@@ -3,6 +3,7 @@
 const int BASE64_SIZE = 1000;
 const char *BASE64_CHARS =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+const char *HEX_DIGITS = "0123456789ABCDEF";
 
 std::string base64_encode(std::string &data) {
   std::string encoded;
@@ -68,4 +69,45 @@ std::string base64_decode(std::string &data) {
   std::string decoded = std::string(result);
 
   return decoded;
+}
+
+std::string url_encode(std::string &data) {
+  std::string result;
+  result.reserve(data.size() << 1);
+
+  for (char ch : data) {
+    if ((ch >= '0' && ch <= '9') || (ch >= 'A' && ch <= 'Z') ||
+        (ch >= 'a' && ch <= 'z') || ch == '-' || ch == '_' || ch == '!' ||
+        ch == '\'' || ch == '(' || ch == ')' || ch == '*' || ch == '~' ||
+        ch == '.') {
+      result.push_back(ch);
+    } else {
+      result += std::string("%") +
+                HEX_DIGITS[static_cast<unsigned char>(ch) >> 4] +
+                HEX_DIGITS[static_cast<unsigned char>(ch) & 15];
+    }
+  }
+
+  return result;
+}
+
+std::string url_decode(std::string &data) {
+  std::string result;
+  result.reserve(data.size());
+
+  for (size_t i = 0; i < data.size(); i++) {
+    char ch = data[i];
+    if (ch == '%' && (i + 2) < data.size()) {
+      std::string hex = data.substr(i + 1, 2);
+      char dec = static_cast<char>(std::strtol(hex.c_str(), nullptr, 16));
+      result.push_back(dec);
+      i += 2;
+    } else if (ch == '+') {
+      result.push_back(' ');
+    } else {
+      result.push_back(ch);
+    }
+  }
+
+  return result;
 }

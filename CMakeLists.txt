@@ -19,6 +19,7 @@ add_executable(hello_router
   ./src/router.cpp
   ./src/response.cpp
   ./src/process.cpp
+  ./src/sterlize.cpp
 
   ./example/hello_router.cpp
 )

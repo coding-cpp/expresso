@@ -144,7 +144,9 @@ Request Server::makeRequest(std::string &request) {
         }
 
         std::string value = req.path.substr(start, end - start);
-        req.body.params[key] = value;
+        // req.body.params[url_decode(key)] = url_decode(value);
+
+        std::cout << url_decode(key) << " " << url_decode(value) << std::endl;
 
         start = end + 1;
       }

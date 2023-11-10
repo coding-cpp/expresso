@@ -103,8 +103,8 @@ void Router::handleRequest(Request &request, Response &response) {
              this->optionsMap.find(request.path) != this->optionsMap.end()) {
     this->optionsMap[request.path](request, response);
   } else if (this->paramRouter != nullptr) {
-    request.body.ids[this->param] =
-        request.path.substr(0, request.path.find('/'));
+    std::string temp = request.path.substr(0, request.path.find('/'));
+    request.body.ids[this->param] = url_decode(temp);
     if (request.path.find('/') == std::string::npos) {
       request.path = "";
     } else {
