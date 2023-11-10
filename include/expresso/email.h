@@ -7,7 +7,7 @@
 
 #include <netinet/in.h>
 
-#include <expresso/base64.h>
+#include <expresso/sterlize.h>
 #include <expresso/sys.h>
 
 class Email {

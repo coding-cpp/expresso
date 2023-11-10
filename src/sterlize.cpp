@@ -1,4 +1,4 @@
-#include <expresso/base64.h>
+#include <expresso/sterlize.h>
 
 const int BASE64_SIZE = 1000;
 const char *BASE64_CHARS =

@@ -24,7 +24,7 @@ add_executable(hello_router
 )
 
 add_executable(email
-  ./src/base64.cpp
+  ./src/sterlize.cpp
   ./src/email.cpp
   ./src/process.cpp
 
