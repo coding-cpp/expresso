@@ -92,8 +92,8 @@ void Server::handleConnection(int clientSocket) {
     header += "Content-Length: " + std::to_string(response.length()) + "\r\n";
     header += "\r\n";
 
-    send(clientSocket, header.c_str(), header.length(), 0);
-    send(clientSocket, response.c_str(), response.length(), 0);
+    sys::send_wrapper(clientSocket, header.c_str(), header.length(), 0);
+    sys::send_wrapper(clientSocket, response.c_str(), response.length(), 0);
   }
 
   close(clientSocket);
