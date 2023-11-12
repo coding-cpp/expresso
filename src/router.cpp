@@ -6,7 +6,7 @@ Router::~Router() { return; }
 
 void Router::setBasePath(std::string basePath) {
   if (basePath[0] != '/') {
-    std::cout << "[ERROR] Router base path must start with a '/'" << std::endl;
+    std::cerr << "[ERROR] Router base path must start with a '/'" << std::endl;
     return;
   }
 
@@ -20,7 +20,7 @@ std::string Router::getBasePath() { return this->basePath; }
 void Router::get(std::string path,
                  void (*handler)(Request &request, Response &response)) {
   if (path[0] != '/') {
-    std::cout << "[ERROR] Router path must start with a '/'" << std::endl;
+    std::cerr << "[ERROR] Router path must start with a '/'" << std::endl;
     return;
   }
   this->getMap[path.substr(1, path.size())] = handler;
@@ -31,7 +31,7 @@ void Router::get(std::string path,
 void Router::post(std::string path,
                   void (*handler)(Request &request, Response &response)) {
   if (path[0] != '/') {
-    std::cout << "[ERROR] Router path must start with a '/'" << std::endl;
+    std::cerr << "[ERROR] Router path must start with a '/'" << std::endl;
     return;
   }
   this->postMap[path.substr(1, path.size())] = handler;
@@ -42,7 +42,7 @@ void Router::post(std::string path,
 void Router::put(std::string path,
                  void (*handler)(Request &request, Response &response)) {
   if (path[0] != '/') {
-    std::cout << "[ERROR] Router path must start with a '/'" << std::endl;
+    std::cerr << "[ERROR] Router path must start with a '/'" << std::endl;
     return;
   }
   this->putMap[path.substr(1, path.size())] = handler;
@@ -53,7 +53,7 @@ void Router::put(std::string path,
 void Router::patch(std::string path,
                    void (*handler)(Request &request, Response &response)) {
   if (path[0] != '/') {
-    std::cout << "[ERROR] Router path must start with a '/'" << std::endl;
+    std::cerr << "[ERROR] Router path must start with a '/'" << std::endl;
     return;
   }
   this->patchMap[path.substr(1, path.size())] = handler;
@@ -64,7 +64,7 @@ void Router::patch(std::string path,
 void Router::del(std::string path,
                  void (*handler)(Request &request, Response &response)) {
   if (path[0] != '/') {
-    std::cout << "[ERROR] Router path must start with a '/'" << std::endl;
+    std::cerr << "[ERROR] Router path must start with a '/'" << std::endl;
     return;
   }
   this->delMap[path.substr(1, path.size())] = handler;
@@ -75,7 +75,7 @@ void Router::del(std::string path,
 void Router::options(std::string path,
                      void (*handler)(Request &request, Response &response)) {
   if (path[0] != '/') {
-    std::cout << "[ERROR] Router path must start with a '/'" << std::endl;
+    std::cerr << "[ERROR] Router path must start with a '/'" << std::endl;
     return;
   }
   this->optionsMap[path.substr(1, path.size())] = handler;
