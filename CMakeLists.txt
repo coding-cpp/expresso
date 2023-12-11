@@ -25,21 +25,7 @@ add_executable(hello_router
   ./example/hello_router.cpp
 )
 
-add_executable(email
-  ./src/sterlize.cpp
-  ./src/email.cpp
-  ./src/process.cpp
-
-  ./example/email.cpp
-)
-
 target_include_directories(hello_router
-  PUBLIC
-    $<INSTALL_INTERFACE:include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-)
-
-target_include_directories(email
   PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
