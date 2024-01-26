@@ -1,9 +1,11 @@
-#include <expresso/process.h>
+#include <expresso/utils/process.h>
 
-Process::Process(std::string envFile) {
+expresso::utils::Process::Process() : Process("../.env") { return; }
+
+expresso::utils::Process::Process(std::string envFile) {
   std::fstream file(envFile, std::ios::in);
   if (!file.is_open()) {
-    std::cerr << "[ERROR] Unable to open \".env\" file." << std::endl;
+    utils::print::error("Unable to open \".env\" file.");
   }
 
   std::string line;
@@ -16,9 +18,9 @@ Process::Process(std::string envFile) {
   return;
 }
 
-Process::~Process() { return; }
+expresso::utils::Process::~Process() { return; }
 
-std::string Process::getEnv(std::string key) {
+std::string expresso::utils::Process::getEnv(std::string key) {
   if (this->env.find(key) != this->env.end()) {
     return this->env[key];
   } else {
@@ -26,8 +28,7 @@ std::string Process::getEnv(std::string key) {
       std::string value = getenv(key.c_str());
       return value;
     } catch (const std::exception &e) {
-      std::cerr << "[ERROR] Environment variable \"" << key << "\" not found!"
-                << std::endl;
+      utils::print::error("Environment variable \"" + key + "\" not found!");
       return "";
     }
   }

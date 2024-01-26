@@ -1,25 +1,29 @@
-#include <expresso/process.h>
-#include <expresso/server.h>
+#include <expresso/core/server.h>
+#include <expresso/utils/process.h>
 
-void helloHandler(Request &request, Response &response) {
-  std::string _response = "Hello, World!";
-  response.status(StatusCode::OK).send(_response);
+using namespace expresso::core;
+
+void helloWorldHandler(Request &req, Response &res) {
+  // response to GET /hello/world
+  res.status(StatusCode::OK).send("Hello World!");
   return;
 }
 
 int main(int argc, char **argv) {
-  Process process("../.env");
+  expresso::utils::Process process("../.env");
   Server app;
-  Router helloRouter;
+  Router world;
 
-  helloRouter.setBasePath("/hello");
-  helloRouter.get("/", &helloHandler);
-  app.use(&helloRouter);
+  world.get("/world", helloWorldHandler);
+  app.use("/hello", &world);
 
-  int PORT =
-      int(process.getEnv("PORT").empty() ? 8000
-                                         : std::stoi(process.getEnv("PORT")));
-  app.run(PORT);
+  app.get("/hello", [](Request &req, Response &res) {
+    // response to GET /hello
+    res.status(StatusCode::OK).send("Hello!");
+    return;
+  });
+
+  app.run(std::stoi(process.getEnv("PORT")));
 
   return EXIT_SUCCESS;
 }

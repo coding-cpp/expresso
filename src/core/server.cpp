@@ -1,10 +1,10 @@
-#include <expresso/server.h>
+#include <expresso/core/server.h>
 
-Server::Server() {
-  this->socket = sys::socket_wrapper(AF_INET, SOCK_STREAM, 0);
+expresso::core::Server::Server() {
+  this->socket = sys::socket(AF_INET, SOCK_STREAM, 0);
   if (this->socket < 0) {
-    std::cerr << "[ERROR] Socket not created!" << std::endl;
-    exit(1);
+    utils::print::error("Socket not created!",
+                        "expresso::core::Server::Server()");
   }
 
   this->address.sin_family = AF_INET;
@@ -13,38 +13,33 @@ Server::Server() {
   return;
 }
 
-Server::~Server() {
+expresso::core::Server::~Server() {
   close(this->socket);
 
   return;
 }
 
-void Server::use(Router *router) {
-  this->routerMap[router->getBasePath()] = *router;
-
-  return;
-}
-
-void Server::run(int port) {
+void expresso::core::Server::run(int port) {
   this->address.sin_port = htons(port);
 
   if (bind(this->socket, (struct sockaddr *)&this->address,
            sizeof(this->address)) < 0) {
-    std::cerr << "[ERROR] Unable to bind socket!" << std::endl;
-    exit(1);
-  }
-  if (listen(this->socket, 5) < 0) {
-    std::cerr << "[ERROR] Unable to listen on socket!" << std::endl;
-    exit(1);
+    utils::print::error("Unable to bind socket!",
+                        "void expresso::core::Server::run(int port)");
   }
 
-  std::cout << "[INFO] Listening on port " << port << std::endl;
+  if (listen(this->socket, 10) < 0) {
+    utils::print::error("Unable to listen on socket!",
+                        "void expresso::core::Server::run(int port)");
+  }
+
+  utils::print::info("Listening on port " + std::to_string(port));
   this->acceptConnections();
 
   return;
 }
 
-void Server::acceptConnections() {
+void expresso::core::Server::acceptConnections() {
   while (true) {
     struct sockaddr_in clientAddress;
     socklen_t clientAddressLength = sizeof(clientAddress);
@@ -52,8 +47,8 @@ void Server::acceptConnections() {
                               &clientAddressLength);
 
     if (clientSocket < 0) {
-      std::cerr << "[ERROR] Client connection not accepted!" << std::endl;
-      exit(1);
+      utils::print::error("Client connection not accepted!",
+                          "void expresso::core::Server::acceptConnections()");
     }
 
     std::thread([this, clientSocket]() {
@@ -64,44 +59,23 @@ void Server::acceptConnections() {
   return;
 }
 
-void Server::handleConnection(int clientSocket) {
+void expresso::core::Server::handleConnection(int clientSocket) {
   char charRequest[4096];
   memset(charRequest, 0, sizeof(charRequest));
   recv(clientSocket, charRequest, sizeof(charRequest) - 1, 0);
 
   std::string request = charRequest;
+  Request req = this->makeRequest(request);
+  Response res(clientSocket);
+  req.res = &res;
 
-  char charMethod[16];
-  char charPath[4096];
-  sscanf(charRequest, "%s /%s HTTP/1.1", charMethod, charPath);
-
-  std::string method = charMethod;
-  std::string path = charPath;
-  std::string routerPath = path.substr(0, path.find('/'));
-  routerPath = routerPath.substr(0, routerPath.find('?'));
-
-  if (this->routerMap.find(routerPath) != this->routerMap.end()) {
-    Request req = this->makeRequest(request);
-    Response res(clientSocket);
-    this->routerMap[routerPath].handleRequest(req, res);
-  } else {
-    std::string response = "404 Not Found\r\n";
-
-    std::string header = "HTTP/1.1 404 Not Found\r\n";
-    header += "Content-Type: text/plain\r\n";
-    header += "Content-Length: " + std::to_string(response.length()) + "\r\n";
-    header += "\r\n";
-
-    sys::send_wrapper(clientSocket, header.c_str(), header.length(), 0);
-    sys::send_wrapper(clientSocket, response.c_str(), response.length(), 0);
-  }
-
-  close(clientSocket);
+  this->handleRequest(req, res);
 
   return;
 }
 
-Request Server::makeRequest(std::string &request) {
+expresso::core::Request
+expresso::core::Server::makeRequest(std::string &request) {
   Request req;
   char method[16];
   char path[4096];
@@ -109,6 +83,7 @@ Request Server::makeRequest(std::string &request) {
 
   req.method = method;
   req.path = path;
+  req.path = req.path == "HTTP/1.1" ? "/" : req.path;
 
   // Headers
   size_t start = request.find('\n', 0) + 1;
@@ -123,12 +98,24 @@ Request Server::makeRequest(std::string &request) {
       std::string key = request.substr(start, separator - start);
       std::string value = request.substr(separator + 2, end - separator - 2);
       req.headers[key] = value;
+
+      if (key == "Content-Length") {
+        req.contentLength = std::stoi(value);
+      }
+
+      if (key == "Host") {
+        req.host = value;
+      }
+
+      if (key == "X-Requested-With" && value == "XMLHttpRequest") {
+        req.xhr = true;
+      }
     }
 
     start = end + 1;
   }
 
-  // Params
+  // Queries
   start = req.path.find('?', 0);
   if (start != std::string::npos) {
     start += 1;
@@ -144,21 +131,16 @@ Request Server::makeRequest(std::string &request) {
         }
 
         std::string value = req.path.substr(start, end - start);
-        req.body.params[url_decode(key)] = url_decode(value);
+        req.queries[url_decode(key)] = url_decode(value);
 
         start = end + 1;
       }
     }
   }
 
-  req.path = req.path.substr(0, req.path.find('?'));
+  req.path = req.path.substr(0, req.path.find('?', 0));
   if (req.path[req.path.size() - 1] == '/') {
     req.path = req.path.substr(0, req.path.size() - 1);
-  }
-  if (req.path.find('/') == std::string::npos) {
-    req.path = "";
-  } else {
-    req.path = req.path.substr(req.path.find('/') + 1, req.path.size());
   }
 
   return req;

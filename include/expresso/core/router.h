@@ -1,36 +1,38 @@
 #pragma once
 
-#include <iostream>
 #include <map>
+#include <string>
 
-#include <netinet/in.h>
+#include <expresso/core/request.h>
+#include <expresso/core/response.h>
+#include <expresso/core/status_code.h>
+#include <expresso/sterlize.h>
+#include <expresso/utils/print.h>
 
-#include <expresso/request.h>
-#include <expresso/response.h>
-#include <expresso/status_code.h>
+namespace expresso {
+
+namespace core {
 
 class Router {
 private:
-  std::string basePath;
-  std::string param;
-
   std::map<std::string, void (*)(Request &request, Response &response)> getMap;
   std::map<std::string, void (*)(Request &request, Response &response)> postMap;
   std::map<std::string, void (*)(Request &request, Response &response)> putMap;
   std::map<std::string, void (*)(Request &request, Response &response)>
       patchMap;
-  std::map<std::string, void (*)(Request &request, Response &response)> delMap;
+  std::map<std::string, void (*)(Request &request, Response &response)>
+      deleteMap;
   std::map<std::string, void (*)(Request &request, Response &response)>
       optionsMap;
 
-  Router *paramRouter = nullptr;
+  std::map<std::string, Router *> routerMap;
+
+  Router *paramRouter;
+  std::string paramRouterParam;
 
 public:
   Router();
   ~Router();
-
-  void setBasePath(std::string basePath);
-  std::string getBasePath();
 
   void get(std::string path,
            void (*handler)(Request &request, Response &response));
@@ -45,7 +47,10 @@ public:
   void options(std::string path,
                void (*handler)(Request &request, Response &response));
 
+  void use(std::string path, Router *router);
   void handleRequest(Request &request, Response &response);
-
-  void setParamRouter(Router *router, std::string param);
 };
+
+} // namespace core
+
+} // namespace expresso

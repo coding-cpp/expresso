@@ -1,5 +1,9 @@
 #pragma once
 
+namespace expresso {
+
+namespace core {
+
 // Scrapped from [Mozilla status code
 // documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses)
 // and [Wikipedia](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
@@ -103,3 +107,7 @@ enum StatusCode {
   NETWORK_READ_TIMEOUT_ERROR = 598,
   NETWORK_CONNECT_TIMEOUT_ERROR = 599
 };
+
+} // namespace core
+
+} // namespace expresso

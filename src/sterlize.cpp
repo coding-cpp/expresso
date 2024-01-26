@@ -5,7 +5,7 @@ const char *BASE64_CHARS =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 const char *HEX_DIGITS = "0123456789ABCDEF";
 
-std::string base64_encode(std::string &data) {
+std::string expresso::base64_encode(std::string &data) {
   std::string encoded;
   int val = 0, valb = -6;
   for (unsigned char c : data) {
@@ -30,7 +30,7 @@ std::string base64_encode(std::string &data) {
 
 // Used from
 // [GFG](https://www.geeksforgeeks.org/decode-encoded-base-64-string-ascii-string/)
-std::string base64_decode(std::string &data) {
+std::string expresso::base64_decode(std::string &data) {
   char *result = (char *)malloc(BASE64_SIZE * sizeof(char));
   int i, j, k = 0;
   int num = 0, countBits = 0;
@@ -71,7 +71,7 @@ std::string base64_decode(std::string &data) {
   return decoded;
 }
 
-std::string url_encode(std::string &data) {
+std::string expresso::url_encode(std::string &data) {
   std::string result;
   result.reserve(data.size() << 1);
 
@@ -91,7 +91,7 @@ std::string url_encode(std::string &data) {
   return result;
 }
 
-std::string url_decode(std::string &data) {
+std::string expresso::url_decode(std::string &data) {
   std::string result;
   result.reserve(data.size());
 

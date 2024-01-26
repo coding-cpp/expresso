@@ -16,11 +16,16 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(USE_INSTALL_RESOURCE_PATH "Set resource path to install location" OFF)
 
 add_executable(hello_router
-  ./src/server.cpp
-  ./src/router.cpp
-  ./src/response.cpp
-  ./src/process.cpp
   ./src/sterlize.cpp
+  
+  ./src/core/request.cpp
+  ./src/core/response.cpp
+  ./src/core/router.cpp
+  ./src/core/server.cpp
+
+  
+  ./src/utils/print.cpp
+  ./src/utils/process.cpp
 
   ./example/hello_router.cpp
 )

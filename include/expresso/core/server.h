@@ -4,14 +4,16 @@
 #include <thread>
 #include <unistd.h>
 
-#include <expresso/router.h>
+#include <expresso/core/router.h>
 
-class Server {
+namespace expresso {
+
+namespace core {
+
+class Server : public Router {
 private:
   int socket;
   struct sockaddr_in address;
-
-  std::map<std::string, Router> routerMap;
 
   void acceptConnections();
   void handleConnection(int clientSocket);
@@ -22,6 +24,9 @@ public:
   Server();
   ~Server();
 
-  void use(Router *router);
   void run(int port);
 };
+
+} // namespace core
+
+} // namespace expresso
