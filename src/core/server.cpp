@@ -65,10 +65,6 @@ void expresso::core::Server::acceptConnections() {
 }
 
 void expresso::core::Server::handleConnection(int clientSocket) {
-  // char charRequest[4096];
-  // memset(charRequest, 0, sizeof(charRequest));
-  // recv(clientSocket, charRequest, sizeof(charRequest) - 1, 0);
-
   constexpr size_t bufferSize = 4096;
   std::vector<char> charRequest;
   charRequest.resize(bufferSize, '\0');
@@ -93,8 +89,6 @@ void expresso::core::Server::handleConnection(int clientSocket) {
 
   charRequest.resize(totalBytesRead);
   std::string request(charRequest.data());
-
-  std::cout << request << std::endl;
 
   Request req = this->makeRequest(request);
   Response res(clientSocket);
