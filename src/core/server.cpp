@@ -1,6 +1,11 @@
 #include <expresso/core/server.h>
 
 expresso::core::Server::Server() {
+  utils::print::info("Using expresso v" +
+                     std::to_string(EXPRESSO_VERSION_MAJOR) + "." +
+                     std::to_string(EXPRESSO_VERSION_MINOR) + "." +
+                     std::to_string(EXPRESSO_VERSION_PATCH));
+
   this->socket = sys::socket(AF_INET, SOCK_STREAM, 0);
   if (this->socket < 0) {
     utils::print::error("Socket not created!",

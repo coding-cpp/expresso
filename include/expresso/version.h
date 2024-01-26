@@ -1,0 +1,5 @@
+#pragma once
+
+#define EXPRESSO_VERSION_MAJOR 0
+#define EXPRESSO_VERSION_MINOR 0
+#define EXPRESSO_VERSION_PATCH 1

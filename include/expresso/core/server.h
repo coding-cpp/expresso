@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include <expresso/core/router.h>
+#include <expresso/version.h>
 
 namespace expresso {
 
