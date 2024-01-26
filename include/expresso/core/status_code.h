@@ -5,7 +5,7 @@ namespace expresso {
 namespace core {
 
 // Scrapped from [Mozilla status code
-// documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses)
+// documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
 // and [Wikipedia](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
 enum StatusCode {
   // Informational responses
