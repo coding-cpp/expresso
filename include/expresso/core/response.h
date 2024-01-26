@@ -22,9 +22,10 @@ public:
   Response(int clientSocket);
   ~Response();
 
-  Response status(int code);
-
   void set(std::string headerName, std::string headerValue);
+  std::string get(std::string headerName);
+
+  Response status(int code);
   void send(std::string response);
 };
 

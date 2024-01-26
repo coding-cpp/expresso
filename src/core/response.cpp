@@ -7,17 +7,25 @@ expresso::core::Response::Response(int clientSocket)
 
 expresso::core::Response::~Response() { return; }
 
-expresso::core::Response expresso::core::Response::status(int code) {
-  this->statusCode = code;
-
-  return *this;
-}
-
 void expresso::core::Response::set(std::string headerName,
                                    std::string headerValue) {
   this->headers[headerName] = headerValue;
 
   return;
+}
+
+std::string expresso::core::Response::get(std::string headerName) {
+  if (this->headers.find(headerName) != this->headers.end()) {
+    return this->headers[headerName];
+  } else {
+    return "";
+  }
+}
+
+expresso::core::Response expresso::core::Response::status(int code) {
+  this->statusCode = code;
+
+  return *this;
 }
 
 void expresso::core::Response::send(std::string response) {
