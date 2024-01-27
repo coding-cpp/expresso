@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include <expresso/core/router.h>
+#include <expresso/middleware/middleware.h>
 #include <expresso/version.h>
 
 namespace expresso {
@@ -16,14 +17,20 @@ private:
   int socket;
   struct sockaddr_in address;
 
+  std::set<middleware::Middleware *> middlewares;
+
   void acceptConnections();
   void handleConnection(int clientSocket);
+  bool handleMiddlewares(core::Request &req, core::Response &res);
 
   Request makeRequest(std::string &request);
 
 public:
   Server();
   ~Server();
+
+  void use(middleware::Middleware *middleware);
+  using Router::use;
 
   void run(int port);
 };

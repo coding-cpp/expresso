@@ -23,9 +23,12 @@ add_executable(hello_router
   ./src/core/router.cpp
   ./src/core/server.cpp
 
+  ./src/middleware/middleware.cpp
+  ./src/middleware/cors.cpp
   
   ./src/utils/print.cpp
   ./src/utils/process.cpp
+  ./src/utils/common.cpp
 
   ./example/hello_router.cpp
 )

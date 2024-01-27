@@ -1,4 +1,5 @@
 #include <expresso/core/server.h>
+#include <expresso/middleware/cors.h>
 #include <expresso/utils/process.h>
 
 using namespace expresso::core;
@@ -13,6 +14,11 @@ int main(int argc, char **argv) {
   expresso::utils::Process process("../.env");
   Server app;
   Router world;
+  expresso::middleware::Cors cors;
+
+  cors.allowOrigin("*");
+  cors.allowCredentials(true);
+  app.use(&cors);
 
   world.get("/world", helloWorldHandler);
   app.use("/hello", &world);

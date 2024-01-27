@@ -24,6 +24,12 @@ expresso::core::Server::~Server() {
   return;
 }
 
+void expresso::core::Server::use(middleware::Middleware *middleware) {
+  this->middlewares.insert(middleware);
+
+  return;
+}
+
 void expresso::core::Server::run(int port) {
   this->address.sin_port = htons(port);
 
@@ -94,9 +100,24 @@ void expresso::core::Server::handleConnection(int clientSocket) {
   Response res(clientSocket);
   req.res = &res;
 
+  if (!this->handleMiddlewares(req, res)) {
+    return;
+  }
+
   this->handleRequest(req, res);
 
   return;
+}
+
+bool expresso::core::Server::handleMiddlewares(core::Request &req,
+                                               core::Response &res) {
+  for (middleware::Middleware *middleware : this->middlewares) {
+    if (!middleware->use(req, res)) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 expresso::core::Request
