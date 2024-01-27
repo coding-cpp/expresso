@@ -6,8 +6,8 @@
 #include <expresso/core/request.h>
 #include <expresso/core/response.h>
 #include <expresso/core/status_code.h>
-#include <expresso/sterlize.h>
 #include <expresso/utils/print.h>
+#include <expresso/utils/sterlize.h>
 
 namespace expresso {
 

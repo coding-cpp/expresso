@@ -16,8 +16,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(USE_INSTALL_RESOURCE_PATH "Set resource path to install location" OFF)
 
 add_executable(hello_router
-  ./src/sterlize.cpp
-  
   ./src/core/request.cpp
   ./src/core/response.cpp
   ./src/core/router.cpp
@@ -26,9 +24,10 @@ add_executable(hello_router
   ./src/middleware/middleware.cpp
   ./src/middleware/cors.cpp
   
+  ./src/utils/common.cpp
   ./src/utils/print.cpp
   ./src/utils/process.cpp
-  ./src/utils/common.cpp
+  ./src/utils/sterlize.cpp
 
   ./example/hello_router.cpp
 )

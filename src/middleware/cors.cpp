@@ -30,6 +30,7 @@ std::set<std::string> expresso::middleware::Cors::HEADERS = {
     "Authorization",
     "Content-Type",
     "Origin",
+    "User-Agent",
     "X-Requested-With",
 };
 

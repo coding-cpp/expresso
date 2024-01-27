@@ -177,7 +177,7 @@ expresso::core::Server::makeRequest(std::string &request) {
         }
 
         std::string value = req.path.substr(start, end - start);
-        req.queries[url_decode(key)] = url_decode(value);
+        req.queries[utils::url_decode(key)] = utils::url_decode(value);
 
         start = end + 1;
       }
