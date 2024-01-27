@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
   Router world;
   expresso::middleware::Cors cors;
 
-  cors.allowOrigin("*");
+  cors.allowOrigin("*.app.localhost");
   cors.allowCredentials(true);
   app.use(&cors);
 

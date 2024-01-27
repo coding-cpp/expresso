@@ -143,7 +143,6 @@ expresso::core::Server::makeRequest(std::string &request) {
     if (separator != std::string::npos) {
       std::string key = request.substr(start, separator - start);
       std::string value = request.substr(separator + 2, end - separator - 2);
-      req.headers[key] = value;
 
       if (key == "Content-Length") {
         req.contentLength = std::stoi(value);
@@ -156,6 +155,15 @@ expresso::core::Server::makeRequest(std::string &request) {
       if (key == "X-Requested-With" && value == "XMLHttpRequest") {
         req.xhr = true;
       }
+
+      if (key == "Origin") {
+        req.headers[key] = value.substr(0, value.find(":", 0));
+        start = end + 1;
+
+        continue;
+      }
+
+      req.headers[key] = value;
     }
 
     start = end + 1;

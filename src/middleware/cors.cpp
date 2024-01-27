@@ -68,11 +68,26 @@ void expresso::middleware::Cors::allowCredentials(bool credentials) {
 bool expresso::middleware::Cors::use(core::Request &req, core::Response &res) {
   std::string requestOrigin = req.headers["Origin"];
 
+  if (requestOrigin == "") {
+    res.set("Access-Control-Allow-Origin", "null");
+    res.status(core::StatusCode::FORBIDDEN).send("Forbidden");
+    return false;
+  }
+
+  bool isOriginPresent = false;
+
   for (std::string origin : this->origins) {
     if (std::regex_match(requestOrigin, std::regex(origin))) {
       res.set("Access-Control-Allow-Origin", origin.substr(1, origin.size()));
+      isOriginPresent = true;
       break;
     }
+  }
+
+  if (!isOriginPresent) {
+    res.set("Access-Control-Allow-Origin", "null");
+    res.status(core::StatusCode::FORBIDDEN).send("Forbidden");
+    return false;
   }
 
   res.set("Access-Control-Allow-Credentials",
