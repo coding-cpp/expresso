@@ -6,6 +6,7 @@
 
 #include <expresso/core/status_code.h>
 #include <expresso/sys.h>
+#include <expresso/utils/print.h>
 
 namespace expresso {
 
@@ -27,6 +28,8 @@ public:
 
   Response status(int code);
   void send(std::string response);
+
+  void print();
 };
 
 } // namespace core

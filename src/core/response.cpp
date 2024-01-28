@@ -44,3 +44,16 @@ void expresso::core::Response::send(std::string response) {
 
   return;
 }
+
+void expresso::core::Response::print() {
+  utils::print::info("Response: ");
+
+  utils::print::info("  statusCode: " + std::to_string(this->statusCode));
+
+  utils::print::info("  headers: ");
+  for (auto const &header : this->headers) {
+    utils::print::info("    " + header.first + ": " + header.second);
+  }
+
+  return;
+}

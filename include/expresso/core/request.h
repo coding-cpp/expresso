@@ -30,6 +30,8 @@ public:
   std::map<std::string, std::string> queries;
 
   expresso::core::Response *res;
+
+  void print();
 };
 
 } // namespace core

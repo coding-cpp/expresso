@@ -1,10 +1,10 @@
 #include <expresso/core/server.h>
 
 expresso::core::Server::Server() {
-  utils::print::info("Using expresso v" +
-                     std::to_string(EXPRESSO_VERSION_MAJOR) + "." +
-                     std::to_string(EXPRESSO_VERSION_MINOR) + "." +
-                     std::to_string(EXPRESSO_VERSION_PATCH));
+  utils::print::success("Using expresso v" +
+                        std::to_string(EXPRESSO_VERSION_MAJOR) + "." +
+                        std::to_string(EXPRESSO_VERSION_MINOR) + "." +
+                        std::to_string(EXPRESSO_VERSION_PATCH));
 
   this->socket = sys::socket(AF_INET, SOCK_STREAM, 0);
   if (this->socket < 0) {
@@ -44,7 +44,7 @@ void expresso::core::Server::run(int port) {
                         "void expresso::core::Server::run(int port)");
   }
 
-  utils::print::info("Listening on port " + std::to_string(port));
+  utils::print::success("Listening on port " + std::to_string(port));
   this->acceptConnections();
 
   return;
