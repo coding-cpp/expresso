@@ -157,6 +157,11 @@ expresso::core::Server::makeRequest(std::string &request) {
       }
 
       if (key == "Origin") {
+        if (value.size() > 7 && value.substr(0, 7) == "http://") {
+          value = value.substr(7, value.size());
+        } else if (value.size() > 8 && value.substr(0, 8) == "https://") {
+          value = value.substr(8, value.size());
+        }
         req.headers[key] = value.substr(0, value.find(":", 0));
         start = end + 1;
 
