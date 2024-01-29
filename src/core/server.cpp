@@ -1,6 +1,6 @@
 #include <expresso/core/server.h>
 
-expresso::core::Server::Server() {
+expresso::core::Server::Server(size_t concurrency) : concurrency(concurrency) {
   utils::print::success("Using expresso v" +
                         std::to_string(EXPRESSO_VERSION_MAJOR) + "." +
                         std::to_string(EXPRESSO_VERSION_MINOR) + "." +
@@ -39,7 +39,7 @@ void expresso::core::Server::run(int port) {
                         "void expresso::core::Server::run(int port)");
   }
 
-  if (listen(this->socket, 10) < 0) {
+  if (listen(this->socket, this->concurrency) < 0) {
     utils::print::error("Unable to listen on socket!",
                         "void expresso::core::Server::run(int port)");
   }

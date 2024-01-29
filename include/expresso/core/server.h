@@ -15,6 +15,7 @@ namespace core {
 class Server : public Router {
 private:
   int socket;
+  size_t concurrency;
   struct sockaddr_in address;
 
   std::set<middleware::Middleware *> middlewares;
@@ -26,7 +27,7 @@ private:
   Request makeRequest(std::string &request);
 
 public:
-  Server();
+  Server(size_t concurrency = 5);
   ~Server();
 
   void use(middleware::Middleware *middleware);

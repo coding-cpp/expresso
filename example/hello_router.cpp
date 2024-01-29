@@ -12,7 +12,7 @@ void helloWorldHandler(Request &req, Response &res) {
 
 int main(int argc, char **argv) {
   expresso::utils::Process process("../.env");
-  Server app;
+  Server app(10);
   Router world;
   expresso::middleware::Cors cors;
 
