@@ -20,6 +20,22 @@ std::string expresso::utils::join(std::set<std::string> &set,
   return result;
 }
 
+std::string expresso::utils::join(std::vector<std::string> &vector,
+                                  std::string delimiter) {
+  std::string result = "";
+
+  if (vector.size() == 0) {
+    return result;
+  }
+
+  result += vector[0];
+  for (size_t i = 1; i < vector.size(); i++) {
+    result += delimiter + vector[i];
+  }
+
+  return result;
+}
+
 std::vector<std::string> expresso::utils::split(std::string &data,
                                                 std::string delimiter) {
   std::vector<std::string> result;
