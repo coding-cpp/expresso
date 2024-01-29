@@ -3,6 +3,10 @@
 #include <expresso/utils/process.h>
 
 using namespace expresso::core;
+using namespace expresso::middleware;
+using namespace expresso::utils;
+
+int port;
 
 void helloWorldHandler(Request &req, Response &res) {
   // response to GET /hello/world
@@ -11,10 +15,12 @@ void helloWorldHandler(Request &req, Response &res) {
 }
 
 int main(int argc, char **argv) {
-  expresso::utils::Process process("../.env");
+  Process process("../.env");
   Server app(10);
   Router world;
-  expresso::middleware::Cors cors;
+  Cors cors;
+
+  port = std::stoi(process.getEnv("PORT"));
 
   cors.allowOrigin("*.app.localhost");
   cors.allowCredentials(true);
@@ -23,13 +29,17 @@ int main(int argc, char **argv) {
   world.get("/world", helloWorldHandler);
   app.use("/hello", &world);
 
-  app.get("/hello", [](Request &req, Response &res) {
-    // response to GET /hello
-    res.status(StatusCode::OK).send("Hello!");
-    return;
-  });
+  app.get("/hello",
+          [](Request &req,
+             Response &res) { // Capture 'port' in the lambda capture list
+            // response to GET /hello
+            res.status(StatusCode::OK).send("Hello!");
+            return;
+          });
 
-  app.run(std::stoi(process.getEnv("PORT")));
+  app.run(port, []() {
+    print::success("Listening on port " + std::to_string(port));
+  });
 
   return EXIT_SUCCESS;
 }

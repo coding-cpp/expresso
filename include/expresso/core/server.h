@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstring>
+#include <functional>
 #include <thread>
 #include <unistd.h>
 
@@ -33,7 +34,7 @@ public:
   void use(middleware::Middleware *middleware);
   using Router::use;
 
-  void run(int port);
+  void run(int port, std::function<void()> callback = nullptr);
 };
 
 } // namespace core

@@ -30,7 +30,7 @@ void expresso::core::Server::use(middleware::Middleware *middleware) {
   return;
 }
 
-void expresso::core::Server::run(int port) {
+void expresso::core::Server::run(int port, std::function<void()> callback) {
   this->address.sin_port = htons(port);
 
   if (bind(this->socket, (struct sockaddr *)&this->address,
@@ -44,7 +44,9 @@ void expresso::core::Server::run(int port) {
                         "void expresso::core::Server::run(int port)");
   }
 
-  utils::print::success("Listening on port " + std::to_string(port));
+  if (callback != nullptr) {
+    callback();
+  }
   this->acceptConnections();
 
   return;
