@@ -21,6 +21,11 @@ void expresso::core::Request::print() {
     utils::print::info("    " + body.first + ": " + body.second);
   }
 
+  utils::print::info("  cookies: ");
+  for (auto const &cookie : this->cookies) {
+    utils::print::info("    " + cookie.first + ": " + cookie.second);
+  }
+
   utils::print::info("  headers: ");
   for (auto const &header : this->headers) {
     utils::print::info("    " + header.first + ": " + header.second);

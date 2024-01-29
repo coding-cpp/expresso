@@ -19,3 +19,31 @@ std::string expresso::utils::join(std::set<std::string> &set,
 
   return result;
 }
+
+std::vector<std::string> expresso::utils::split(std::string &data,
+                                                std::string delimiter) {
+  std::vector<std::string> result;
+  size_t start = 0;
+  size_t end = data.find(delimiter);
+
+  while (end != std::string::npos) {
+    result.push_back(data.substr(start, end - start));
+    start = end + delimiter.length();
+    end = data.find(delimiter, start);
+  }
+
+  result.push_back(data.substr(start, end));
+
+  return result;
+}
+
+std::string expresso::utils::trim(std::string &data) {
+  size_t start = data.find_first_not_of(" \n\r\t");
+  size_t end = data.find_last_not_of(" \n\r\t");
+
+  if (start == std::string::npos || end == std::string::npos) {
+    return "";
+  }
+
+  return data.substr(start, end - start + 1);
+}

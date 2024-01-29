@@ -23,6 +23,7 @@ add_executable(hello_router
 
   ./src/middleware/middleware.cpp
   ./src/middleware/cors.cpp
+  ./src/middleware/cookie_parser.cpp
   
   ./src/utils/common.cpp
   ./src/utils/print.cpp

@@ -1,4 +1,5 @@
 #include <expresso/core/server.h>
+#include <expresso/middleware/cookie_parser.h>
 #include <expresso/middleware/cors.h>
 #include <expresso/utils/process.h>
 
@@ -16,15 +17,18 @@ void helloWorldHandler(Request &req, Response &res) {
 
 int main(int argc, char **argv) {
   Process process("../.env");
+  port = std::stoi(process.getEnv("PORT"));
+
   Server app(10);
   Router world;
-  Cors cors;
 
-  port = std::stoi(process.getEnv("PORT"));
+  Cors cors;
+  CookieParser cookieParser;
 
   cors.allowOrigin("*.app.localhost");
   cors.allowCredentials(true);
   app.use(&cors);
+  app.use(&cookieParser);
 
   world.get("/world", helloWorldHandler);
   app.use("/hello", &world);
