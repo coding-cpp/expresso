@@ -34,7 +34,7 @@ public:
   void use(middleware::Middleware *middleware);
   using Router::use;
 
-  void run(int port, std::function<void()> callback = nullptr);
+  void listen(int port, std::function<void()> callback = nullptr);
 };
 
 } // namespace core

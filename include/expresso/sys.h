@@ -14,6 +14,8 @@ inline int socket(int domain, int type, int protocol) noexcept(true) {
   return ::socket(domain, type, protocol);
 }
 
+inline int listen(int fd, int n) noexcept(true) { return ::listen(fd, n); }
+
 } // namespace sys
 
 } // namespace expresso

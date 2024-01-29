@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
             return;
           });
 
-  app.run(port, []() {
+  app.listen(port, []() {
     print::success("Listening on port " + std::to_string(port));
   });
 

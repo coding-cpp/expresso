@@ -30,7 +30,7 @@ void expresso::core::Server::use(middleware::Middleware *middleware) {
   return;
 }
 
-void expresso::core::Server::run(int port, std::function<void()> callback) {
+void expresso::core::Server::listen(int port, std::function<void()> callback) {
   this->address.sin_port = htons(port);
 
   if (bind(this->socket, (struct sockaddr *)&this->address,
@@ -39,7 +39,7 @@ void expresso::core::Server::run(int port, std::function<void()> callback) {
                         "void expresso::core::Server::run(int port)");
   }
 
-  if (listen(this->socket, this->concurrency) < 0) {
+  if (sys::listen(this->socket, this->concurrency) < 0) {
     utils::print::error("Unable to listen on socket!",
                         "void expresso::core::Server::run(int port)");
   }
