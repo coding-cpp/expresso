@@ -24,6 +24,10 @@ public:
   std::string method;
   std::string path;
 
+  // tempPath used internally for referencing the path. DON'T USE IT. Use path
+  // instead.
+  std::string tempPath;
+
   std::map<std::string, std::string> body;
   std::map<std::string, std::string> cookies;
   std::map<std::string, std::string> headers;

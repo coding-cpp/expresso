@@ -15,6 +15,7 @@ void expresso::core::Request::print() {
   utils::print::info("  host: " + this->host);
   utils::print::info("  hostname: " + this->hostname);
   utils::print::info("  method: " + this->method);
+  utils::print::info("  path: " + this->path);
 
   utils::print::info("  body: ");
   for (const std::pair<std::string, std::string> &body : this->body) {

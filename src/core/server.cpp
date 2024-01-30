@@ -134,6 +134,8 @@ expresso::core::Server::makeRequest(std::string &request) {
   req.method = method;
   req.path = path;
   req.path = req.path == "HTTP/1.1" ? "/" : req.path;
+  req.tempPath = req.path;
+  req.path = "/" + req.path;
 
   // Headers
   size_t start = request.find('\n', 0) + 1;
@@ -179,21 +181,21 @@ expresso::core::Server::makeRequest(std::string &request) {
   }
 
   // Queries
-  start = req.path.find('?', 0);
+  start = req.tempPath.find('?', 0);
   if (start != std::string::npos) {
     start += 1;
-    while (start < req.path.size()) {
-      size_t separator = req.path.find('=', start);
+    while (start < req.tempPath.size()) {
+      size_t separator = req.tempPath.find('=', start);
       if (separator != std::string::npos) {
-        std::string key = req.path.substr(start, separator - start);
+        std::string key = req.tempPath.substr(start, separator - start);
         start = separator + 1;
 
-        size_t end = req.path.find('&', start);
+        size_t end = req.tempPath.find('&', start);
         if (end == std::string::npos) {
-          end = req.path.size();
+          end = req.tempPath.size();
         }
 
-        std::string value = req.path.substr(start, end - start);
+        std::string value = req.tempPath.substr(start, end - start);
         req.queries[utils::url_decode(key)] = utils::url_decode(value);
 
         start = end + 1;
@@ -201,9 +203,9 @@ expresso::core::Server::makeRequest(std::string &request) {
     }
   }
 
-  req.path = req.path.substr(0, req.path.find('?', 0));
-  if (req.path[req.path.size() - 1] == '/') {
-    req.path = req.path.substr(0, req.path.size() - 1);
+  req.tempPath = req.tempPath.substr(0, req.tempPath.find('?', 0));
+  if (req.tempPath[req.tempPath.size() - 1] == '/') {
+    req.tempPath = req.tempPath.substr(0, req.tempPath.size() - 1);
   }
 
   return req;
