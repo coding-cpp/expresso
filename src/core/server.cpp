@@ -99,14 +99,16 @@ void expresso::core::Server::handleConnection(int clientSocket) {
   std::string request(charRequest.data());
 
   Request req = this->makeRequest(request);
-  Response res(clientSocket);
-  req.res = &res;
+  Response *res = new Response(clientSocket);
+  req.res = res;
 
-  if (!this->handleMiddlewares(req, res)) {
+  if (!this->handleMiddlewares(req, *res)) {
+    delete res;
     return;
   }
 
-  this->handleRequest(req, res);
+  this->handleRequest(req, *res);
+  delete res;
 
   return;
 }

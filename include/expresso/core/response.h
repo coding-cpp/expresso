@@ -17,6 +17,8 @@ private:
   int socket;
   int statusCode;
 
+  std::string message;
+
   std::map<std::string, std::string> headers;
 
 public:
