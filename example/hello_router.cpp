@@ -1,46 +1,57 @@
+// Include files
 #include <expresso/core/server.h>
 #include <expresso/middleware/cookie_parser.h>
 #include <expresso/middleware/cors.h>
 #include <expresso/utils/process.h>
 
+// Personally, I don't encourange using namespaces, but, I left it here just so
+// that the code could be more readable ¯\_(ツ)_/¯
 using namespace expresso::core;
 using namespace expresso::middleware;
 using namespace expresso::utils;
 
+// Global variable, just for fun :)
 int port;
 
+// Handler to handle the `GET` request on `/hello/world`
 void helloWorldHandler(Request &req, Response &res) {
-  // response to GET /hello/world
   res.status(StatusCode::OK).send("Hello World!");
   return;
 }
 
 int main(int argc, char **argv) {
+  // `Process` class to load in the environment variables
   Process process("../.env");
   port = std::stoi(process.getEnv("PORT"));
 
+  // Running a server with 10 connection request queueable
   Server app(10);
+
+  // Router, for routing requests starting with /hello
   Router world;
 
+  // Cors middleware
   Cors cors;
-  CookieParser cookieParser;
-
   cors.allowOrigin("*.app.localhost");
   cors.allowCredentials(true);
   app.use(&cors);
+
+  // CookieParser middleware
+  CookieParser cookieParser;
   app.use(&cookieParser);
 
+  // Routing demo
   world.get("/world", helloWorldHandler);
   app.use("/hello", &world);
 
-  app.get("/hello",
-          [](Request &req,
-             Response &res) { // Capture 'port' in the lambda capture list
-            // response to GET /hello
-            res.status(StatusCode::OK).send("Hello!");
-            return;
-          });
+  // Direct usage demo
+  // response to GET request on /hello
+  app.get("/hello", [](Request &req, Response &res) {
+    res.status(StatusCode::OK).send("Hello!");
+    return;
+  });
 
+  // Listening on port with optional callback function
   app.listen(port, []() {
     print::success("Listening on port " + std::to_string(port));
   });
