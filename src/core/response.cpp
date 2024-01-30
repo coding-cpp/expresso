@@ -65,9 +65,11 @@ void expresso::core::Response::sendFile(std::string path) {
 
   std::string fileName = path.substr(path.find_last_of("/") + 1);
 
+  this->headers.erase("Content-Length");
   this->set("Transfer-Encoding", "chunked");
   this->set("Content-Type", this->getFileContentType(fileName));
   this->set("Content-Disposition", "inline; filename=\"" + fileName + "\"");
+  this->set("Accept-Ranges", "bytes");
   std::string header = "HTTP/1.1 " + std::to_string(this->statusCode) + "\r\n";
   for (std::pair<const std::string, std::string> it : this->headers) {
     header += it.first + ": " + it.second + "\r\n";
@@ -169,16 +171,22 @@ std::string expresso::core::Response::getFileContentType(std::string fileName) {
     return "text/plain";
   }
 
-  // Video extensions
-  if (extension == "mp4" || extension == "webm" || extension == "ogg") {
-    return "video/" + extension;
-  } else if (extension == "avi") {
-    return "video/x-msvideo";
-  } else if (extension == "mov") {
-    return "video/quicktime";
+  // Audio extensions
+  if (extension == "ogg" || extension == "wav") {
+    return "audio/" + extension;
+  } else if (extension == "mp3") {
+    return "audio/mpeg";
   }
 
-  // Audio extensions
+  // Video extensions
+  // ! Not working currently, hence commented
+  // if (extension == "mp4" || extension == "webm" || extension == "ogg") {
+  //   return "video/" + extension;
+  // } else if (extension == "avi") {
+  //   return "video/x-msvideo";
+  // } else if (extension == "mov") {
+  //   return "video/quicktime";
+  // }
 
   // Default -> download
   return "application/octet-stream";
