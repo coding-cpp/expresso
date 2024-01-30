@@ -63,3 +63,13 @@ std::string expresso::utils::trim(std::string &data) {
 
   return data.substr(start, end - start + 1);
 }
+
+std::string expresso::utils::lower(std::string &data) {
+  std::string result = "";
+
+  for (char c : data) {
+    result += std::tolower(c);
+  }
+
+  return result;
+}
