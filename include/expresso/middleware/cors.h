@@ -11,6 +11,7 @@ namespace middleware {
 class Cors : public Middleware {
 private:
   bool credentials;
+  bool allowAllOrigins;
 
   std::set<std::string> origins;
   std::set<std::string> methods;

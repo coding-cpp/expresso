@@ -2,6 +2,7 @@
 
 expresso::middleware::Cors::Cors() {
   this->credentials = false;
+  this->allowAllOrigins = false;
 
   for (std::string _header : this->HEADERS) {
     this->headers.insert(_header);
@@ -40,6 +41,10 @@ void expresso::middleware::Cors::allowOrigin(std::string origin) {
   }
   this->origins.insert(origin);
 
+  if (origin == ".*") {
+    this->allowAllOrigins = true;
+  }
+
   return;
 }
 
@@ -66,6 +71,10 @@ void expresso::middleware::Cors::allowCredentials(bool credentials) {
 }
 
 bool expresso::middleware::Cors::use(core::Request &req, core::Response &res) {
+  if (this->allowAllOrigins) {
+    return true;
+  }
+
   std::string requestOrigin = req.headers["Origin"];
 
   if (requestOrigin == "") {
