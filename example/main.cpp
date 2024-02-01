@@ -56,9 +56,9 @@ int main(int argc, char **argv) {
     return;
   });
 
-  // Example sending file in response to GET request on /trails
-  app.get("/trails", [](Request &req, Response &res) {
-    res.sendFile("../assets/star trails.png");
+  // Example sending file in response to GET request on /expresso
+  app.get("/expresso", [](Request &req, Response &res) {
+    res.sendFile("../assets/coffee.png");
     return;
   });
 
