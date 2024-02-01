@@ -45,22 +45,18 @@ void expresso::core::Response::send(std::string response) {
 }
 
 void expresso::core::Response::sendFile(std::string path) {
-  std::fstream file(path, std::ios::in | std::ios::binary);
-  if (!file.is_open()) {
-    file.open(path + "/index.html", std::ios::in | std::ios::binary);
-    if (file.is_open()) {
-      path += "/index.html";
-    }
+  std::string availableFile = utils::getAvailableFile(path);
+  if (availableFile == "") {
+    this->status(StatusCode::NOT_FOUND).send("Not Found");
+    this->end();
+    return;
   }
+
+  std::fstream file(availableFile, std::ios::in | std::ios::binary);
   if (!file.is_open()) {
-    file.open(path + "/index.htm", std::ios::in | std::ios::binary);
-    if (file.is_open()) {
-      path += "/index.htm";
-    }
-  }
-  if (!file.is_open()) {
-    this->status(StatusCode::NOT_FOUND);
-    this->send("Not Found");
+    this->status(StatusCode::NOT_FOUND).send("Not Found");
+    this->end();
+    return;
   }
 
   std::string fileName = path.substr(path.find_last_of("/") + 1);

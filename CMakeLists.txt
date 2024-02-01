@@ -21,16 +21,18 @@ add_executable(hello_router
   ./src/core/router.cpp
   ./src/core/server.cpp
 
-  ./src/middleware/middleware.cpp
   ./src/middleware/cors.cpp
   ./src/middleware/cookie_parser.cpp
+  ./src/middleware/middleware.cpp
+  ./src/middleware/static_serve.cpp
   
   ./src/utils/common.cpp
+  ./src/utils/file.cpp
   ./src/utils/print.cpp
   ./src/utils/process.cpp
   ./src/utils/sterlize.cpp
 
-  ./example/hello_router.cpp
+  ./example/main.cpp
 )
 
 target_include_directories(hello_router
