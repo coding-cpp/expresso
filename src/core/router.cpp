@@ -174,7 +174,7 @@ void expresso::core::Router::handleRequest(Request &request,
 
   if (this->paramRouter != nullptr) {
     std::string temp = request.tempPath.substr(0, request.tempPath.find('/'));
-    request.params[this->paramRouterParam] = utils::url_decode(temp);
+    request.params[this->paramRouterParam] = utils::urlDecode(temp);
 
     if (request.tempPath.find('/') == std::string::npos) {
       request.tempPath = "";

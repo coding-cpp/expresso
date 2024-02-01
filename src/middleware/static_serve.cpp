@@ -14,7 +14,7 @@ bool expresso::middleware::StaticServe::use(core::Request &req,
     return true;
   }
 
-  std::string filePath = utils::url_decode(req.path);
+  std::string filePath = utils::urlDecode(req.path);
   std::string availableFile =
       utils::getAvailableFile(utils::joinPath(this->dirname, filePath));
 

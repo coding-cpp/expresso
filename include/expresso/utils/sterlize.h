@@ -7,13 +7,13 @@ namespace expresso {
 
 namespace utils {
 
-std::string base64_encode(std::string &data);
+std::string base64Encode(std::string &data);
 
-std::string base64_decode(std::string &data);
+std::string base64Decode(std::string &data);
 
-std::string url_encode(std::string &data);
+std::string urlEncode(std::string &data);
 
-std::string url_decode(std::string &data);
+std::string urlDecode(std::string &data);
 
 } // namespace utils
 
