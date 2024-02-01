@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <functional>
+#include <signal.h>
 #include <thread>
 #include <unistd.h>
 

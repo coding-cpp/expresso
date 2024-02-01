@@ -86,10 +86,19 @@ void expresso::core::Response::sendFile(std::string path) {
     chunkSizeHex << std::hex << bytesRead;
 
     std::string chunkSize = chunkSizeHex.str() + "\r\n";
-    sys::send(this->socket, chunkSize.c_str(), chunkSize.length(), 0);
 
-    sys::send(this->socket, buffer, bytesRead, 0);
-    sys::send(this->socket, "\r\n", 2, 0);
+    if (sys::send(this->socket, chunkSize.c_str(), chunkSize.length(), 0) < 0) {
+      file.close();
+      return;
+    }
+    if (sys::send(this->socket, buffer, bytesRead, 0) < 0) {
+      file.close();
+      return;
+    }
+    if (sys::send(this->socket, "\r\n", 2, 0) < 0) {
+      file.close();
+      return;
+    }
   }
 
   sys::send(this->socket, "0\r\n\r\n", 5, 0);

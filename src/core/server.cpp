@@ -1,6 +1,7 @@
 #include <expresso/core/server.h>
 
 expresso::core::Server::Server(size_t concurrency) : concurrency(concurrency) {
+  signal(SIGPIPE, SIG_IGN);
   utils::print::success("Using expresso v" +
                         std::to_string(EXPRESSO_VERSION_MAJOR) + "." +
                         std::to_string(EXPRESSO_VERSION_MINOR) + "." +
