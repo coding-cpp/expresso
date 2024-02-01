@@ -15,7 +15,7 @@ endif()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(USE_INSTALL_RESOURCE_PATH "Set resource path to install location" OFF)
 
-add_executable(hello_router
+add_executable(server
   ./src/core/request.cpp
   ./src/core/response.cpp
   ./src/core/router.cpp
@@ -35,7 +35,7 @@ add_executable(hello_router
   ./example/main.cpp
 )
 
-target_include_directories(hello_router
+target_include_directories(server
   PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
