@@ -37,6 +37,10 @@ add_executable(server
   ./lib/json/src/parse.cpp
   ./lib/json/src/type.cpp
 
+  # Logger submodule
+  ./lib/logger/src/config.cpp
+  ./lib/logger/src/log.cpp
+
   ./example/main.cpp
 )
 
@@ -46,4 +50,6 @@ target_include_directories(server
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:lib/json/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/json/include>
+    $<INSTALL_INTERFACE:lib/logger/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/logger/include>
 )
