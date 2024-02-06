@@ -1,9 +1,10 @@
 #pragma once
 
+#include <logger/log.h>
+
 #include <expresso/core/request.h>
 #include <expresso/core/response.h>
 #include <expresso/utils/common.h>
-#include <expresso/utils/print.h>
 
 namespace expresso {
 

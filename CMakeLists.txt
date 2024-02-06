@@ -28,7 +28,6 @@ add_executable(server
   
   ./src/utils/common.cpp
   ./src/utils/file.cpp
-  ./src/utils/print.cpp
   ./src/utils/process.cpp
   ./src/utils/sterlize.cpp
 

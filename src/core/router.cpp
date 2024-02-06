@@ -30,10 +30,9 @@ void expresso::core::Router::del(std::string path,
                                  void (*handler)(Request &request,
                                                  Response &response)) {
   if (path[0] != '/') {
-    utils::print::error(
-        "Router path must start with a '/', given: " + path,
-        "void expresso::core::Router::del(std::string path, void "
-        "(*handler)(Request &request, Response &response))");
+    logger::error("Router path must start with a '/', given: " + path,
+                  "void expresso::core::Router::del(std::string path, void "
+                  "(*handler)(Request &request, Response &response))");
     return;
   }
 
@@ -45,10 +44,9 @@ void expresso::core::Router::get(std::string path,
                                  void (*handler)(Request &request,
                                                  Response &response)) {
   if (path[0] != '/') {
-    utils::print::error(
-        "Router path must start with a '/', given: " + path,
-        "void expresso::core::Router::get(std::string path, void "
-        "(*handler)(Request &request, Response &response))");
+    logger::error("Router path must start with a '/', given: " + path,
+                  "void expresso::core::Router::get(std::string path, void "
+                  "(*handler)(Request &request, Response &response))");
     return;
   }
 
@@ -60,10 +58,9 @@ void expresso::core::Router::options(std::string path,
                                      void (*handler)(Request &request,
                                                      Response &response)) {
   if (path[0] != '/') {
-    utils::print::error(
-        "Router path must start with a '/', given: " + path,
-        "void expresso::core::Router::options(std::string path, void "
-        "(*handler)(Request &request, Response &response))");
+    logger::error("Router path must start with a '/', given: " + path,
+                  "void expresso::core::Router::options(std::string path, void "
+                  "(*handler)(Request &request, Response &response))");
     return;
   }
 
@@ -75,10 +72,9 @@ void expresso::core::Router::patch(std::string path,
                                    void (*handler)(Request &request,
                                                    Response &response)) {
   if (path[0] != '/') {
-    utils::print::error(
-        "Router path must start with a '/', given: " + path,
-        "void expresso::core::Router::patch(std::string path, void "
-        "(*handler)(Request &request, Response &response))");
+    logger::error("Router path must start with a '/', given: " + path,
+                  "void expresso::core::Router::patch(std::string path, void "
+                  "(*handler)(Request &request, Response &response))");
     return;
   }
 
@@ -90,10 +86,9 @@ void expresso::core::Router::post(std::string path,
                                   void (*handler)(Request &request,
                                                   Response &response)) {
   if (path[0] != '/') {
-    utils::print::error(
-        "Router path must start with a '/', given: " + path,
-        "void expresso::core::Router::post(std::string path, void "
-        "(*handler)(Request &request, Response &response))");
+    logger::error("Router path must start with a '/', given: " + path,
+                  "void expresso::core::Router::post(std::string path, void "
+                  "(*handler)(Request &request, Response &response))");
     return;
   }
 
@@ -105,10 +100,9 @@ void expresso::core::Router::put(std::string path,
                                  void (*handler)(Request &request,
                                                  Response &response)) {
   if (path[0] != '/') {
-    utils::print::error(
-        "Router path must start with a '/', given: " + path,
-        "void expresso::core::Router::put(std::string path, void "
-        "(*handler)(Request &request, Response &response))");
+    logger::error("Router path must start with a '/', given: " + path,
+                  "void expresso::core::Router::put(std::string path, void "
+                  "(*handler)(Request &request, Response &response))");
     return;
   }
 
@@ -118,7 +112,7 @@ void expresso::core::Router::put(std::string path,
 
 void expresso::core::Router::use(std::string path, Router *router) {
   if (path[0] != '/') {
-    utils::print::error(
+    logger::error(
         "Router path must start with a '/', given: " + path,
         "void expresso::core::Router::use(std::string path, Router *router)");
     return;

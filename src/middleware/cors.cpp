@@ -50,7 +50,7 @@ void expresso::middleware::Cors::allowOrigin(std::string origin) {
 
 void expresso::middleware::Cors::allowMethod(std::string method) {
   if (this->METHODS.find(method) == this->METHODS.end()) {
-    utils::print::warning("Invalid CORS method: " + method);
+    logger::warning("Invalid CORS method: " + method);
   }
 
   this->methods.insert(method);

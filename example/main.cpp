@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
 
   // Listening on port with optional callback function
   app.listen(port, []() {
-    print::success("Listening on port " + std::to_string(port));
+    logger::success("Listening on port " + std::to_string(port));
   });
 
   return EXIT_SUCCESS;

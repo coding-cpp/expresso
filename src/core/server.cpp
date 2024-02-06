@@ -2,15 +2,13 @@
 
 expresso::core::Server::Server(size_t concurrency) : concurrency(concurrency) {
   signal(SIGPIPE, SIG_IGN);
-  utils::print::success("Using expresso v" +
-                        std::to_string(EXPRESSO_VERSION_MAJOR) + "." +
-                        std::to_string(EXPRESSO_VERSION_MINOR) + "." +
-                        std::to_string(EXPRESSO_VERSION_PATCH));
+  logger::success("Using expresso v" + std::to_string(EXPRESSO_VERSION_MAJOR) +
+                  "." + std::to_string(EXPRESSO_VERSION_MINOR) + "." +
+                  std::to_string(EXPRESSO_VERSION_PATCH));
 
   this->socket = sys::socket(AF_INET, SOCK_STREAM, 0);
   if (this->socket < 0) {
-    utils::print::error("Socket not created!",
-                        "expresso::core::Server::Server()");
+    logger::error("Socket not created!", "expresso::core::Server::Server()");
   }
 
   this->address.sin_family = AF_INET;
@@ -36,13 +34,13 @@ void expresso::core::Server::listen(int port, std::function<void()> callback) {
 
   if (bind(this->socket, (struct sockaddr *)&this->address,
            sizeof(this->address)) < 0) {
-    utils::print::error("Unable to bind socket!",
-                        "void expresso::core::Server::run(int port)");
+    logger::error("Unable to bind socket!",
+                  "void expresso::core::Server::run(int port)");
   }
 
   if (sys::listen(this->socket, this->concurrency) < 0) {
-    utils::print::error("Unable to listen on socket!",
-                        "void expresso::core::Server::run(int port)");
+    logger::error("Unable to listen on socket!",
+                  "void expresso::core::Server::run(int port)");
   }
 
   if (callback != nullptr) {
@@ -61,8 +59,8 @@ void expresso::core::Server::acceptConnections() {
                               &clientAddressLength);
 
     if (clientSocket < 0) {
-      utils::print::error("Client connection not accepted!",
-                          "void expresso::core::Server::acceptConnections()");
+      logger::error("Client connection not accepted!",
+                    "void expresso::core::Server::acceptConnections()");
     }
 
     std::thread([this, clientSocket]() {
@@ -85,7 +83,7 @@ void expresso::core::Server::handleConnection(int clientSocket) {
     bytesRead = recv(clientSocket, charRequest.data() + totalBytesRead,
                      bufferSize - 1, 0);
     if (bytesRead == static_cast<ssize_t>(-1)) {
-      utils::print::error(
+      logger::error(
           "Failed to receive data from client!",
           "void expresso::core::Server::handleConnection(int clientSocket)");
       close(clientSocket);

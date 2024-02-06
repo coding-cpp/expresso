@@ -111,24 +111,24 @@ void expresso::core::Response::end() {
   if (!this->hasEnded) {
     this->sendToClient();
   } else {
-    utils::print::warning("Response has already ended");
+    logger::warning("Response has already ended");
   }
 
   return;
 }
 
 void expresso::core::Response::print() {
-  utils::print::info("Response: ");
+  logger::info("Response: ");
 
-  utils::print::info("  statusCode: " + std::to_string(this->statusCode));
+  logger::info("  statusCode: " + std::to_string(this->statusCode));
 
-  utils::print::info("  headers: ");
+  logger::info("  headers: ");
   for (const std::pair<const std::string, std::string> &header :
        this->headers) {
-    utils::print::info("    " + header.first + ": " + header.second);
+    logger::info("    " + header.first + ": " + header.second);
   }
 
-  utils::print::info("  message: " + this->message);
+  logger::info("  message: " + this->message);
 
   return;
 }

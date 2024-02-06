@@ -10,36 +10,36 @@ expresso::core::Request::Request() {
 expresso::core::Request::~Request() { return; }
 
 void expresso::core::Request::print() {
-  utils::print::info("Request: ");
+  logger::info("Request: ");
 
-  utils::print::info("  host: " + this->host);
-  utils::print::info("  hostname: " + this->hostname);
-  utils::print::info("  method: " + this->method);
-  utils::print::info("  path: " + this->path);
+  logger::info("  host: " + this->host);
+  logger::info("  hostname: " + this->hostname);
+  logger::info("  method: " + this->method);
+  logger::info("  path: " + this->path);
 
-  utils::print::info("  body: ");
+  logger::info("  body: ");
   for (const std::pair<std::string, std::string> &body : this->body) {
-    utils::print::info("    " + body.first + ": " + body.second);
+    logger::info("    " + body.first + ": " + body.second);
   }
 
-  utils::print::info("  cookies: ");
+  logger::info("  cookies: ");
   for (const std::pair<std::string, std::string> &cookie : this->cookies) {
-    utils::print::info("    " + cookie.first + ": " + cookie.second);
+    logger::info("    " + cookie.first + ": " + cookie.second);
   }
 
-  utils::print::info("  headers: ");
+  logger::info("  headers: ");
   for (const std::pair<std::string, std::string> &header : this->headers) {
-    utils::print::info("    " + header.first + ": " + header.second);
+    logger::info("    " + header.first + ": " + header.second);
   }
 
-  utils::print::info("  params: ");
+  logger::info("  params: ");
   for (const std::pair<std::string, std::string> &param : this->params) {
-    utils::print::info("    " + param.first + ": " + param.second);
+    logger::info("    " + param.first + ": " + param.second);
   }
 
-  utils::print::info("  queries: ");
+  logger::info("  queries: ");
   for (const std::pair<std::string, std::string> &query : this->queries) {
-    utils::print::info("    " + query.first + ": " + query.second);
+    logger::info("    " + query.first + ": " + query.second);
   }
 
   return;
