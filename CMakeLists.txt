@@ -31,6 +31,9 @@ add_executable(server
   ./src/utils/process.cpp
   ./src/utils/sterlize.cpp
 
+  # Nexus submodule
+  ./lib/nexus/src/pool.cpp
+
   # JSON submodule
   ./lib/json/src/object.cpp
   ./lib/json/src/parse.cpp
@@ -47,6 +50,8 @@ target_include_directories(server
   PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:lib/nexus/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/nexus/include>
     $<INSTALL_INTERFACE:lib/json/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/json/include>
     $<INSTALL_INTERFACE:lib/logger/include>
