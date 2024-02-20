@@ -6,6 +6,8 @@
 #include <thread>
 #include <unistd.h>
 
+#include <nexus/pool.h>
+
 #include <expresso/core/router.h>
 #include <expresso/middleware/middleware.h>
 #include <expresso/version.h>
@@ -17,7 +19,7 @@ namespace core {
 class Server : public Router {
 private:
   int socket;
-  size_t concurrency;
+  size_t maxConnections;
   struct sockaddr_in address;
 
   std::set<middleware::Middleware *> middlewares;
@@ -28,8 +30,10 @@ private:
 
   Request makeRequest(std::string &request);
 
+  nexus::pool threadPool;
+
 public:
-  Server(size_t concurrency = 5);
+  Server(size_t maxConnections = 5, size_t maxThreads = 2);
   ~Server();
 
   void use(middleware::Middleware *middleware);

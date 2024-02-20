@@ -25,8 +25,8 @@ int main(int argc, char **argv) {
   Process process("../.env");
   port = std::stoi(process.getEnv("PORT"));
 
-  // Running a server with 10 connection request queueable
-  Server app(10);
+  // Running a server with max 10 connections and 4 threads
+  Server app(10, 4);
 
   // Router, for routing requests starting with /hello
   Router world;

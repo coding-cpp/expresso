@@ -1,6 +1,7 @@
 #include <expresso/core/server.h>
 
-expresso::core::Server::Server(size_t concurrency) : concurrency(concurrency) {
+expresso::core::Server::Server(size_t maxConnections, size_t maxThreads)
+    : maxConnections(maxConnections), threadPool(nexus::pool(maxThreads)) {
   signal(SIGPIPE, SIG_IGN);
   logger::success("Using expresso v" + std::to_string(EXPRESSO_VERSION_MAJOR) +
                   "." + std::to_string(EXPRESSO_VERSION_MINOR) + "." +
@@ -38,7 +39,7 @@ void expresso::core::Server::listen(int port, std::function<void()> callback) {
                   "void expresso::core::Server::run(int port)");
   }
 
-  if (sys::listen(this->socket, this->concurrency) < 0) {
+  if (sys::listen(this->socket, this->maxConnections) < 0) {
     logger::error("Unable to listen on socket!",
                   "void expresso::core::Server::run(int port)");
   }
@@ -64,9 +65,8 @@ void expresso::core::Server::acceptConnections() {
       return;
     }
 
-    std::thread([this, clientSocket]() {
-      this->handleConnection(clientSocket);
-    }).detach();
+    this->threadPool.enqueue(
+        [this, clientSocket]() { this->handleConnection(clientSocket); });
   }
 
   return;
