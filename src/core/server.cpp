@@ -61,6 +61,7 @@ void expresso::core::Server::acceptConnections() {
     if (clientSocket < 0) {
       logger::error("Client connection not accepted!",
                     "void expresso::core::Server::acceptConnections()");
+      return;
     }
 
     std::thread([this, clientSocket]() {
