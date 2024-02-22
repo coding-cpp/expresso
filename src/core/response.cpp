@@ -52,6 +52,14 @@ expresso::core::Response expresso::core::Response::json(json::object response) {
   return *this;
 }
 
+expresso::core::Response
+expresso::core::Response::json(const std::string response) {
+  this->message = response;
+  this->set("Content-Type", "application/json");
+
+  return *this;
+}
+
 void expresso::core::Response::sendFile(std::string path) {
   std::string availableFile = utils::getAvailableFile(path);
   if (availableFile == "") {
