@@ -6,6 +6,7 @@
 #include <string>
 
 #include <logger/log.h>
+#include <json/object.h>
 
 #include <expresso/core/status_code.h>
 #include <expresso/sys.h>
@@ -38,7 +39,8 @@ public:
   std::string get(std::string headerName);
 
   Response status(int code);
-  void send(std::string response);
+  Response send(std::string response);
+  Response json(json::object response);
 
   // Send absolute path to the file, not relative
   void sendFile(std::string path);

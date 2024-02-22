@@ -16,7 +16,35 @@ int port;
 
 // Handler to handle the `GET` request on `/hello/world`
 void helloWorldHandler(Request &req, Response &res) {
-  res.status(StatusCode::OK).send("Hello World!");
+  json::object resp;
+  resp["framework"] = "Expresso";
+  resp["repository"] = "https://github.com/coding-cpp/expresso";
+  resp["language"] = "C++";
+  resp["creator"] = "Adit Jain";
+
+  json::object submodules;
+  submodules.push_back(json::object());
+  submodules[0]["repository"] = "https://github.com/coding-cpp/logger";
+  submodules[0]["work"] = "Logging library for C++";
+  submodules[0]["location"] = "lib/logger";
+  submodules[0]["name"] = "Logger";
+
+  json::object nexusSubmodule;
+  nexusSubmodule["repository"] = "https://github.com/coding-cpp/nexus";
+  nexusSubmodule["work"] = "Thread pool library for C++";
+  submodules.push_back(nexusSubmodule);
+  submodules[1]["location"] = "lib/nexus";
+  submodules[1]["name"] = "Nexus";
+
+  submodules.push_back(json::object());
+  resp["submodules"] = submodules;
+
+  resp["submodules"][2]["repository"] = "https://github.com/coding-cpp/json";
+  resp["submodules"][2]["work"] = "JSON library for C++";
+  resp["submodules"][2]["location"] = "lib/json";
+  resp["submodules"][2]["name"] = "JSON";
+
+  res.json(resp).status(200);
   return;
 }
 
@@ -26,7 +54,7 @@ int main(int argc, char **argv) {
   port = std::stoi(process.getEnv("PORT"));
 
   // Running a server with max 10 connections and 4 threads
-  Server app(10, 4);
+  Server app(10000, 100);
 
   // Router, for routing requests starting with /hello
   Router world;

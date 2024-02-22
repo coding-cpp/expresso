@@ -37,11 +37,19 @@ expresso::core::Response expresso::core::Response::status(int code) {
   return *this;
 }
 
-void expresso::core::Response::send(std::string response) {
+expresso::core::Response expresso::core::Response::send(std::string response) {
   this->message = std::regex_replace(response, std::regex("\n"), "\r\n");
   this->message += "\r\n";
+  this->set("Content-Type", "text/plain");
 
-  return;
+  return *this;
+}
+
+expresso::core::Response expresso::core::Response::json(json::object response) {
+  this->message = response.dumps(0);
+  this->set("Content-Type", "application/json");
+
+  return *this;
 }
 
 void expresso::core::Response::sendFile(std::string path) {
