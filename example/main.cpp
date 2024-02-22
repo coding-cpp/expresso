@@ -21,23 +21,17 @@ void helloWorldHandler(Request &req, Response &res) {
   resp["repository"] = "https://github.com/coding-cpp/expresso";
   resp["language"] = "C++";
   resp["creator"] = "Adit Jain";
+  resp["submodules"].resize(3);
 
-  json::object submodules;
-  submodules.push_back(json::object());
-  submodules[0]["repository"] = "https://github.com/coding-cpp/logger";
-  submodules[0]["work"] = "Logging library for C++";
-  submodules[0]["location"] = "lib/logger";
-  submodules[0]["name"] = "Logger";
+  resp["submodules"][0]["repository"] = "https://github.com/coding-cpp/logger";
+  resp["submodules"][0]["work"] = "Logging library for C++";
+  resp["submodules"][0]["location"] = "lib/logger";
+  resp["submodules"][0]["name"] = "Logger";
 
-  json::object nexusSubmodule;
-  nexusSubmodule["repository"] = "https://github.com/coding-cpp/nexus";
-  nexusSubmodule["work"] = "Thread pool library for C++";
-  submodules.push_back(nexusSubmodule);
-  submodules[1]["location"] = "lib/nexus";
-  submodules[1]["name"] = "Nexus";
-
-  submodules.push_back(json::object());
-  resp["submodules"] = submodules;
+  resp["submodules"][1]["repository"] = "https://github.com/coding-cpp/nexus";
+  resp["submodules"][1]["work"] = "Thread pool library for C++";
+  resp["submodules"][1]["location"] = "lib/nexus";
+  resp["submodules"][1]["name"] = "Nexus";
 
   resp["submodules"][2]["repository"] = "https://github.com/coding-cpp/json";
   resp["submodules"][2]["work"] = "JSON library for C++";
