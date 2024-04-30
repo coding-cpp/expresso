@@ -18,9 +18,7 @@ void expresso::core::Request::print() {
   logger::info("  path: " + this->path);
 
   logger::info("  body: ");
-  for (const std::pair<std::string, std::string> &body : this->body) {
-    logger::info("    " + body.first + ": " + body.second);
-  }
+  logger::info(this->body.dumps(2, 2));
 
   logger::info("  cookies: ");
   for (const std::pair<std::string, std::string> &cookie : this->cookies) {

@@ -28,7 +28,7 @@ public:
   // instead.
   std::string tempPath;
 
-  std::map<std::string, std::string> body;
+  json::object body;
   std::map<std::string, std::string> cookies;
   std::map<std::string, std::string> headers;
   std::map<std::string, std::string> params;

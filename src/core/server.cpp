@@ -148,7 +148,7 @@ expresso::core::Server::makeRequest(std::string &request) {
     size_t separator = request.find(':', start);
     if (separator != std::string::npos) {
       std::string key = request.substr(start, separator - start);
-      std::string value = request.substr(separator + 2, end - separator - 2);
+      std::string value = request.substr(separator + 2, end - separator - 3);
 
       if (key == "Content-Length") {
         req.contentLength = std::stoi(value);
@@ -203,9 +203,48 @@ expresso::core::Server::makeRequest(std::string &request) {
     }
   }
 
+  // Fixing the tempPath
   req.tempPath = req.tempPath.substr(0, req.tempPath.find('?', 0));
   if (req.tempPath[req.tempPath.size() - 1] == '/') {
     req.tempPath = req.tempPath.substr(0, req.tempPath.size() - 1);
+  }
+
+  // Setting the body
+  std::string contentType = req.headers["Content-Type"];
+  std::string body = request.substr(request.find("\r\n\r\n") + 4);
+  if (contentType == "text/plain" || contentType == "application/javascript") {
+    req.body = json::object(body);
+  } else if (contentType == "application/json") {
+    json::parser parser;
+    req.body = parser.loads(body);
+  } else if (contentType == "application/x-www-form-urlencoded") {
+    std::vector<std::string> parts = utils::split(body, "&");
+    std::string key;
+    std::string value;
+    req.body = json::object(std::map<std::string, json::object>());
+    for (auto str : parts) {
+      key = utils::urlDecode(utils::split(str, "=")[0]);
+      value = utils::urlDecode(utils::split(str, "=")[1]);
+      req.body[key] = json::object(value);
+    }
+  } else if (utils::split(contentType, ";")[0] == "multipart/form-data") {
+    std::string delimiter =
+        utils::split(utils::split(contentType, ";")[1], "=")[1];
+    std::vector<std::string> parts = utils::split(body, delimiter);
+    std::vector<std::string> data;
+    std::string key;
+    std::string value;
+    req.body = json::object(std::map<std::string, json::object>());
+    for (auto str : parts) {
+      data = utils::split(str, "Content-Disposition: form-data; name=\"");
+      if (data.size() == 2) {
+        key = utils::split(data[1], "\r\n")[0];
+        key = key.substr(0, key.size() - 1);
+        value = utils::split(data[1], "\r\n\r\n")[1];
+        value = value.substr(0, value.size() - 3);
+        req.body[key] = json::object(value);
+      }
+    }
   }
 
   return req;

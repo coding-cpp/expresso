@@ -7,6 +7,7 @@
 #include <unistd.h>
 
 #include <nexus/pool.h>
+#include <json/parse.h>
 
 #include <expresso/core/router.h>
 #include <expresso/middleware/middleware.h>
