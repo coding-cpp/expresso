@@ -12,6 +12,7 @@ class Cookie {
 public:
   bool secure;
   bool httpOnly;
+  bool partitioned;
 
   std::string name;
   std::string value;

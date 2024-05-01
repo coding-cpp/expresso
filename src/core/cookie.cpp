@@ -3,6 +3,7 @@
 expresso::core::Cookie::Cookie() {
   this->secure = false;
   this->httpOnly = false;
+  this->partitioned = false;
   this->name = "";
   this->value = "";
   this->domain = "";
@@ -38,6 +39,9 @@ std::string expresso::core::Cookie::serialize() {
   }
   if (this->httpOnly) {
     cookieString += "; HttpOnly";
+  }
+  if (this->partitioned) {
+    cookieString += "; Partitioned";
   }
 
   return cookieString;
