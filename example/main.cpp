@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
   port = std::stoi(process.getEnv("PORT"));
 
   // Running a server with max 10 connections and 4 threads
-  Server app(10000, 100);
+  Server app(10000, 4);
 
   // Router, for routing requests starting with /hello
   Router world;
