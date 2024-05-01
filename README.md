@@ -1,15 +1,15 @@
-# Expresso
+# Expresso ☕️
 
 A C++ backend framework designed for web applications. A few features include:
 
-- Simple and easy to use API
-- Built-in HTTP server
-- Out of the box multi-threading support
-- Expandable custom middleware
+- Simple and easy to use API ✨
+- Built-in HTTP server 🌐
+- Out of the box multi-threading support 🧵
+- Expandable custom middleware 🧩
 
-It is pretty straightforward and if you are familiar with the Express.js framework, you will feel right at home, as the API is very similar, which is my goal?
+It is pretty straightforward and if you are familiar with the Express.js framework, you will feel right at home, as the API is very similar, which is my goal? 🎯
 
-## Installation
+## Installation 🚀
 
 0. Make sure you have the gnu g++ compiler installed on your system. You can install it by running the following command:
 
@@ -44,4 +44,4 @@ You can find an example of how to use the framework in the [`example`](./example
 
 ## Bugs and Issues
 
-If you encounter any bugs or issues, feel free to open an issue on the repository. This is a work in progress and since I am the only one working on it, that too in my spare time, I might not have the time to fix it right away, but I will try my best to get to it as soon as possible.
+If you encounter any bugs or issues, feel free to open an issue on the repository. This is a work in progress and since I am the only one working on it, that too in my spare time, I might not have the time to fix it right away, but I will try my best to get to it as soon as possible. 🐛🔧
