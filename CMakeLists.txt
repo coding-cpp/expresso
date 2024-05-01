@@ -16,6 +16,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(USE_INSTALL_RESOURCE_PATH "Set resource path to install location" OFF)
 
 add_executable(server
+  ./src/core/cookie.cpp
   ./src/core/request.cpp
   ./src/core/response.cpp
   ./src/core/router.cpp

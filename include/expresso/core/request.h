@@ -29,7 +29,7 @@ public:
   std::string tempPath;
 
   json::object body;
-  std::map<std::string, std::string> cookies;
+  std::vector<Cookie *> cookies;
   std::map<std::string, std::string> headers;
   std::map<std::string, std::string> params;
   std::map<std::string, std::string> queries;

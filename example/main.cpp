@@ -38,6 +38,11 @@ void helloWorldHandler(Request &req, Response &res) {
   resp["submodules"][2]["location"] = "lib/json";
   resp["submodules"][2]["name"] = "JSON";
 
+  Cookie *cookie = new Cookie();
+  cookie->name = "hello";
+  cookie->value = "world";
+  res.setCookie(cookie);
+
   res.json(resp).status(200);
   return;
 }

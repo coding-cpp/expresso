@@ -12,9 +12,14 @@ bool expresso::middleware::CookieParser::use(expresso::core::Request &req,
   }
 
   std::vector<std::string> cookies = utils::split(cookieString, ";");
-  for (std::string &cookie : cookies) {
-    std::vector<std::string> cookiePair = utils::split(cookie, "=");
-    req.cookies[utils::trim(cookiePair[0])] = utils::trim(cookiePair[1]);
+  std::vector<std::string> cookiePair;
+  for (std::string &cookieStr : cookies) {
+    expresso::core::Cookie *cookie = new expresso::core::Cookie();
+    cookiePair = utils::split(cookieStr, "=");
+    cookie->name = utils::trim(cookiePair[0]);
+    cookie->value = utils::trim(cookiePair[1]);
+    cookie->value = utils::urlDecode(cookie->value);
+    req.cookies.push_back(cookie);
   }
 
   return true;

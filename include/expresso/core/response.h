@@ -8,6 +8,7 @@
 #include <json/object.h>
 #include <logger/log.h>
 
+#include <expresso/core/cookie.h>
 #include <expresso/core/status_code.h>
 #include <expresso/sys.h>
 #include <expresso/utils/common.h>
@@ -26,6 +27,7 @@ private:
 
   std::string message;
 
+  std::vector<Cookie *> cookies;
   std::map<std::string, std::string> headers;
 
   void sendToClient();
@@ -36,6 +38,7 @@ public:
   ~Response();
 
   void set(std::string headerName, std::string headerValue);
+  void setCookie(Cookie *cookie);
   std::string get(std::string headerName);
 
   Response status(int code);

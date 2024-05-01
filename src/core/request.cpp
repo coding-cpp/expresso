@@ -21,8 +21,8 @@ void expresso::core::Request::print() {
   logger::info(this->body.dumps(2, 2));
 
   logger::info("  cookies: ");
-  for (const std::pair<std::string, std::string> &cookie : this->cookies) {
-    logger::info("    " + cookie.first + ": " + cookie.second);
+  for (expresso::core::Cookie *cookie : this->cookies) {
+    logger::info("    " + cookie->serialize());
   }
 
   logger::info("  headers: ");
