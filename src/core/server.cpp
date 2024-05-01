@@ -115,6 +115,11 @@ void expresso::core::Server::handleConnection(int clientSocket) {
 
 bool expresso::core::Server::handleMiddlewares(core::Request &req,
                                                core::Response &res) {
+  // Setting response headers
+  res.set("Server", "expresso/" + std::to_string(EXPRESSO_VERSION_MAJOR) + "." +
+                        std::to_string(EXPRESSO_VERSION_MINOR) + "." +
+                        std::to_string(EXPRESSO_VERSION_PATCH));
+
   for (middleware::Middleware *middleware : this->middlewares) {
     if (!middleware->use(req, res)) {
       return false;
