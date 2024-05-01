@@ -41,3 +41,7 @@ make
 ## Example
 
 You can find an example of how to use the framework in the [`example`](./example/) directory.
+
+## Bugs and Issues
+
+If you encounter any bugs or issues, feel free to open an issue on the repository. This is a work in progress and since I am the only one working on it, that too in my spare time, I might not have the time to fix it right away, but I will try my best to get to it as soon as possible.
