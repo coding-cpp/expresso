@@ -4,10 +4,7 @@ namespace expresso {
 
 namespace core {
 
-// Scrapped from [Mozilla status code
-// documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
-// and [Wikipedia](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
-enum StatusCode {
+enum STATUS_CODE {
   // Informational responses
   CONTINUE = 100,
   SWITCHING_PROTOCOLS = 101,

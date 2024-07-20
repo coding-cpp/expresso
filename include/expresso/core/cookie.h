@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <expresso/utils/sterlize.h>
+#include <brewtils/url.h>
 
 namespace expresso {
 

@@ -1,8 +1,6 @@
 #pragma once
 
 #include <expresso/middleware/middleware.h>
-#include <expresso/utils/file.h>
-#include <expresso/utils/sterlize.h>
 
 namespace expresso {
 
@@ -10,10 +8,12 @@ namespace middleware {
 
 class StaticServe : public Middleware {
 private:
+  bool showListing;
+
   std::string dirname;
 
 public:
-  StaticServe(std::string dirname);
+  StaticServe(std::string dirname, bool showListing = false);
   ~StaticServe();
 
   bool use(core::Request &req, core::Response &res) override;

@@ -1,26 +1,11 @@
 #include <expresso/middleware/cors.h>
 
-expresso::middleware::Cors::Cors() {
-  this->credentials = false;
-  this->allowAllOrigins = false;
+namespace expresso::middleware {
 
-  for (std::string _header : this->HEADERS) {
-    this->headers.insert(_header);
-  }
+const std::set<std::string> Cors::METHODS = {"GET", "POST", "PUT", "DELETE",
+                                             "OPTIONS"};
 
-  this->allowMethod("GET");
-  this->allowMethod("POST");
-  this->allowMethod("OPTIONS");
-
-  return;
-}
-
-expresso::middleware::Cors::~Cors() { return; }
-
-std::set<std::string> expresso::middleware::Cors::METHODS = {
-    "GET", "POST", "PUT", "DELETE", "OPTIONS"};
-
-std::set<std::string> expresso::middleware::Cors::HEADERS = {
+const std::set<std::string> Cors::HEADERS = {
     "Accept",
     "Access-Control-Allow-Credentials",
     "Access-Control-Allow-Headers",
@@ -34,6 +19,25 @@ std::set<std::string> expresso::middleware::Cors::HEADERS = {
     "User-Agent",
     "X-Requested-With",
 };
+
+const std::string Cors::FORBIDDEN = "Forbidden";
+
+} // namespace expresso::middleware
+
+expresso::middleware::Cors::Cors()
+    : credentials(false), allowAllOrigins(false) {
+  for (std::string _header : this->HEADERS) {
+    this->headers.insert(_header);
+  }
+
+  this->allowMethod("GET");
+  this->allowMethod("POST");
+  this->allowMethod("OPTIONS");
+
+  return;
+}
+
+expresso::middleware::Cors::~Cors() { return; }
 
 void expresso::middleware::Cors::allowOrigin(std::string origin) {
   if (origin[0] != '.') {
@@ -70,7 +74,8 @@ void expresso::middleware::Cors::allowCredentials(bool credentials) {
   return;
 }
 
-bool expresso::middleware::Cors::use(core::Request &req, core::Response &res) {
+bool expresso::middleware::Cors::use(expresso::core::Request &req,
+                                     expresso::core::Response &res) {
   if (this->allowAllOrigins) {
     return true;
   }
@@ -79,7 +84,8 @@ bool expresso::middleware::Cors::use(core::Request &req, core::Response &res) {
 
   if (requestOrigin == "") {
     res.set("Access-Control-Allow-Origin", "null");
-    res.status(core::StatusCode::FORBIDDEN).send("Forbidden");
+    res.status(expresso::core::STATUS_CODE::FORBIDDEN)
+        .send(expresso::middleware::Cors::FORBIDDEN);
     return false;
   }
 
@@ -95,14 +101,17 @@ bool expresso::middleware::Cors::use(core::Request &req, core::Response &res) {
 
   if (!isOriginPresent) {
     res.set("Access-Control-Allow-Origin", "null");
-    res.status(core::StatusCode::FORBIDDEN).send("Forbidden");
+    res.status(expresso::core::STATUS_CODE::FORBIDDEN)
+        .send(expresso::middleware::Cors::FORBIDDEN);
     return false;
   }
 
   res.set("Access-Control-Allow-Credentials",
           this->credentials ? "true" : "false");
-  res.set("Access-Control-Allow-Methods", utils::join(this->methods, ", "));
-  res.set("Access-Control-Allow-Headers", utils::join(this->headers, ", "));
+  res.set("Access-Control-Allow-Methods",
+          brewtils::string::join(this->methods, ", "));
+  res.set("Access-Control-Allow-Headers",
+          brewtils::string::join(this->headers, ", "));
 
   return true;
 }

@@ -1,24 +1,16 @@
 #include <expresso/core/cookie.h>
 
-expresso::core::Cookie::Cookie() {
-  this->secure = false;
-  this->httpOnly = false;
-  this->partitioned = false;
-  this->name = "";
-  this->value = "";
-  this->domain = "";
-  this->path = "";
-  this->expires = "";
-  this->maxAge = "";
-  this->sameSite = "";
-
+expresso::core::Cookie::Cookie()
+    : secure(false), httpOnly(false), partitioned(false), name(""), value(""),
+      domain(""), path(""), expires(""), maxAge(""), sameSite("") {
   return;
 }
 
 expresso::core::Cookie::~Cookie() { return; }
 
 std::string expresso::core::Cookie::serialize() {
-  std::string cookieString = this->name + "=" + utils::urlEncode(this->value);
+  std::string cookieString =
+      this->name + "=" + brewtils::url::encode(this->value);
   if (!this->domain.empty()) {
     cookieString += "; Domain=" + this->domain;
   }

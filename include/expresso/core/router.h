@@ -1,12 +1,6 @@
 #pragma once
 
-#include <map>
-#include <string>
-
-#include <expresso/core/request.h>
-#include <expresso/core/response.h>
-#include <expresso/core/status_code.h>
-#include <expresso/utils/sterlize.h>
+#include <expresso/middleware/middleware.h>
 
 namespace expresso {
 
@@ -23,11 +17,14 @@ private:
       deleteMap;
   std::map<std::string, void (*)(Request &request, Response &response)>
       optionsMap;
-
   std::map<std::string, Router *> routerMap;
 
   Router *paramRouter;
   std::string paramRouterParam;
+
+  std::vector<expresso::middleware::Middleware *> middlewares;
+
+  bool handleMiddlewares(Request &request, Response &response);
 
 public:
   Router();
@@ -47,6 +44,8 @@ public:
                void (*handler)(Request &request, Response &response));
 
   void use(std::string path, Router *router);
+  void use(expresso::middleware::Middleware *middleware);
+
   void handleRequest(Request &request, Response &response);
 };
 

@@ -1,24 +1,20 @@
 #include <expresso/core/router.h>
 
-expresso::core::Router::Router() {
-  this->paramRouter = nullptr;
-
-  return;
-}
+expresso::core::Router::Router() : paramRouter(nullptr) { return; }
 
 expresso::core::Router::~Router() {
   if (this->paramRouter != nullptr) {
     delete this->paramRouter;
   }
 
-  for (const std::pair<std::string, Router *> &x : this->routerMap) {
-    delete x.second;
+  for (const std::pair<std::string, Router *> &router : this->routerMap) {
+    delete router.second;
   }
-  this->routerMap.clear();
 
+  this->routerMap.clear();
   this->getMap.clear();
-  this->putMap.clear();
   this->postMap.clear();
+  this->putMap.clear();
   this->patchMap.clear();
   this->deleteMap.clear();
   this->optionsMap.clear();
@@ -126,27 +122,46 @@ void expresso::core::Router::use(std::string path, Router *router) {
   return;
 }
 
+void expresso::core::Router::use(middleware::Middleware *middleware) {
+  this->middlewares.push_back(middleware);
+  return;
+}
+
 void expresso::core::Router::handleRequest(Request &request,
                                            Response &response) {
+  if (!this->handleMiddlewares(request, response)) {
+    return;
+  }
+
+  if (request.tempPath.size() > 0 && request.tempPath[0] == '/') {
+    request.tempPath = request.tempPath.substr(1, request.tempPath.size());
+  }
+
   if (request.method == "GET" &&
       this->getMap.find(request.tempPath) != this->getMap.end()) {
     this->getMap[request.tempPath](request, response);
+    return;
   } else if (request.method == "POST" &&
              this->postMap.find(request.tempPath) != this->postMap.end()) {
     this->postMap[request.tempPath](request, response);
+    return;
   } else if (request.method == "PUT" &&
              this->putMap.find(request.tempPath) != this->putMap.end()) {
     this->putMap[request.tempPath](request, response);
+    return;
   } else if (request.method == "PATCH" &&
              this->patchMap.find(request.tempPath) != this->patchMap.end()) {
     this->patchMap[request.tempPath](request, response);
+    return;
   } else if (request.method == "DELETE" &&
              this->deleteMap.find(request.tempPath) != this->deleteMap.end()) {
     this->deleteMap[request.tempPath](request, response);
+    return;
   } else if (request.method == "OPTIONS" &&
              this->optionsMap.find(request.tempPath) !=
                  this->optionsMap.end()) {
     this->optionsMap[request.tempPath](request, response);
+    return;
   }
 
   for (const std::pair<std::string, Router *> &x : this->routerMap) {
@@ -156,7 +171,7 @@ void expresso::core::Router::handleRequest(Request &request,
     if ((request.tempPath + "/")
             .compare(0, (x.first + "/").size(), (x.first + "/")) == 0) {
       if (request.tempPath == x.first) {
-        request.tempPath = "/";
+        request.tempPath = "";
       } else {
         request.tempPath = request.tempPath.substr(x.first.size() + 1,
                                                    request.tempPath.size());
@@ -168,7 +183,7 @@ void expresso::core::Router::handleRequest(Request &request,
 
   if (this->paramRouter != nullptr) {
     std::string temp = request.tempPath.substr(0, request.tempPath.find('/'));
-    request.params[this->paramRouterParam] = utils::urlDecode(temp);
+    request.params[this->paramRouterParam] = brewtils::url::decode(temp);
 
     if (request.tempPath.find('/') == std::string::npos) {
       request.tempPath = "";
@@ -181,7 +196,18 @@ void expresso::core::Router::handleRequest(Request &request,
     return;
   }
 
-  response.status(StatusCode::NOT_FOUND).send("Not Found");
-
+  response.sendNotFound();
   return;
+}
+
+bool expresso::core::Router::handleMiddlewares(Request &request,
+                                               Response &response) {
+  for (expresso::middleware::Middleware *middleware : this->middlewares) {
+    if (!middleware->use(request, response)) {
+      response.end();
+      return false;
+    }
+  }
+
+  return true;
 }

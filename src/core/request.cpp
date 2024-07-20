@@ -1,9 +1,7 @@
 #include <expresso/core/request.h>
 
-expresso::core::Request::Request() {
-  this->xhr = false;
-  this->res = nullptr;
-
+expresso::core::Request::Request()
+    : xhr(false), res(nullptr), contentLength(0) {
   return;
 }
 

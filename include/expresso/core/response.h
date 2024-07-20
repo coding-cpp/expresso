@@ -1,18 +1,14 @@
 #pragma once
 
-#include <fstream>
 #include <netinet/in.h>
-#include <regex>
-#include <string>
 
+#include <brewtils/os.h>
+#include <brewtils/string.h>
+#include <brewtils/sys.h>
 #include <json/object.h>
-#include <logger/log.h>
 
 #include <expresso/core/cookie.h>
 #include <expresso/core/status_code.h>
-#include <expresso/sys.h>
-#include <expresso/utils/common.h>
-#include <expresso/utils/file.h>
 
 namespace expresso {
 
@@ -23,15 +19,15 @@ private:
   bool hasEnded;
 
   int socket;
-  int statusCode;
+  expresso::core::STATUS_CODE statusCode;
 
   std::string message;
-
   std::vector<Cookie *> cookies;
   std::map<std::string, std::string> headers;
 
   void sendToClient();
-  static std::string getFileContentType(std::string fileName);
+
+  static std::string getMimeType(const std::string &path);
 
 public:
   Response(int clientSocket);
@@ -41,18 +37,23 @@ public:
   void setCookie(Cookie *cookie);
   std::string get(std::string headerName);
 
-  Response status(int code);
-  Response send(std::string response);
-  Response json(json::object response);
-  Response json(const std::string response);
+  Response &status(expresso::core::STATUS_CODE code);
+  Response &send(std::string response);
+  Response &json(std::string response);
+  Response &json(json::object response);
 
-  // Send absolute path to the file, not relative
-  void sendFile(std::string path);
+  // Send the absolute path to the file, not the relative path.
+  void sendFile(std::string &path);
+  void sendNotFound();
 
   void end();
   void print();
 
   static size_t CHUNK_SIZE;
+  static std::string NOT_FOUND;
+  static std::map<std::string, std::set<std::string>> MIME_TYPES;
+
+  static std::string getAvailableFile(const std::string &path);
 };
 
 } // namespace core

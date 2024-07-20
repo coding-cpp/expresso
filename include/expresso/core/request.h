@@ -1,10 +1,6 @@
 #pragma once
 
-#include <map>
-#include <string>
-
 #include <expresso/core/response.h>
-#include <expresso/utils/sterlize.h>
 
 namespace expresso {
 
@@ -24,7 +20,7 @@ public:
   std::string method;
   std::string path;
 
-  // tempPath used internally for referencing the path. DON'T USE IT. Use path
+  // tempPath used internally for referencing. DO NOT USE IT! Use `path`
   // instead.
   std::string tempPath;
 

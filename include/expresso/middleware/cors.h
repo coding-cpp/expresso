@@ -1,7 +1,5 @@
 #pragma once
 
-#include <regex>
-
 #include <expresso/middleware/middleware.h>
 
 namespace expresso {
@@ -21,15 +19,16 @@ public:
   Cors();
   ~Cors();
 
-  static std::set<std::string> METHODS;
-  static std::set<std::string> HEADERS;
-
   void allowOrigin(std::string origin);
   void allowMethod(std::string method);
   void allowHeader(std::string header);
   void allowCredentials(bool credentials);
 
   bool use(core::Request &req, core::Response &res) override;
+
+  static const std::string FORBIDDEN;
+  static const std::set<std::string> METHODS;
+  static const std::set<std::string> HEADERS;
 };
 
 } // namespace middleware
