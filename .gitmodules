@@ -1,0 +1,12 @@
+[submodule "lib/brewtils"]
+	path = lib/brewtils
+	url = git@github.com:coding-cpp/brewtils.git
+[submodule "lib/nexus"]
+	path = lib/nexus
+	url = git@github.com:coding-cpp/nexus.git
+[submodule "lib/json"]
+	path = lib/json
+	url = git@github.com:coding-cpp/json.git
+[submodule "lib/logger"]
+	path = lib/logger
+	url = git@github.com:coding-cpp/logger.git
