@@ -122,7 +122,7 @@ void expresso::core::Router::use(std::string path, Router *router) {
   return;
 }
 
-void expresso::core::Router::use(middleware::Middleware *middleware) {
+void expresso::core::Router::use(expresso::middleware::Middleware *middleware) {
   this->middlewares.push_back(middleware);
   return;
 }

@@ -12,11 +12,15 @@ private:
 
   std::string dirname;
 
+  std::string getFolderHTML(expresso::core::Request &req,
+                            const std::string &localPath);
+
 public:
   StaticServe(std::string dirname, bool showListing = false);
   ~StaticServe();
 
-  bool use(core::Request &req, core::Response &res) override;
+  bool use(expresso::core::Request &req,
+           expresso::core::Response &res) override;
 };
 
 } // namespace middleware

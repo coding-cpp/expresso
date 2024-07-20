@@ -24,7 +24,8 @@ public:
   void allowHeader(std::string header);
   void allowCredentials(bool credentials);
 
-  bool use(core::Request &req, core::Response &res) override;
+  bool use(expresso::core::Request &req,
+           expresso::core::Response &res) override;
 
   static const std::string FORBIDDEN;
   static const std::set<std::string> METHODS;

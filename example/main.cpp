@@ -77,6 +77,12 @@ int main(int argc, char **argv) {
   router.get("/", about);
   app.use("/about", &router);
 
+  // Listing directories
+  StaticServe pictureServe("../assets/github", true);
+  Router pictureRouter;
+  pictureRouter.use(&pictureServe);
+  app.use("/pictures", &pictureRouter);
+
   app.listen(port, []() {
     logger::success("Server is running on port " + std::to_string(port));
   });
