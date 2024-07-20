@@ -32,11 +32,15 @@ cmake ..
 make
 ```
 
+![Building](./assets/github/build.png)
+
 3. Run the server:
 
 ```bash
-./expresso
+./server
 ```
+
+![Starting](./assets/github/start.png)
 
 ## Example
 
