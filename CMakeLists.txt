@@ -15,36 +15,14 @@ endif()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(USE_INSTALL_RESOURCE_PATH "Set resource path to install location" OFF)
 
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+file(GLOB_RECURSE LIB_SOURCES "lib/**/src/*.cpp")
+
 add_executable(server
-  ./src/core/cookie.cpp
-  ./src/core/request.cpp
-  ./src/core/response.cpp
-  ./src/core/router.cpp
-  ./src/core/server.cpp
-
-  ./src/middleware/cors.cpp
-  ./src/middleware/cookie_parser.cpp
-  ./src/middleware/middleware.cpp
-  ./src/middleware/static_serve.cpp
-  
-  ./src/utils/common.cpp
-  ./src/utils/file.cpp
-  ./src/utils/process.cpp
-  ./src/utils/sterlize.cpp
-
-  # Nexus submodule
-  ./lib/nexus/src/pool.cpp
-
-  # JSON submodule
-  ./lib/json/src/object.cpp
-  ./lib/json/src/parse.cpp
-  ./lib/json/src/type.cpp
-
-  # Logger submodule
-  ./lib/logger/src/config.cpp
-  ./lib/logger/src/log.cpp
-
   ./example/main.cpp
+
+  ${SOURCES}
+  ${LIB_SOURCES}
 )
 
 target_include_directories(server
@@ -57,4 +35,6 @@ target_include_directories(server
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/json/include>
     $<INSTALL_INTERFACE:lib/logger/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/logger/include>
+    $<INSTALL_INTERFACE:lib/brewtils/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/brewtils/include>
 )
