@@ -7,3 +7,6 @@
 [submodule "lib/nexus"]
 	path = lib/nexus
 	url = git@github.com:coding-cpp/nexus.git
+[submodule "lib/brewtils"]
+	path = lib/brewtils
+	url = https://github.com/coding-cpp/brewtils
