@@ -1,3 +1,0 @@
-[submodule "lib/--force"]
-	path = lib/--force
-	url = git@github.com:coding-cpp/brewtils.git
