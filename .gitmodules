@@ -1,12 +1,16 @@
 [submodule "lib/json"]
 	path = lib/json
 	url = git@github.com:coding-cpp/json.git
+	shallow = true
 [submodule "lib/logger"]
 	path = lib/logger
 	url = git@github.com:coding-cpp/logger.git
+	shallow = true
 [submodule "lib/nexus"]
 	path = lib/nexus
 	url = git@github.com:coding-cpp/nexus.git
+	shallow = true
 [submodule "lib/brewtils"]
 	path = lib/brewtils
 	url = https://github.com/coding-cpp/brewtils
+	shallow = true
