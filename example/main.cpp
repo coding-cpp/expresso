@@ -51,7 +51,7 @@ void about(Request &req, Response &res) {
 }
 
 int main(int argc, char **argv) {
-  Server app(10000, 10000);
+  Server app(10, 4);
 
   // CORS middleware
   Cors cors;
