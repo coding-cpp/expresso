@@ -46,6 +46,32 @@ make
 
 You can find an example of how to use the framework in the [`example`](./example/) directory.
 
+## Docker 🐳
+
+You can also run the server using Docker. Make sure you have Docker installed on your system.
+
+1. Build the Docker image:
+
+```bash
+docker build -t expresso .
+```
+
+2. Run the Docker container:
+
+```bash
+docker run -p 8000:8000 expresso
+```
+
+Alternatively, you can use the pre-built Docker image from Docker Hub (supports both amd64 and arm64 architectures):
+
+```bash
+docker run -p 8000:8000 jadit19/expresso:0.1.0
+```
+
+## Contributing 🤝
+
+If you would like to contribute to the project, feel free to fork the repository and submit a pull request. I am always open to new ideas and suggestions. 🚀
+
 ## Bugs and Issues
 
 If you encounter any bugs or issues, feel free to open an issue on the repository. This is a work in progress and since I am the only one working on it, that too in my spare time, I might not have the time to fix it right away, but I will try my best to get to it as soon as possible. 🐛🔧
