@@ -23,7 +23,9 @@ sudo apt-get install g++ build-essential
 git clone --recurse-submodules git@github.com:coding-cpp/expresso.git
 ```
 
-2. Build the project:
+2. Make a `.env` file in the root directory of the project and add the environment variables present in the [`.env.sample`](./.env.sample) file in it.
+
+3. Build the project:
 
 ```bash
 cd expresso
@@ -34,7 +36,7 @@ make
 
 ![Building](./assets/github/build.png)
 
-3. Run the server:
+4. Run the server:
 
 ```bash
 ./server
