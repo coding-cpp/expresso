@@ -4,13 +4,15 @@
 #include <expresso/middleware/cors.h>
 #include <expresso/middleware/static_serve.h>
 
+#include <brewtils/env.h>
+
 // Personally, I don't encourange using namespaces, but, I left it here just so
 // that the code could be more readable ¯\_(ツ)_/¯
 using namespace expresso::core;
 using namespace expresso::middleware;
 
 // Global variable, just for fun :)
-int port = 8000;
+int port;
 
 // About handler
 void about(Request &req, Response &res) {
@@ -51,6 +53,12 @@ void about(Request &req, Response &res) {
 }
 
 int main(int argc, char **argv) {
+  brewtils::env::init("../.env");
+  port = std::stoi(brewtils::env::get("PORT"));
+  if (!port) {
+    port = 8000;
+  }
+
   Server app(10, 4);
 
   // CORS middleware
