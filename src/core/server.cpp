@@ -107,7 +107,7 @@ expresso::core::Server::makeRequest(std::string &request) {
 
   req.method = method;
   req.path = path;
-  req.path = req.path == "HTTP/1.1" ? "/" : req.path;
+  req.path = req.path == "HTTP/1.1" ? "" : req.path;
   req.tempPath = req.path;
   req.path = "/" + req.path;
 
