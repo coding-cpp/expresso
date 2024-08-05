@@ -1,6 +1,7 @@
 #pragma once
 
 #include <csignal>
+#include <unistd.h>
 
 #include <json/parse.h>
 #include <nexus/pool.h>

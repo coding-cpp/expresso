@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(expresso VERSION 0.1.0)
+project(expresso VERSION 0.1.2)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -14,6 +14,9 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(USE_INSTALL_RESOURCE_PATH "Set resource path to install location" OFF)
+
+set(BUILD_SHARED_LIBS OFF)
+set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 file(GLOB_RECURSE LIB_SOURCES "lib/**/src/*.cpp")

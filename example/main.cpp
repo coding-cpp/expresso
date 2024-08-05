@@ -54,10 +54,7 @@ void about(Request &req, Response &res) {
 
 int main(int argc, char **argv) {
   brewtils::env::init("../.env");
-  port = std::stoi(brewtils::env::get("PORT"));
-  if (!port) {
-    port = 8000;
-  }
+  port = std::stoi(brewtils::env::get("PORT", "8000"));
 
   Server app(10, 4);
 
