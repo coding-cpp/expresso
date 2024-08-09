@@ -82,6 +82,8 @@ services:
     restart: unless-stopped
     environment:
       - PORT=8000
+    expose:
+      - 8000
 ```
 
 ## Contributing 🤝
