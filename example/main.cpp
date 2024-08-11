@@ -22,7 +22,7 @@ void about(Request &req, Response &res) {
   response["language"] = "C++";
   response["creator"]["name"] = "Adit Jain";
   response["creator"]["github"] = "https://github.com/jadit19";
-  response["submodules"].resize(4);
+  response["submodules"].resize(5);
 
   response["submodules"][0]["repository"] =
       "https://github.com/coding-cpp/logger";
@@ -47,6 +47,12 @@ void about(Request &req, Response &res) {
   response["submodules"][3]["work"] = "Utilities library for C++";
   response["submodules"][3]["location"] = "lib/brewtils";
   response["submodules"][3]["name"] = "Brewtils";
+
+  response["submodules"][4]["repository"] =
+      "https://github.com/coding-cpp/zippuccino";
+  response["submodules"][4]["work"] = "Zipping library for C++";
+  response["submodules"][4]["location"] = "lib/zippuccino";
+  response["submodules"][4]["name"] = "Zippuccino";
 
   res.status(STATUS_CODE::OK).json(response).end();
   return;
