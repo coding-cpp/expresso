@@ -10,3 +10,6 @@
 [submodule "lib/logger"]
 	path = lib/logger
 	url = git@github.com:coding-cpp/logger.git
+[submodule "lib/zippuccino"]
+	path = lib/zippuccino
+	url = git@github.com:coding-cpp/zippuccino.git
