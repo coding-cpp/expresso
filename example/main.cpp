@@ -88,6 +88,14 @@ int main(int argc, char **argv) {
   pictureRouter.use(&pictureServe);
   app.use("/pictures", &pictureRouter);
 
+  // Sending multiple files as single zip
+  app.get("/download", [](Request &req, Response &res) {
+    // You can put folders too, it will zip all the files in the folder
+    std::set<std::string> files = {"../assets"};
+    res.sendFiles(files);
+  });
+
+  // Starting the server
   app.listen(port, []() {
     logger::success("Server is running on port " + std::to_string(port));
   });

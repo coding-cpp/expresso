@@ -6,6 +6,7 @@
 #include <brewtils/string.h>
 #include <brewtils/sys.h>
 #include <json/object.h>
+#include <zippuccino/zipper.h>
 
 #include <expresso/core/cookie.h>
 #include <expresso/core/status_code.h>
@@ -25,6 +26,8 @@ private:
   std::vector<Cookie *> cookies;
   std::map<std::string, std::string> headers;
 
+  bool sendDataInChunks(const std::string &data);
+  void sendFileInChunks(const std::string &path);
   void sendToClient();
 
   static std::string getMimeType(const std::string &path);
@@ -44,6 +47,7 @@ public:
 
   // Send the absolute path to the file, not the relative path.
   void sendFile(std::string &path);
+  void sendFiles(const std::set<std::string> &paths);
   void sendNotFound();
 
   void end();

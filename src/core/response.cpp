@@ -96,6 +96,7 @@ void expresso::core::Response::sendFile(std::string &path) {
   if (!file.is_open()) {
     return this->sendNotFound();
   }
+  file.close();
 
   std::string fileName = path.substr(path.find_last_of('/') + 1);
   this->headers.erase("Content-Length");
@@ -113,35 +114,42 @@ void expresso::core::Response::sendFile(std::string &path) {
   headers += "\r\n";
   brewtils::sys::send(this->socket, headers.c_str(), headers.length(), 0);
 
-  std::string line;
-  char buffer[expresso::core::Response::CHUNK_SIZE];
-  while (true) {
-    file.read(buffer, expresso::core::Response::CHUNK_SIZE);
-    std::streamsize bytesRead = file.gcount();
-    if (bytesRead == 0) {
-      break;
-    }
+  this->sendFileInChunks(availableFile);
+  brewtils::sys::send(this->socket, "0\r\n\r\n", 5, 0);
+  return;
+}
 
-    std::ostringstream chunkSizeHex;
-    chunkSizeHex << std::hex << bytesRead;
-    std::string chunkSize = chunkSizeHex.str() + "\r\n";
-    if (brewtils::sys::send(this->socket, chunkSize.c_str(), chunkSize.length(),
-                            0) == -1) {
-      file.close();
-      break;
-    }
-    if (brewtils::sys::send(this->socket, buffer, bytesRead, 0) == -1) {
-      file.close();
-      break;
-    }
-    if (brewtils::sys::send(this->socket, "\r\n", 2, 0) == -1) {
-      file.close();
-      break;
-    }
+void expresso::core::Response::sendFiles(const std::set<std::string> &paths) {
+  const std::string fileName = "download.zip";
+  this->headers.erase("Content-Length");
+  this->set("Transfer-Encoding", "chunked");
+  this->set("Content-Type", this->getMimeType(fileName));
+  this->set("Content-Disposition", "inline; filename=\"" + fileName + "\"");
+  this->set("Accept-Ranges", "bytes");
+  std::string headers = "HTTP/1.1 " + std::to_string(this->statusCode) + "\r\n";
+  for (std::pair<const std::string, std::string> &header : this->headers) {
+    headers += header.first + ": " + header.second + "\r\n";
+  }
+  for (expresso::core::Cookie *cookie : this->cookies) {
+    headers += "Set-Cookie: " + cookie->serialize() + "\r\n";
+  }
+  headers += "\r\n";
+  brewtils::sys::send(this->socket, headers.c_str(), headers.length(), 0);
+
+  zippuccino::Zipper zipper;
+  for (const std::string &path : paths) {
+    zipper.add(path);
+  }
+  zipper.zip();
+
+  while (!zipper.isFinished()) {
+    this->sendDataInChunks(zipper.getHeader());
+    std::string currentFile = zipper.getCurrentFile();
+    this->sendFileInChunks(currentFile);
   }
 
+  this->sendDataInChunks(zipper.getFooter());
   brewtils::sys::send(this->socket, "0\r\n\r\n", 5, 0);
-  file.close();
   return;
 }
 
@@ -172,6 +180,43 @@ void expresso::core::Response::print() {
     logger::info("    " + header.first + ": " + header.second);
   }
   logger::info("  message: " + this->message);
+
+  return;
+}
+
+bool expresso::core::Response::sendDataInChunks(const std::string &data) {
+  std::ostringstream dataSizeHex;
+  dataSizeHex << std::hex << data.length();
+  std::string dataSize = dataSizeHex.str() + "\r\n";
+  if (brewtils::sys::send(this->socket, dataSize.c_str(), dataSize.length(),
+                          0) == -1) {
+    return false;
+  }
+  if (brewtils::sys::send(this->socket, data.c_str(), data.length(), 0) == -1) {
+    return false;
+  }
+  if (brewtils::sys::send(this->socket, "\r\n", 2, 0) == -1) {
+    return false;
+  }
+  return true;
+}
+
+void expresso::core::Response::sendFileInChunks(const std::string &path) {
+  std::fstream file(path, std::ios::in | std::ios::binary);
+  std::string line;
+  char buffer[expresso::core::Response::CHUNK_SIZE];
+  while (true) {
+    file.read(buffer, expresso::core::Response::CHUNK_SIZE);
+    std::streamsize bytesRead = file.gcount();
+    if (bytesRead == 0) {
+      break;
+    }
+
+    if (!this->sendDataInChunks(std::string(buffer, bytesRead))) {
+      file.close();
+      break;
+    }
+  }
 
   return;
 }
