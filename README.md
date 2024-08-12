@@ -67,7 +67,7 @@ docker run -p 8000:8000 -e PORT=8000 expresso
 Alternatively, you can use the pre-built Docker image from Docker Hub (supports both amd64 and arm64 architectures):
 
 ```bash
-docker run -p 8000:8000 -e PORT=8000 jadit19/expresso:0.1.2
+docker run -p 8000:8000 -e PORT=8000 jadit19/expresso:latest
 ```
 
 If you prefer to use Docker Compose, you can use the following `docker-compose.yml` file:
@@ -77,7 +77,7 @@ name: expresso
 version: '3'
 services:
   expresso:
-    image: jadit19/expresso:0.1.2
+    image: jadit19/expresso:latest
     container_name: expresso
     restart: unless-stopped
     environment:
