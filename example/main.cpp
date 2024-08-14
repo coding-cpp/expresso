@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
   app.get("/download", [](Request &req, Response &res) {
     // You can put folders too, it will zip all the files in the folder
     std::set<std::string> files = {"../assets"};
-    res.sendFiles(files);
+    res.sendFiles(files, "assets.zip");
   });
 
   // Starting the server

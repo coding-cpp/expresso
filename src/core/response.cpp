@@ -119,12 +119,12 @@ void expresso::core::Response::sendFile(std::string &path) {
   return;
 }
 
-void expresso::core::Response::sendFiles(const std::set<std::string> &paths) {
-  const std::string fileName = "download.zip";
+void expresso::core::Response::sendFiles(const std::set<std::string> &paths,
+                                         const std::string &zipFileName) {
   this->headers.erase("Content-Length");
   this->set("Transfer-Encoding", "chunked");
-  this->set("Content-Type", this->getMimeType(fileName));
-  this->set("Content-Disposition", "inline; filename=\"" + fileName + "\"");
+  this->set("Content-Type", this->getMimeType(zipFileName));
+  this->set("Content-Disposition", "inline; filename=\"" + zipFileName + "\"");
   this->set("Accept-Ranges", "bytes");
   std::string headers = "HTTP/1.1 " + std::to_string(this->statusCode) + "\r\n";
   for (std::pair<const std::string, std::string> &header : this->headers) {

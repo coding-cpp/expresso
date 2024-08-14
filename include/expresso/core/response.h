@@ -47,7 +47,8 @@ public:
 
   // Send the absolute path to the file, not the relative path.
   void sendFile(std::string &path);
-  void sendFiles(const std::set<std::string> &paths);
+  void sendFiles(const std::set<std::string> &paths,
+                 const std::string &zipFileName = "download.zip");
   void sendNotFound();
 
   void end();
