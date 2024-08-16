@@ -18,7 +18,13 @@ expresso::core::Server::Server(size_t maxConnections, size_t maxThreads)
   return;
 }
 
-expresso::core::Server::~Server() { return; }
+expresso::core::Server::~Server() {
+  if (this->socket > 0) {
+    close(this->socket);
+  }
+
+  return;
+}
 
 void expresso::core::Server::listen(int port, std::function<void()> callback) {
   this->address.sin_port = htons(port);
