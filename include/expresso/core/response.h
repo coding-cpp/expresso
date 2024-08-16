@@ -1,6 +1,7 @@
 #pragma once
 
 #include <netinet/in.h>
+#include <sstream>
 
 #include <brewtils/os.h>
 #include <brewtils/string.h>
