@@ -26,7 +26,7 @@ private:
   nexus::pool threadPool;
 
 public:
-  Server(size_t maxConnections = 5, size_t maxThreads = 2);
+  Server(size_t maxConnections = 5, size_t maxThreads = std::thread::hardware_concurrency());
   ~Server();
 
   void listen(int port, std::function<void()> callback = nullptr);
