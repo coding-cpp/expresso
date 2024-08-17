@@ -3,6 +3,10 @@
 expresso::core::Server::Server(size_t maxConnections, size_t maxThreads)
     : maxConnections(maxConnections), threadPool(maxThreads) {
   signal(SIGPIPE, SIG_IGN);
+  brewtils::sys::exitIf(SIGINT);
+  brewtils::sys::exitIf(SIGTERM);
+  brewtils::sys::exitIf(SIGKILL);
+
   logger::success("Using expresso v" + std::to_string(EXPRESSO_VERSION_MAJOR) +
                   "." + std::to_string(EXPRESSO_VERSION_MINOR) + "." +
                   std::to_string(EXPRESSO_VERSION_PATCH));
