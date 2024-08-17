@@ -1,0 +1,17 @@
+name: expresso
+
+networks:
+  intranet:
+    driver: bridge
+
+services:
+  server:
+    image: jadit19/expresso:latest
+    container_name: expresso
+    restart: unless-stopped
+    networks:
+      - intranet
+    environment:
+      - PORT=8000
+    ports:
+      - 8000:8000

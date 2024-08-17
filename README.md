@@ -70,20 +70,10 @@ Alternatively, you can use the pre-built Docker image from Docker Hub (supports 
 docker run -p 8000:8000 -e PORT=8000 jadit19/expresso:latest
 ```
 
-If you prefer to use Docker Compose, you can use the following `docker-compose.yml` file:
+If you prefer to use Docker Compose, you can use the provided [docker compose](./docker/compose.yaml) file and run it using the following command:
 
-```yaml
-name: expresso
-version: '3'
-services:
-  expresso:
-    image: jadit19/expresso:latest
-    container_name: expresso
-    restart: unless-stopped
-    environment:
-      - PORT=8000
-    expose:
-      - 8000
+```bash
+docker compose -f docker/compose.yaml up
 ```
 
 ## Contributing 🤝
