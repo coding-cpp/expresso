@@ -55,7 +55,7 @@ You can also run the server using Docker. Make sure you have Docker installed on
 1. Build the Docker image:
 
 ```bash
-docker build -t expresso .
+docker build -f docker/build.dockerfile -t expresso .
 ```
 
 2. Run the Docker container:
