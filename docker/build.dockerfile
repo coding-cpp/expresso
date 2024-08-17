@@ -18,4 +18,4 @@ COPY --from=builder /app/build/server /app/build/server
 
 COPY --from=builder /app/assets /app/assets
 
-CMD ["./server"]
+ENTRYPOINT ["./server"]
