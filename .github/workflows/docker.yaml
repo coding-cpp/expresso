@@ -5,7 +5,9 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/docker.yaml'
       - 'include/expresso/version.h'
+      - 'docker/build.dockerfile'
   workflow_dispatch:
 
 jobs:
@@ -37,4 +39,4 @@ jobs:
       
       - name: Build and push
         run: |
-          docker buildx build --platform linux/amd64,linux/arm/v7 -t jadit19/expresso:latest -t jadit19/expresso:${{ env.VERSION }} -f docker/build.dockerfile .
+          docker buildx build --platform linux/amd64,linux/arm/v7 -t jadit19/expresso:latest -t jadit19/expresso:${{ env.VERSION }} -f docker/build.dockerfile --push .
