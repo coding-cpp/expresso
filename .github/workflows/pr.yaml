@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          submodules: recursive
       
       - name: Update and Install dependencies
         run: |
@@ -29,7 +31,6 @@ jobs:
           cd build
           cmake ..
           make
-        continue-on-error: true
       
       - name: Post success comment
         if: ${{ success() }}
