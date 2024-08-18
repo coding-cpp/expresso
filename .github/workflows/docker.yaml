@@ -35,4 +35,4 @@ jobs:
       
       - name: Build and push
         run: |
-          echo $VERSION
+          docker buildx build --platform linux/amd64,linux/arm/v7 -t jadit19/expresso:latest -t jadit19/expresso:${{ env.VERSION }} -f docker/build.dockerfile .
