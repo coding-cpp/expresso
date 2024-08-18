@@ -1,0 +1,57 @@
+name: "Pull Request check"
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Update and Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential g++
+      
+      - name: Build
+        id: build
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
+        continue-on-error: true
+      
+      - name: Post success comment
+        if: ${{ success() }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Build successful! 🎉'
+            });
+      
+      - name: Post failure comment
+        if: ${{ failure() }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Build failed! ❌\n\n\`\`\`\n${{ steps.build.outputs.stderr || 'Unknown error' }}\n\`\`\``
+            });
