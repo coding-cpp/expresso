@@ -1,0 +1,40 @@
+name: "Build and Push Docker Image"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'include/expresso/version.h'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: "jadit19"
+          password: ${{ secrets.DOCKER_TOKEN }}
+      
+      - name: Extract version
+        id: extract_version
+        run: |
+          MAJOR_VERSION=$(grep -oP '(?<=#define EXPRESSO_VERSION_MAJOR )\d+' include/expresso/version.h)
+          MINOR_VERSION=$(grep -oP '(?<=#define EXPRESSO_VERSION_MINOR )\d+' include/expresso/version.h)
+          PATCH_VERSION=$(grep -oP '(?<=#define EXPRESSO_VERSION_PATCH )\d+' include/expresso/version.h)
+          echo "VERSION=$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION" >> $GITHUB_ENV
+      
+      - name: Build and push
+        run: |
+          docker buildx build --platform linux/amd64,linux/arm/v7 -t jadit19/expresso:latest -t jadit19/expresso:${{ env.VERSION }} -f docker/build.dockerfile .
