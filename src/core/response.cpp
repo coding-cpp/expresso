@@ -205,19 +205,30 @@ void expresso::core::Response::sendFileInChunks(const std::string &path) {
   std::fstream file(path, std::ios::in | std::ios::binary);
   std::string line;
   char buffer[expresso::core::Response::CHUNK_SIZE];
-  while (true) {
-    file.read(buffer, expresso::core::Response::CHUNK_SIZE);
-    std::streamsize bytesRead = file.gcount();
-    if (bytesRead == 0) {
-      break;
-    }
 
-    if (!this->sendDataInChunks(std::string(buffer, bytesRead))) {
-      file.close();
-      break;
+  try {
+    while (true) {
+      file.read(buffer, expresso::core::Response::CHUNK_SIZE);
+      std::streamsize bytesRead = file.gcount();
+      if (bytesRead == 0) {
+        break;
+      }
+
+      if (!this->sendDataInChunks(std::string(buffer, bytesRead))) {
+        break;
+      }
     }
+  } catch (const std::exception &e) {
+    logger::error(e.what(),
+                  "void expresso::core::Response::sendFileInChunks(const "
+                  "std::string &path)");
+  } catch (...) {
+    logger::error("Unknown error occurred.",
+                  "void expresso::core::Response::sendFileInChunks(const "
+                  "std::string &path)");
   }
 
+  file.close();
   return;
 }
 
