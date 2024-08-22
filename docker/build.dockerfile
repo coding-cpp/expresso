@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make
+RUN mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXE_LINKER_FLAGS="-static" .. && make
 
 RUN chmod +x /app/build/server
 
