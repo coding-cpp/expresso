@@ -112,10 +112,15 @@ void expresso::core::Response::sendFile(std::string &path) {
     headers += "Set-Cookie: " + cookie->serialize() + "\r\n";
   }
   headers += "\r\n";
-  brewtils::sys::send(this->socket, headers.c_str(), headers.length(), 0);
+  if (brewtils::sys::send(this->socket, headers.c_str(), headers.length(), 0) ==
+      -1) {
+    return;
+  }
 
   this->sendFileInChunks(availableFile);
-  brewtils::sys::send(this->socket, "0\r\n\r\n", 5, 0);
+  if (brewtils::sys::send(this->socket, "0\r\n\r\n", 5, 0) == -1) {
+    return;
+  }
   return;
 }
 
@@ -134,7 +139,10 @@ void expresso::core::Response::sendFiles(const std::set<std::string> &paths,
     headers += "Set-Cookie: " + cookie->serialize() + "\r\n";
   }
   headers += "\r\n";
-  brewtils::sys::send(this->socket, headers.c_str(), headers.length(), 0);
+  if (brewtils::sys::send(this->socket, headers.c_str(), headers.length(), 0) ==
+      -1) {
+    return;
+  }
 
   zippuccino::Zipper zipper;
   for (const std::string &path : paths) {
@@ -149,7 +157,9 @@ void expresso::core::Response::sendFiles(const std::set<std::string> &paths,
   }
 
   this->sendDataInChunks(zipper.getFooter());
-  brewtils::sys::send(this->socket, "0\r\n\r\n", 5, 0);
+  if (brewtils::sys::send(this->socket, "0\r\n\r\n", 5, 0) == -1) {
+    return;
+  }
   return;
 }
 
@@ -243,9 +253,14 @@ void expresso::core::Response::sendToClient() {
   }
   header += "\r\n";
 
-  brewtils::sys::send(this->socket, header.c_str(), header.length(), 0);
-  brewtils::sys::send(this->socket, this->message.c_str(),
-                      this->message.length(), 0);
+  if (brewtils::sys::send(this->socket, header.c_str(), header.length(), 0) ==
+      -1) {
+    return;
+  }
+  if (brewtils::sys::send(this->socket, this->message.c_str(),
+                          this->message.length(), 0) == -1) {
+    return;
+  }
   this->hasEnded = true;
 
   return;
