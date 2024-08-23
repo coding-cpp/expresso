@@ -11,21 +11,40 @@ It is pretty straightforward and if you are familiar with the Express.js framewo
 
 ## Installation 🚀
 
-0. Make sure you have the gnu g++ compiler installed on your system. You can install it by running the following command:
+0. Make sure you have the a c++ compiler (such as [g++](https://gcc.gnu.org/) or [clang](https://clang.llvm.org/)) installed on your system.
+
+<details>
+  <summary>Install g++</summary>
+  
+  ```bash
+  sudo apt install g++
+  ```
+</details>
+
+<details>
+  <summary>Install clang</summary>
+  
+  ```bash
+  sudo apt install clang
+  ```
+</details>
+<br />
+
+1. Install the make utilities to build the binary:
 
 ```bash
-sudo apt-get install g++ build-essential
+sudo apt install cmake make
 ```
 
-1. Clone the repository:
+2. Clone the repository:
 
 ```bash
 git clone --recurse-submodules git@github.com:coding-cpp/expresso.git
 ```
 
-2. Make a `.env` file in the root directory of the project and add the environment variables present in the [`.env.sample`](./.env.sample) file in it.
+3. Make a `.env` file in the root directory of the project and add the environment variables present in the [`.env.sample`](./.env.sample) file in it.
 
-3. Build the project:
+4. Build the project:
 
 ```bash
 cd expresso
@@ -36,7 +55,7 @@ make
 
 ![Building](./assets/github/build.png)
 
-4. Run the server:
+5. Run the server:
 
 ```bash
 ./server
