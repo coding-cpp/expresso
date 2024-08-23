@@ -112,10 +112,17 @@ void expresso::core::Response::sendFile(std::string &path) {
     headers += "Set-Cookie: " + cookie->serialize() + "\r\n";
   }
   headers += "\r\n";
-  brewtils::sys::send(this->socket, headers.c_str(), headers.length(), 0);
+  if (brewtils::sys::send(this->socket, headers.c_str(), headers.length(), 0) ==
+      -1) {
+    this->hasEnded = true;
+    return;
+  }
 
   this->sendFileInChunks(availableFile);
-  brewtils::sys::send(this->socket, "0\r\n\r\n", 5, 0);
+  if (brewtils::sys::send(this->socket, "0\r\n\r\n", 5, 0) == -1) {
+    this->hasEnded = true;
+    return;
+  }
   return;
 }
 
@@ -134,7 +141,11 @@ void expresso::core::Response::sendFiles(const std::set<std::string> &paths,
     headers += "Set-Cookie: " + cookie->serialize() + "\r\n";
   }
   headers += "\r\n";
-  brewtils::sys::send(this->socket, headers.c_str(), headers.length(), 0);
+  if (brewtils::sys::send(this->socket, headers.c_str(), headers.length(), 0) ==
+      -1) {
+    this->hasEnded = true;
+    return;
+  }
 
   zippuccino::Zipper zipper;
   for (const std::string &path : paths) {
@@ -149,7 +160,10 @@ void expresso::core::Response::sendFiles(const std::set<std::string> &paths,
   }
 
   this->sendDataInChunks(zipper.getFooter());
-  brewtils::sys::send(this->socket, "0\r\n\r\n", 5, 0);
+  if (brewtils::sys::send(this->socket, "0\r\n\r\n", 5, 0) == -1) {
+    this->hasEnded = true;
+    return;
+  }
   return;
 }
 
@@ -190,12 +204,15 @@ bool expresso::core::Response::sendDataInChunks(const std::string &data) {
   std::string dataSize = dataSizeHex.str() + "\r\n";
   if (brewtils::sys::send(this->socket, dataSize.c_str(), dataSize.length(),
                           0) == -1) {
+    this->hasEnded = true;
     return false;
   }
   if (brewtils::sys::send(this->socket, data.c_str(), data.length(), 0) == -1) {
+    this->hasEnded = true;
     return false;
   }
   if (brewtils::sys::send(this->socket, "\r\n", 2, 0) == -1) {
+    this->hasEnded = true;
     return false;
   }
   return true;
@@ -243,9 +260,16 @@ void expresso::core::Response::sendToClient() {
   }
   header += "\r\n";
 
-  brewtils::sys::send(this->socket, header.c_str(), header.length(), 0);
-  brewtils::sys::send(this->socket, this->message.c_str(),
-                      this->message.length(), 0);
+  if (brewtils::sys::send(this->socket, header.c_str(), header.length(), 0) ==
+      -1) {
+    this->hasEnded = true;
+    return;
+  }
+  if (brewtils::sys::send(this->socket, this->message.c_str(),
+                          this->message.length(), 0) == -1) {
+    this->hasEnded = true;
+    return;
+  }
   this->hasEnded = true;
 
   return;
