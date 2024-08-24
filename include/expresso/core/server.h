@@ -22,11 +22,12 @@ private:
   void acceptConnections();
   void handleConnection(int clientSocket);
 
-  expresso::core::Request makeRequest(std::string &request);
+  expresso::core::Request makeRequest(std::string &request) noexcept(false);
   nexus::pool threadPool;
 
 public:
-  Server(size_t maxConnections = 5, size_t maxThreads = std::thread::hardware_concurrency());
+  Server(size_t maxConnections = 5,
+         size_t maxThreads = std::thread::hardware_concurrency());
   ~Server();
 
   void listen(int port, std::function<void()> callback = nullptr);

@@ -96,34 +96,40 @@ void expresso::core::Server::handleConnection(int clientSocket) {
 
   charRequest.resize(totalBytesRead);
   std::string request(charRequest.data());
-  Request req = this->makeRequest(request);
   Response *res = new Response(clientSocket);
   res->set("Expresso", "v" + std::to_string(EXPRESSO_VERSION_MAJOR) + "." +
                            std::to_string(EXPRESSO_VERSION_MINOR) + "." +
                            std::to_string(EXPRESSO_VERSION_PATCH));
-  req.res = res;
-  this->handleRequest(req, *res);
-  delete res;
+
+  try {
+    Request req = this->makeRequest(request);
+    req.res = res;
+    this->handleRequest(req, *res);
+    delete res;
+  } catch (const std::exception &e) {
+    logger::error(
+        e.what(),
+        "void expresso::core::Server::handleConnection(int clientSocket)");
+    res->status(STATUS_CODE::BAD_REQUEST).send("Bad Request");
+  }
 
   return;
 }
 
 expresso::core::Request
-expresso::core::Server::makeRequest(std::string &request) {
+expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
   Request req;
-  char method[16];
-  char path[4096];
-  sscanf(request.c_str(), "%s /%s HTTP/1.1", method, path);
-
-  req.method = method;
-  req.path = path;
-  req.path = req.path == "HTTP/1.1" ? "" : req.path;
-  req.tempPath = req.path;
-  req.path = "/" + req.path;
-
-  // Headers
   std::string line;
   std::istringstream stream(request);
+  std::getline(stream, line);
+
+  std::vector<std::string> parts = brewtils::string::split(line, " ");
+  req.method = parts[0];
+  req.path = parts[1];
+  req.httpVersion = parts[2];
+  req.tempPath = req.path.substr(1, req.path.size());
+
+  // Headers
   while (std::getline(stream, line) && line != "\r") {
     size_t separator = line.find(':', 0);
     if (separator != std::string::npos) {
