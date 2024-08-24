@@ -1,4 +1,5 @@
 #include <expresso/core/response.h>
+#include <expresso/helpers/response.h>
 
 namespace expresso::core {
 
@@ -78,7 +79,7 @@ expresso::core::Response::json(json::object response) {
 }
 
 void expresso::core::Response::sendFile(const std::string &path) {
-  std::string availableFile = this->getAvailableFile(path);
+  std::string availableFile = expresso::helpers::getAvailableFile(path);
   if (availableFile.empty()) {
     return this->sendNotFound();
   }
@@ -264,23 +265,4 @@ void expresso::core::Response::sendToClient() {
   this->hasEnded = true;
 
   return;
-}
-
-std::string
-expresso::core::Response::getAvailableFile(const std::string &path) {
-  if (brewtils::os::file::exists(path)) {
-    return path;
-  }
-
-  std::string tempPath = brewtils::os::joinPath(path, "index.htm");
-  if (brewtils::os::file::exists(tempPath)) {
-    return tempPath;
-  }
-
-  tempPath.push_back('l');
-  if (brewtils::os::file::exists(tempPath)) {
-    return tempPath;
-  }
-
-  return "";
 }

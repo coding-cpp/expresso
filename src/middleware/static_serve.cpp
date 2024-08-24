@@ -1,3 +1,4 @@
+#include <expresso/helpers/response.h>
 #include <expresso/middleware/static_serve.h>
 
 expresso::middleware::StaticServe::StaticServe(std::string dirname,
@@ -15,7 +16,7 @@ bool expresso::middleware::StaticServe::use(expresso::core::Request &req,
   }
 
   std::string filePath = brewtils::url::decode(req.tempPath);
-  std::string availableFile = expresso::core::Response::getAvailableFile(
+  std::string availableFile = expresso::helpers::getAvailableFile(
       brewtils::os::joinPath(this->dirname, filePath));
   if (!availableFile.empty()) {
     res.sendFile(availableFile);

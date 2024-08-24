@@ -55,8 +55,6 @@ public:
 
   static size_t CHUNK_SIZE;
   static std::string NOT_FOUND;
-
-  static std::string getAvailableFile(const std::string &path);
 };
 
 } // namespace core
