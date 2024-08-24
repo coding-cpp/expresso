@@ -86,7 +86,7 @@ expresso::core::Response::json(json::object response) {
   return *this;
 }
 
-void expresso::core::Response::sendFile(std::string &path) {
+void expresso::core::Response::sendFile(const std::string &path) {
   std::string availableFile = this->getAvailableFile(path);
   if (availableFile.empty()) {
     return this->sendNotFound();
