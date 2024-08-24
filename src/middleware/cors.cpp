@@ -84,7 +84,7 @@ bool expresso::middleware::Cors::use(expresso::core::Request &req,
 
   if (requestOrigin == "") {
     res.set("Access-Control-Allow-Origin", "null");
-    res.status(expresso::core::STATUS_CODE::FORBIDDEN)
+    res.status(expresso::enums::STATUS_CODE::FORBIDDEN)
         .send(expresso::middleware::Cors::FORBIDDEN);
     return false;
   }
@@ -101,7 +101,7 @@ bool expresso::middleware::Cors::use(expresso::core::Request &req,
 
   if (!isOriginPresent) {
     res.set("Access-Control-Allow-Origin", "null");
-    res.status(expresso::core::STATUS_CODE::FORBIDDEN)
+    res.status(expresso::enums::STATUS_CODE::FORBIDDEN)
         .send(expresso::middleware::Cors::FORBIDDEN);
     return false;
   }

@@ -110,7 +110,7 @@ void expresso::core::Server::handleConnection(int clientSocket) {
     logger::error(
         e.what(),
         "void expresso::core::Server::handleConnection(int clientSocket)");
-    res->status(STATUS_CODE::BAD_REQUEST).send("Bad Request");
+    res->status(expresso::enums::STATUS_CODE::BAD_REQUEST).send("Bad Request");
   }
 
   return;

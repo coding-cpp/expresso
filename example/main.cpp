@@ -9,6 +9,7 @@
 // Personally, I don't encourange using namespaces, but, I left it here just so
 // that the code could be more readable ¯\_(ツ)_/¯
 using namespace expresso::core;
+using namespace expresso::enums;
 using namespace expresso::middleware;
 
 // Global variable, just for fun :)
