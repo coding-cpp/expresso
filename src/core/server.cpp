@@ -125,8 +125,20 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
 
   std::vector<std::string> parts = brewtils::string::split(line, " ");
   req.method = parts[0];
+  if (expresso::enums::VERBS.find(req.method) == expresso::enums::VERBS.end()) {
+    logger::error("Unsupported HTTP method: " + req.method,
+                  "expresso::core::Server::makeRequest(std::string &request) "
+                  "noexcept(false)");
+  }
+
   req.path = parts[1];
   req.httpVersion = parts[2];
+  if (req.httpVersion.substr(0, 5) != "HTTP/") {
+    logger::error("Invalid HTTP version: " + req.httpVersion,
+                  "expresso::core::Server::makeRequest(std::string &request) "
+                  "noexcept(false)");
+  }
+
   req.tempPath = req.path.substr(1, req.path.size());
 
   // Headers
