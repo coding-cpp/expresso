@@ -31,8 +31,6 @@ private:
   void sendFileInChunks(const std::string &path);
   void sendToClient();
 
-  static std::string getMimeType(const std::string &path);
-
 public:
   Response(int clientSocket);
   ~Response();

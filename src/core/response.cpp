@@ -101,7 +101,7 @@ void expresso::core::Response::sendFile(const std::string &path) {
   std::string fileName = path.substr(path.find_last_of('/') + 1);
   this->headers.erase("Content-Length");
   this->set("Transfer-Encoding", "chunked");
-  this->set("Content-Type", this->getMimeType(fileName));
+  this->set("Content-Type", brewtils::os::file::getMimeType(fileName));
   this->set("Content-Disposition", "inline; filename=\"" + fileName + "\"");
   this->set("Accept-Ranges", "bytes");
   std::string headers = "HTTP/1.1 " + std::to_string(this->statusCode) + "\r\n";
@@ -130,7 +130,7 @@ void expresso::core::Response::sendFiles(const std::set<std::string> &paths,
                                          const std::string &zipFileName) {
   this->headers.erase("Content-Length");
   this->set("Transfer-Encoding", "chunked");
-  this->set("Content-Type", this->getMimeType(zipFileName));
+  this->set("Content-Type", brewtils::os::file::getMimeType(zipFileName));
   this->set("Content-Disposition", "inline; filename=\"" + zipFileName + "\"");
   this->set("Accept-Ranges", "bytes");
   std::string headers = "HTTP/1.1 " + std::to_string(this->statusCode) + "\r\n";
@@ -292,33 +292,4 @@ expresso::core::Response::getAvailableFile(const std::string &path) {
   }
 
   return "";
-}
-
-std::string expresso::core::Response::getMimeType(const std::string &path) {
-  std::string extension = path.substr(path.find_last_of('.') + 1);
-  extension = brewtils::string::lower(extension);
-
-  // Default MIME types
-  for (const std::pair<const std::string, std::set<std::string>> &it :
-       expresso::core::Response::MIME_TYPES) {
-    if (it.second.find(extension) != it.second.end()) {
-      return it.first + "/" + extension;
-    }
-  }
-
-  // Special cases handling
-  if (extension == "js") {
-    return "text/javascript";
-  } else if (extension == "svg") {
-    return "image/svg+xml";
-  } else if (extension == "ico") {
-    return "image/x-icon";
-  } else if (extension == "txt") {
-    return "text/plain";
-  } else if (extension == "mp3") {
-    return "audio/mpeg";
-  }
-
-  // Default MIME type -> download
-  return "application/octet-stream";
 }
