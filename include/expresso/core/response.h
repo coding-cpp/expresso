@@ -10,7 +10,7 @@
 #include <zippuccino/zipper.h>
 
 #include <expresso/core/cookie.h>
-#include <expresso/core/status_code.h>
+#include <expresso/enums/status_code.h>
 
 namespace expresso {
 
@@ -21,7 +21,7 @@ private:
   bool hasEnded;
 
   int socket;
-  expresso::core::STATUS_CODE statusCode;
+  expresso::enums::STATUS_CODE statusCode;
 
   std::string message;
   std::vector<Cookie *> cookies;
@@ -41,7 +41,7 @@ public:
   void setCookie(Cookie *cookie);
   std::string get(std::string headerName);
 
-  Response &status(expresso::core::STATUS_CODE code);
+  Response &status(expresso::enums::STATUS_CODE code);
   Response &send(std::string response);
   Response &json(std::string response);
   Response &json(json::object response);

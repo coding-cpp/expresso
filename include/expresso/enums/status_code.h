@@ -2,7 +2,7 @@
 
 namespace expresso {
 
-namespace core {
+namespace enums {
 
 enum STATUS_CODE {
   // Informational responses
@@ -105,6 +105,6 @@ enum STATUS_CODE {
   NETWORK_CONNECT_TIMEOUT_ERROR = 599
 };
 
-} // namespace core
+} // namespace enums
 
 } // namespace expresso

@@ -19,7 +19,7 @@ std::map<std::string, std::set<std::string>> Response::MIME_TYPES = {
 
 expresso::core::Response::Response(int clientSocket)
     : hasEnded(false), socket(clientSocket),
-      statusCode(expresso::core::STATUS_CODE::OK), message("") {
+      statusCode(expresso::enums::STATUS_CODE::OK), message("") {
   return;
 }
 
@@ -57,7 +57,7 @@ std::string expresso::core::Response::get(std::string headerName) {
 }
 
 expresso::core::Response &
-expresso::core::Response::status(expresso::core::STATUS_CODE code) {
+expresso::core::Response::status(expresso::enums::STATUS_CODE code) {
   this->statusCode = code;
 
   return *this;
@@ -168,7 +168,7 @@ void expresso::core::Response::sendFiles(const std::set<std::string> &paths,
 }
 
 void expresso::core::Response::sendNotFound() {
-  this->status(expresso::core::STATUS_CODE::NOT_FOUND)
+  this->status(expresso::enums::STATUS_CODE::NOT_FOUND)
       .send(expresso::core::Response::NOT_FOUND)
       .end();
 
