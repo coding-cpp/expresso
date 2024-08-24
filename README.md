@@ -39,15 +39,22 @@ sudo apt install cmake make
 2. Clone the repository:
 
 ```bash
-git clone --recurse-submodules git@github.com:coding-cpp/expresso.git
+git clone git@github.com:coding-cpp/expresso.git
 ```
 
-3. Make a `.env` file in the root directory of the project and add the environment variables present in the [`.env.sample`](./.env.sample) file in it.
-
-4. Build the project:
+3. Clone the submodules:
 
 ```bash
 cd expresso
+git submodule init
+git submodule update
+```
+
+4. Make a `.env` file in the root directory of the project and add the environment variables present in the [`.env.sample`](./.env.sample) file in it.
+
+5. Build the project:
+
+```bash
 mkdir build && cd build
 cmake ..
 make
@@ -55,7 +62,7 @@ make
 
 ![Building](./assets/github/build.png)
 
-5. Run the server:
+6. Run the server:
 
 ```bash
 ./server
