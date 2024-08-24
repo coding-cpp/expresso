@@ -55,7 +55,6 @@ public:
 
   static size_t CHUNK_SIZE;
   static std::string NOT_FOUND;
-  static std::map<std::string, std::set<std::string>> MIME_TYPES;
 
   static std::string getAvailableFile(const std::string &path);
 };

@@ -6,15 +6,6 @@ size_t Response::CHUNK_SIZE = 1024;
 
 std::string Response::NOT_FOUND = "Not Found";
 
-std::map<std::string, std::set<std::string>> Response::MIME_TYPES = {
-    {"text", {"htm", "html", "css", "log", "md", "csv"}},
-    {"image",
-     {"png", "jpg", "jpeg", "gif", "tif", "bmp", "webp", "apng", "avif"}},
-    {"application", {"pdf", "json", "zip", "rtf", "xml"}},
-    {"audio", {"mp3", "wav", "aac", "wma", "midi"}},
-    {"video", {"mp4", "webm", "ogg"}},
-    {"font", {"ttf", "otf", "woff"}}};
-
 } // namespace expresso::core
 
 expresso::core::Response::Response(int clientSocket)
