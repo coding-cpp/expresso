@@ -19,6 +19,7 @@ public:
   std::string hostname;
   std::string method;
   std::string path;
+  std::string httpVersion;
 
   // tempPath used internally for referencing. DO NOT USE IT! Use `path`
   // instead.
