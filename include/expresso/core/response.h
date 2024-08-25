@@ -27,9 +27,8 @@ private:
   std::vector<Cookie *> cookies;
   std::map<std::string, std::string> headers;
 
-  bool sendDataInChunks(const std::string &data);
-  void sendFileInChunks(const std::string &path);
   void sendToClient();
+  void sendHeaders();
 
 public:
   Response(int clientSocket);
@@ -44,17 +43,14 @@ public:
   Response &json(std::string response);
   Response &json(json::object response);
 
-  // Send the absolute path to the file, not the relative path.
-  void sendFile(const std::string &path);
+  void sendFile(const std::string &path, int64_t start = -1, int64_t end = -1);
   void sendFiles(const std::set<std::string> &paths,
                  const std::string &zipFileName = "download.zip");
   void sendNotFound();
+  void sendInvalidRange();
 
   void end();
   void print();
-
-  static size_t CHUNK_SIZE;
-  static std::string NOT_FOUND;
 };
 
 } // namespace core
