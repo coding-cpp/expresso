@@ -15,11 +15,25 @@ bool expresso::middleware::StaticServe::use(expresso::core::Request &req,
     return true;
   }
 
+  int64_t start = -1;
+  int64_t end = -1;
+  if (req.headers.find("Range") != req.headers.end()) {
+    try {
+      std::string range = req.headers["Range"];
+      range = range.substr(range.find('=') + 1);
+      start = std::stoll(range.substr(0, range.find('-')));
+      end = std::stoll(range.substr(range.find('-') + 1));
+    } catch (...) {
+      start = start == -1 ? -1 : start;
+      end = end == -1 ? -1 : end;
+    }
+  }
+
   std::string filePath = brewtils::url::decode(req.tempPath);
   std::string availableFile = expresso::helpers::getAvailableFile(
       brewtils::os::joinPath(this->dirname, filePath));
   if (!availableFile.empty()) {
-    res.sendFile(availableFile);
+    res.sendFile(availableFile, start, end);
     return false;
   }
 
