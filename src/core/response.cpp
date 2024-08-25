@@ -1,21 +1,5 @@
 #include <expresso/core/response.h>
-
-namespace expresso::core {
-
-size_t Response::CHUNK_SIZE = 1024;
-
-std::string Response::NOT_FOUND = "Not Found";
-
-std::map<std::string, std::set<std::string>> Response::MIME_TYPES = {
-    {"text", {"htm", "html", "css", "log", "md", "csv"}},
-    {"image",
-     {"png", "jpg", "jpeg", "gif", "tif", "bmp", "webp", "apng", "avif"}},
-    {"application", {"pdf", "json", "zip", "rtf", "xml"}},
-    {"audio", {"mp3", "wav", "aac", "wma", "midi"}},
-    {"video", {"mp4", "webm", "ogg"}},
-    {"font", {"ttf", "otf", "woff"}}};
-
-} // namespace expresso::core
+#include <expresso/helpers/response.h>
 
 expresso::core::Response::Response(int clientSocket)
     : hasEnded(false), socket(clientSocket),
@@ -86,43 +70,68 @@ expresso::core::Response::json(json::object response) {
   return *this;
 }
 
-void expresso::core::Response::sendFile(const std::string &path) {
-  std::string availableFile = this->getAvailableFile(path);
-  if (availableFile.empty()) {
+void expresso::core::Response::sendFile(const std::string &path, int64_t start,
+                                        int64_t end) {
+  std::string availableFile = expresso::helpers::getAvailableFile(path);
+  if (availableFile.empty() || !brewtils::os::file::exists(availableFile)) {
     return this->sendNotFound();
   }
 
-  std::fstream file(availableFile, std::ios::in | std::ios::binary);
-  if (!file.is_open()) {
-    return this->sendNotFound();
+  int64_t fileSize = brewtils::os::file::size(availableFile);
+  if (start >= fileSize || end >= fileSize) {
+    return this->sendInvalidRange();
   }
-  file.close();
 
-  std::string fileName = path.substr(path.find_last_of('/') + 1);
-  this->headers.erase("Content-Length");
-  this->set("Transfer-Encoding", "chunked");
+  bool isPartial = start >= 0 || end >= 0;
+  std::string fileName =
+      availableFile.substr(availableFile.find_last_of('/') + 1);
   this->set("Content-Type", brewtils::os::file::getMimeType(fileName));
   this->set("Content-Disposition", "inline; filename=\"" + fileName + "\"");
   this->set("Accept-Ranges", "bytes");
-  std::string headers = "HTTP/1.1 " + std::to_string(this->statusCode) + "\r\n";
-  for (std::pair<const std::string, std::string> &header : this->headers) {
-    headers += header.first + ": " + header.second + "\r\n";
+
+  if (!isPartial) {
+    start = 0;
+    end = fileSize - 1;
+    this->set("Content-Length", std::to_string(fileSize));
+  } else {
+    if (start < 0) {
+      start = 0;
+    }
+    if (end < 0) {
+      end = fileSize - 1;
+    }
+    this->status(expresso::enums::STATUS_CODE::PARTIAL_CONTENT);
+    this->set("Content-Length", std::to_string(end - start + 1));
+    this->set("Content-Range", "bytes " + std::to_string(start) + "-" +
+                                   std::to_string(end) + "/" +
+                                   std::to_string(fileSize));
   }
-  for (expresso::core::Cookie *cookie : this->cookies) {
-    headers += "Set-Cookie: " + cookie->serialize() + "\r\n";
+  this->sendHeaders();
+
+  std::ifstream file(availableFile, std::ios::binary);
+  try {
+    file.seekg(start, std::ios::beg);
+    char buffer[expresso::helpers::CHUNK_SIZE];
+    while (file.read(buffer, expresso::helpers::CHUNK_SIZE)) {
+      if (brewtils::sys::send(this->socket, buffer,
+                              expresso::helpers::CHUNK_SIZE, 0) == -1) {
+        this->hasEnded = true;
+        break;
+      }
+    }
+    if (file.gcount() > 0) {
+      if (brewtils::sys::send(this->socket, buffer, file.gcount(), 0) == -1) {
+        this->hasEnded = true;
+      }
+    }
+  } catch (const std::exception &e) {
+    logger::error(e.what(), "void expresso::core::Response::sendFile(const "
+                            "std::string &path, int64_t start, int64_t end)");
   }
-  headers += "\r\n";
-  if (brewtils::sys::send(this->socket, headers.c_str(), headers.length(), 0) ==
-      -1) {
-    this->hasEnded = true;
-    return;
+  if (file.is_open()) {
+    file.close();
   }
 
-  this->sendFileInChunks(availableFile);
-  if (brewtils::sys::send(this->socket, "0\r\n\r\n", 5, 0) == -1) {
-    this->hasEnded = true;
-    return;
-  }
   return;
 }
 
@@ -133,19 +142,7 @@ void expresso::core::Response::sendFiles(const std::set<std::string> &paths,
   this->set("Content-Type", brewtils::os::file::getMimeType(zipFileName));
   this->set("Content-Disposition", "inline; filename=\"" + zipFileName + "\"");
   this->set("Accept-Ranges", "bytes");
-  std::string headers = "HTTP/1.1 " + std::to_string(this->statusCode) + "\r\n";
-  for (std::pair<const std::string, std::string> &header : this->headers) {
-    headers += header.first + ": " + header.second + "\r\n";
-  }
-  for (expresso::core::Cookie *cookie : this->cookies) {
-    headers += "Set-Cookie: " + cookie->serialize() + "\r\n";
-  }
-  headers += "\r\n";
-  if (brewtils::sys::send(this->socket, headers.c_str(), headers.length(), 0) ==
-      -1) {
-    this->hasEnded = true;
-    return;
-  }
+  this->sendHeaders();
 
   zippuccino::Zipper zipper;
   for (const std::string &path : paths) {
@@ -153,23 +150,47 @@ void expresso::core::Response::sendFiles(const std::set<std::string> &paths,
   }
   zipper.zip();
 
-  while (!zipper.isFinished()) {
-    this->sendDataInChunks(zipper.getHeader());
-    std::string currentFile = zipper.getCurrentFile();
-    this->sendFileInChunks(currentFile);
+  try {
+    while (!zipper.isFinished()) {
+      if (!expresso::helpers::sendChunkedData(this->socket,
+                                              zipper.getHeader())) {
+        this->hasEnded = true;
+        return;
+      }
+      std::string currentFile = zipper.getCurrentFile();
+      if (!expresso::helpers::sendFileInChunks(this->socket, currentFile)) {
+        this->hasEnded = true;
+        return;
+      }
+    }
+
+    if (!expresso::helpers::sendChunkedData(this->socket, zipper.getFooter())) {
+      this->hasEnded = true;
+      return;
+    }
+    if (brewtils::sys::send(this->socket, "0\r\n\r\n", 5, 0) == -1) {
+      this->hasEnded = true;
+    }
+  } catch (const std::exception &e) {
+    logger::error(e.what(), "void expresso::core::Response::sendFiles(const "
+                            "std::set<std::string> &paths, const std::string "
+                            "&zipFileName)");
   }
 
-  this->sendDataInChunks(zipper.getFooter());
-  if (brewtils::sys::send(this->socket, "0\r\n\r\n", 5, 0) == -1) {
-    this->hasEnded = true;
-    return;
-  }
   return;
 }
 
 void expresso::core::Response::sendNotFound() {
-  this->status(expresso::enums::STATUS_CODE::NOT_FOUND)
-      .send(expresso::core::Response::NOT_FOUND)
+  this->status(expresso::enums::STATUS_CODE::NOT_FOUND).send("Not Found").end();
+
+  return;
+}
+
+void expresso::core::Response::sendInvalidRange() {
+  this->set("Content-Range", "bytes */");
+  this->set("Connection", "close");
+  this->status(expresso::enums::STATUS_CODE::RANGE_NOT_SATISFIABLE)
+      .send("Invalid Range")
       .end();
 
   return;
@@ -198,60 +219,21 @@ void expresso::core::Response::print() {
   return;
 }
 
-bool expresso::core::Response::sendDataInChunks(const std::string &data) {
-  std::ostringstream dataSizeHex;
-  dataSizeHex << std::hex << data.length();
-  std::string dataSize = dataSizeHex.str() + "\r\n";
-  if (brewtils::sys::send(this->socket, dataSize.c_str(), dataSize.length(),
-                          0) == -1) {
-    this->hasEnded = true;
-    return false;
+void expresso::core::Response::sendToClient() {
+  this->set("Content-Length", std::to_string(this->message.length()));
+  this->sendHeaders();
+  if (this->hasEnded) {
+    return;
   }
-  if (brewtils::sys::send(this->socket, data.c_str(), data.length(), 0) == -1) {
-    this->hasEnded = true;
-    return false;
-  }
-  if (brewtils::sys::send(this->socket, "\r\n", 2, 0) == -1) {
-    this->hasEnded = true;
-    return false;
-  }
-  return true;
-}
+  brewtils::sys::send(this->socket, this->message.c_str(),
+                      this->message.length(), 0);
+  this->hasEnded = true;
 
-void expresso::core::Response::sendFileInChunks(const std::string &path) {
-  std::fstream file(path, std::ios::in | std::ios::binary);
-  std::string line;
-  char buffer[expresso::core::Response::CHUNK_SIZE];
-
-  try {
-    while (true) {
-      file.read(buffer, expresso::core::Response::CHUNK_SIZE);
-      std::streamsize bytesRead = file.gcount();
-      if (bytesRead == 0) {
-        break;
-      }
-
-      if (!this->sendDataInChunks(std::string(buffer, bytesRead))) {
-        break;
-      }
-    }
-  } catch (const std::exception &e) {
-    logger::error(e.what(),
-                  "void expresso::core::Response::sendFileInChunks(const "
-                  "std::string &path)");
-  } catch (...) {
-    logger::error("Unknown error occurred.",
-                  "void expresso::core::Response::sendFileInChunks(const "
-                  "std::string &path)");
-  }
-
-  file.close();
   return;
 }
 
-void expresso::core::Response::sendToClient() {
+void expresso::core::Response::sendHeaders() {
   std::string header = "HTTP/1.1 " + std::to_string(this->statusCode) + "\r\n";
-  this->set("Content-Length", std::to_string(this->message.length()));
   for (std::pair<const std::string, std::string> it : this->headers) {
     header += it.first + ": " + it.second + "\r\n";
   }
@@ -259,37 +241,9 @@ void expresso::core::Response::sendToClient() {
     header += "Set-Cookie: " + cookie->serialize() + "\r\n";
   }
   header += "\r\n";
-
   if (brewtils::sys::send(this->socket, header.c_str(), header.length(), 0) ==
       -1) {
     this->hasEnded = true;
-    return;
   }
-  if (brewtils::sys::send(this->socket, this->message.c_str(),
-                          this->message.length(), 0) == -1) {
-    this->hasEnded = true;
-    return;
-  }
-  this->hasEnded = true;
-
   return;
-}
-
-std::string
-expresso::core::Response::getAvailableFile(const std::string &path) {
-  if (brewtils::os::file::exists(path)) {
-    return path;
-  }
-
-  std::string tempPath = brewtils::os::joinPath(path, "index.htm");
-  if (brewtils::os::file::exists(tempPath)) {
-    return tempPath;
-  }
-
-  tempPath.push_back('l');
-  if (brewtils::os::file::exists(tempPath)) {
-    return tempPath;
-  }
-
-  return "";
 }
