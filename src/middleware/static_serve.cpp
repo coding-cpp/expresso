@@ -38,9 +38,9 @@ bool expresso::middleware::StaticServe::use(expresso::core::Request &req,
   }
 
   if (this->showListing && brewtils::os::dir::exists(brewtils::os::joinPath(
-                               this->dirname, req.tempPath))) {
+                               this->dirname, filePath))) {
     const std::string &tempPath =
-        brewtils::os::joinPath(this->dirname, req.tempPath);
+        brewtils::os::joinPath(this->dirname, filePath);
     if (!brewtils::os::dir::exists(tempPath)) {
       return true;
     }
@@ -59,8 +59,8 @@ expresso::middleware::StaticServe::getFolderHTML(expresso::core::Request &req,
                                                  const std::string &localPath) {
   const std::string urlPath = req.path;
   std::string html = "<html><head><title>Index of /" + urlPath +
-                     "</title></head><body><h1>Index of /" + urlPath +
-                     "</h1><ul>";
+                     "</title></head><body><h1>Index of /" +
+                     brewtils::url::decode(urlPath) + "</h1><ul>";
   if (req.tempPath.size() != 0) {
     html += "<li><a href=\"/" + urlPath + "/..\">..</a></li>";
   }
