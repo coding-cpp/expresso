@@ -7,9 +7,9 @@ expresso::core::Server::Server(size_t maxConnections, size_t maxThreads)
   brewtils::sys::exitIf(SIGTERM);
   brewtils::sys::exitIf(SIGKILL);
 
-  logger::success("Using expresso v" + std::to_string(EXPRESSO_VERSION_MAJOR) +
-                  "." + std::to_string(EXPRESSO_VERSION_MINOR) + "." +
-                  std::to_string(EXPRESSO_VERSION_PATCH));
+  logger::info("Using expresso v" + std::to_string(EXPRESSO_VERSION_MAJOR) +
+               "." + std::to_string(EXPRESSO_VERSION_MINOR) + "." +
+               std::to_string(EXPRESSO_VERSION_PATCH));
 
   this->socket = brewtils::sys::socket(AF_INET, SOCK_STREAM, 0);
   if (this->socket < 0) {
@@ -32,6 +32,8 @@ expresso::core::Server::~Server() {
 
 void expresso::core::Server::listen(int port, std::function<void()> callback) {
   this->address.sin_port = htons(port);
+  pid_t pid = getpid();
+  logger::info("Server started with PID " + std::to_string(pid));
 
   if (brewtils::sys::bind(this->socket, (struct sockaddr *)&this->address,
                           sizeof(this->address)) < 0) {
