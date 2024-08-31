@@ -212,7 +212,7 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
     std::string key;
     std::string value;
     req.body = json::object(std::map<std::string, json::object>());
-    for (auto str : parts) {
+    for (const std::string &str : parts) {
       key = brewtils::url::decode(brewtils::string::split(str, "=")[0]);
       value = brewtils::url::decode(brewtils::string::split(str, "=")[1]);
       req.body[key] = json::object(value);
@@ -226,7 +226,7 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
     std::string key;
     std::string value;
     req.body = json::object(std::map<std::string, json::object>());
-    for (auto str : parts) {
+    for (const std::string &str : parts) {
       data = brewtils::string::split(str,
                                      "Content-Disposition: form-data; name=\"");
       if (data.size() == 2) {
