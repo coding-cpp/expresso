@@ -12,6 +12,7 @@ private:
 
   std::string dirname;
 
+  std::pair<int64_t, int64_t> getRange(const std::string &range);
   std::string getFolderHTML(expresso::core::Request &req,
                             const std::string &localPath);
 
