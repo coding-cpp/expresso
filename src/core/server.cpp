@@ -147,17 +147,16 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
   while (std::getline(stream, line) && line != "\r") {
     size_t separator = line.find(':', 0);
     if (separator != std::string::npos) {
-      std::string key = line.substr(0, separator);
+      std::string key = brewtils::string::lower(line.substr(0, separator));
       std::string value =
           line.substr(separator + 2, line.size() - separator - 3);
-      if (key == "Content-Length" || key == "content-length") {
+      if (key == "content-length") {
         req.contentLength = std::stoi(value);
-      } else if (key == "Host" || key == "host") {
+      } else if (key == "host") {
         req.host = value;
-      } else if ((key == "X-Requested-With" || key == "x-requested-with") &&
-                 value == "XMLHttpRequest") {
+      } else if (key == "x-requested-with" && value == "XMLHttpRequest") {
         req.xhr = true;
-      } else if (key == "Origin" || key == "origin") {
+      } else if (key == "origin") {
         if (value.size() > 7 && value.substr(0, 7) == "http://") {
           value = value.substr(7, value.size());
         } else if (value.size() > 8 && value.substr(0, 8) == "https://") {
@@ -200,7 +199,7 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
   }
 
   // Setting the body
-  std::string contentType = req.headers["Content-Type"];
+  std::string contentType = req.headers["content-type"];
   std::string body = request.substr(request.find("\r\n\r\n") + 4);
   if (contentType == "text/plain" || contentType == "application/javascript") {
     req.body = json::object(body);
