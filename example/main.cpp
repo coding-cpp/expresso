@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
   brewtils::env::init("../.env");
   port = std::stoi(brewtils::env::get("PORT", "8000"));
 
-  Server app(1000);
+  Server app = Server();
 
   // CORS middleware
   Cors cors;

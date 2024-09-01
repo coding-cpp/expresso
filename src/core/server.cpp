@@ -7,9 +7,9 @@ expresso::core::Server::Server(size_t maxConnections, size_t maxThreads)
   brewtils::sys::exitIf(SIGTERM);
   brewtils::sys::exitIf(SIGKILL);
 
-  logger::success("Using expresso v" + std::to_string(EXPRESSO_VERSION_MAJOR) +
-                  "." + std::to_string(EXPRESSO_VERSION_MINOR) + "." +
-                  std::to_string(EXPRESSO_VERSION_PATCH));
+  logger::info("Using expresso v" + std::to_string(EXPRESSO_VERSION_MAJOR) +
+               "." + std::to_string(EXPRESSO_VERSION_MINOR) + "." +
+               std::to_string(EXPRESSO_VERSION_PATCH));
 
   this->socket = brewtils::sys::socket(AF_INET, SOCK_STREAM, 0);
   if (this->socket < 0) {
@@ -32,6 +32,8 @@ expresso::core::Server::~Server() {
 
 void expresso::core::Server::listen(int port, std::function<void()> callback) {
   this->address.sin_port = htons(port);
+  pid_t pid = getpid();
+  logger::info("Server started with PID " + std::to_string(pid));
 
   if (brewtils::sys::bind(this->socket, (struct sockaddr *)&this->address,
                           sizeof(this->address)) < 0) {
@@ -145,17 +147,16 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
   while (std::getline(stream, line) && line != "\r") {
     size_t separator = line.find(':', 0);
     if (separator != std::string::npos) {
-      std::string key = line.substr(0, separator);
+      std::string key = brewtils::string::lower(line.substr(0, separator));
       std::string value =
           line.substr(separator + 2, line.size() - separator - 3);
-      if (key == "Content-Length" || key == "content-length") {
+      if (key == "content-length") {
         req.contentLength = std::stoi(value);
-      } else if (key == "Host" || key == "host") {
+      } else if (key == "host") {
         req.host = value;
-      } else if ((key == "X-Requested-With" || key == "x-requested-with") &&
-                 value == "XMLHttpRequest") {
+      } else if (key == "x-requested-with" && value == "XMLHttpRequest") {
         req.xhr = true;
-      } else if (key == "Origin" || key == "origin") {
+      } else if (key == "origin") {
         if (value.size() > 7 && value.substr(0, 7) == "http://") {
           value = value.substr(7, value.size());
         } else if (value.size() > 8 && value.substr(0, 8) == "https://") {
@@ -198,7 +199,7 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
   }
 
   // Setting the body
-  std::string contentType = req.headers["Content-Type"];
+  std::string contentType = req.headers["content-type"];
   std::string body = request.substr(request.find("\r\n\r\n") + 4);
   if (contentType == "text/plain" || contentType == "application/javascript") {
     req.body = json::object(body);
@@ -210,7 +211,7 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
     std::string key;
     std::string value;
     req.body = json::object(std::map<std::string, json::object>());
-    for (auto str : parts) {
+    for (const std::string &str : parts) {
       key = brewtils::url::decode(brewtils::string::split(str, "=")[0]);
       value = brewtils::url::decode(brewtils::string::split(str, "=")[1]);
       req.body[key] = json::object(value);
@@ -224,7 +225,7 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
     std::string key;
     std::string value;
     req.body = json::object(std::map<std::string, json::object>());
-    for (auto str : parts) {
+    for (const std::string &str : parts) {
       data = brewtils::string::split(str,
                                      "Content-Disposition: form-data; name=\"");
       if (data.size() == 2) {

@@ -27,7 +27,7 @@ private:
   nexus::pool threadPool;
 
 public:
-  Server(size_t maxConnections = 5,
+  Server(size_t maxConnections = SOMAXCONN,
          size_t maxThreads = std::thread::hardware_concurrency());
   ~Server();
 
