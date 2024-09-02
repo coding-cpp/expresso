@@ -1,5 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
+:root {
+  --white: #f0f0f0;
+  --bg-color: #FFEAC5;
+  --code-color: #FFDBB5;
+  --primary-color: #6C4E31;
+  --accent-color: #603F26;
+  --href-color: #003F8A;
+}
+
 * {
   padding: 0px;
   margin: 0px;
@@ -7,28 +16,121 @@
   font-family: 'Roboto', sans-serif;
 }
 
-html {
-  height: 100%;
-}
-
 body {
-  max-width: 400px;
-  height: 100%;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  
-  margin: 0 auto;
-  padding: 0 20px;
+  width: 100%;
+  background-color: var(--bg-color);
 }
 
-body > * {
-  padding: 10px 0px;
+nav, footer {
+  padding: 12px;
+  background-color: var(--accent-color);
+  color: var(--white);
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+}
+
+nav {
+  font-size: 30px;
 }
 
 a {
   text-decoration: none;
-  color: blue;
+  color: inherit;
+}
+
+article {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 102px);
+  overflow: auto;
+  margin: 0 auto;
+}
+
+section {
+  padding: 20px;
+}
+
+section#left {
+  width: 70%;
+}
+
+section#right {
+  width: 30%;
+}
+
+div {
+  padding-bottom: 10px;
+}
+
+div > * {
+  padding-left: 20px;
+}
+
+div h1 {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--primary-color);
+}
+
+div p {
+  margin: 5px 0px;
+  padding-bottom: 10px;
+}
+
+div a {
+  text-decoration: none;
+  color:var(--href-color);
+}
+
+div ol {
+  margin-left: 30px;
+}
+
+div ol li {
+  margin-bottom: 2px;
+  padding-left: 5px;
+}
+
+div ul {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+div ul li {
+  list-style-type: none;
+}
+
+div ul li a {
+  border: none !important;
+}
+
+div ul li a img {
+  width: 60px;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  article {
+    flex-direction: column;
+  }
+
+  section#left {
+    width: 100% !important;
+  }
+
+  section#right {
+    width: 100% !important;
+    padding-top: 0px !important;
+  }
+  
 }
