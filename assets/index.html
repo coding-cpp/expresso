@@ -5,30 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Expresso</title>
     <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
     <script src="app.js"></script>
   </head>
   <body>
-    <div>Hi !!!!!!!</div>
-    <div>
-      This is an example of a static file served via
-      <a href="https://github.com/coding-cpp/expresso" target="_blank"
-        >expresso</a
-      >, a backend framework written in pure C++ 20 without the use of any
-      external libraries at all (well, obviously except for the standard c++
-      library).
-    </div>
-    <div>Expresso version running: <i></i></div>
-    <section>
-      <p>Submodules used (also developed by me btw :)</p>
-      <br />
-      <ol></ol>
-    </section>
-    <div>
-      Made by: <span><a id="creator"></a></span>
-    </div>
-    <div>Since you're here, enjoy an AI generated coffee, on me:</div>
-    <div>
-      <img width="100%" src="/coffee.png" alt="AI generated coffee" />
-    </div>
+    <nav>
+      <span>Expresso</span>
+      <span>
+        <a class="github" style="margin-right: 10px"
+          ><i class="fa-brands fa-github"></i
+        ></a>
+        <a href="https://hub.docker.com/r/jadit19/expresso" target="_blank">
+          <i class="fa-brands fa-docker"></i>
+        </a>
+      </span>
+    </nav>
+
+    <article>
+      <section id="left">
+        <div id="intro">
+          <h1>Introduction</h1>
+          <p>
+            If you are seeing this, it means you have successfully set up
+            <a class="github">expresso</a> on your machine. First of all, let me
+            thank you for either using, testing, contributing and/or supporting
+            this project.
+          </p>
+          <p>
+            <a class="github">Expresso</a>
+            is a backend framework written in pure C++ 20 without the use of any
+            external dependencies at all (well, obviously except for the
+            standard c++ library included with any c++ compiler now-a-days)
+          </p>
+        </div>
+
+        <div id="details">
+          <h1>Details</h1>
+          <p>
+            <a class="github">Expresso</a> version running: <i id="version"></i>
+          </p>
+          <p>Submodules used:</p>
+          <ol></ol>
+          <p></p>
+        </div>
+
+        <div id="contributors">
+          <h1>Contributors</h1>
+          <p>Special thanks to the following contributors:</p>
+          <ul></ul>
+        </div>
+      </section>
+
+      <section id="right">
+        <div id="image">
+          <h1>Image</h1>
+          <p>Since you are here, enjoy an AI generated coffee on me:</p>
+          <img width="100%" src="/coffee.png" style="padding: 0px !important" />
+        </div>
+      </section>
+    </article>
+
+    <footer>
+      <p>&copy; <a id="creator"></a></p>
+    </footer>
   </body>
 </html>
