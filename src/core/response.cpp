@@ -132,7 +132,6 @@ void expresso::core::Response::sendFile(const std::string &path, int64_t start,
     file.close();
   }
 
-  this->hasEnded = true;
   return;
 }
 
@@ -178,7 +177,6 @@ void expresso::core::Response::sendFiles(const std::set<std::string> &paths,
                             "&zipFileName)");
   }
 
-  this->hasEnded = true;
   return;
 }
 
