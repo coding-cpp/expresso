@@ -6,18 +6,18 @@ const std::set<std::string> Cors::METHODS = {"GET", "POST", "PUT", "DELETE",
                                              "OPTIONS"};
 
 const std::set<std::string> Cors::HEADERS = {
-    "Accept",
-    "Access-Control-Allow-Credentials",
-    "Access-Control-Allow-Headers",
-    "Access-Control-Allow-Methods",
-    "Access-Control-Allow-Origin",
-    "Access-Control-Expose-Headers",
-    "Access-Control-Max-Age",
-    "Authorization",
-    "Content-Type",
-    "Origin",
-    "User-Agent",
-    "X-Requested-With",
+    "accept",
+    "access-control-allow-credentials",
+    "access-control-allow-headers",
+    "access-control-allow-methods",
+    "access-control-allow-origin",
+    "access-control-expose-headers",
+    "access-control-max-age",
+    "authorization",
+    "content-type",
+    "origin",
+    "user-agent",
+    "x-requested-with",
 };
 
 const std::string Cors::FORBIDDEN = "Forbidden";
@@ -63,7 +63,7 @@ void expresso::middleware::Cors::allowMethod(std::string method) {
 }
 
 void expresso::middleware::Cors::allowHeader(std::string header) {
-  this->headers.insert(header);
+  this->headers.insert(brewtils::string::lower(header));
 
   return;
 }
@@ -80,10 +80,10 @@ bool expresso::middleware::Cors::use(expresso::core::Request &req,
     return true;
   }
 
-  std::string requestOrigin = req.headers["Origin"];
+  std::string requestOrigin = req.headers["origin"];
 
   if (requestOrigin == "") {
-    res.set("Access-Control-Allow-Origin", "null");
+    res.set("access-control-allow-origin", "null");
     res.status(expresso::enums::STATUS_CODE::FORBIDDEN)
         .send(expresso::middleware::Cors::FORBIDDEN);
     return false;
@@ -93,24 +93,24 @@ bool expresso::middleware::Cors::use(expresso::core::Request &req,
 
   for (std::string origin : this->origins) {
     if (std::regex_match(requestOrigin, std::regex(origin))) {
-      res.set("Access-Control-Allow-Origin", origin.substr(1, origin.size()));
+      res.set("access-control-allow-origin", origin.substr(1, origin.size()));
       isOriginPresent = true;
       break;
     }
   }
 
   if (!isOriginPresent) {
-    res.set("Access-Control-Allow-Origin", "null");
+    res.set("access-control-allow-origin", "null");
     res.status(expresso::enums::STATUS_CODE::FORBIDDEN)
         .send(expresso::middleware::Cors::FORBIDDEN);
     return false;
   }
 
-  res.set("Access-Control-Allow-Credentials",
+  res.set("access-control-allow-credentials",
           this->credentials ? "true" : "false");
-  res.set("Access-Control-Allow-Methods",
+  res.set("access-control-allow-methods",
           brewtils::string::join(this->methods, ", "));
-  res.set("Access-Control-Allow-Headers",
+  res.set("access-control-allow-headers",
           brewtils::string::join(this->headers, ", "));
 
   return true;

@@ -21,7 +21,7 @@ expresso::core::Response::~Response() {
 
 void expresso::core::Response::set(std::string headerName,
                                    std::string headerValue) {
-  this->headers[headerName] = headerValue;
+  this->headers[brewtils::string::lower(headerName)] = headerValue;
 
   return;
 }
@@ -33,6 +33,7 @@ void expresso::core::Response::setCookie(Cookie *cookie) {
 }
 
 std::string expresso::core::Response::get(std::string headerName) {
+  headerName = brewtils::string::lower(headerName);
   if (this->headers.find(headerName) != this->headers.end()) {
     return this->headers[headerName];
   } else {
@@ -50,14 +51,14 @@ expresso::core::Response::status(expresso::enums::STATUS_CODE code) {
 expresso::core::Response &expresso::core::Response::send(std::string response) {
   this->message = brewtils::string::replace(response, "\n", "\r\n");
   this->message += "\r\n";
-  this->set("Content-Type", "text/plain");
+  this->set("content-type", "text/plain");
 
   return *this;
 }
 
 expresso::core::Response &expresso::core::Response::json(std::string response) {
   this->message = response;
-  this->set("Content-Type", "application/json");
+  this->set("content-type", "application/json");
 
   return *this;
 }
@@ -65,7 +66,7 @@ expresso::core::Response &expresso::core::Response::json(std::string response) {
 expresso::core::Response &
 expresso::core::Response::json(json::object response) {
   this->message = response.dumps(0);
-  this->set("Content-Type", "application/json");
+  this->set("content-type", "application/json");
 
   return *this;
 }
@@ -85,14 +86,14 @@ void expresso::core::Response::sendFile(const std::string &path, int64_t start,
   bool isPartial = start >= 0 || end >= 0;
   std::string fileName =
       availableFile.substr(availableFile.find_last_of('/') + 1);
-  this->set("Content-Type", brewtils::os::file::getMimeType(fileName));
-  this->set("Content-Disposition", "inline; filename=\"" + fileName + "\"");
-  this->set("Accept-Ranges", "bytes");
+  this->set("content-type", brewtils::os::file::getMimeType(fileName));
+  this->set("content-disposition", "inline; filename=\"" + fileName + "\"");
+  this->set("accept-ranges", "bytes");
 
   if (!isPartial) {
     start = 0;
     end = fileSize - 1;
-    this->set("Content-Length", std::to_string(fileSize));
+    this->set("content-length", std::to_string(fileSize));
   } else {
     if (start < 0) {
       start = 0;
@@ -101,8 +102,8 @@ void expresso::core::Response::sendFile(const std::string &path, int64_t start,
       end = fileSize - 1;
     }
     this->status(expresso::enums::STATUS_CODE::PARTIAL_CONTENT);
-    this->set("Content-Length", std::to_string(end - start + 1));
-    this->set("Content-Range", "bytes " + std::to_string(start) + "-" +
+    this->set("content-length", std::to_string(end - start + 1));
+    this->set("content-range", "bytes " + std::to_string(start) + "-" +
                                    std::to_string(end) + "/" +
                                    std::to_string(fileSize));
   }
@@ -138,11 +139,11 @@ void expresso::core::Response::sendFile(const std::string &path, int64_t start,
 
 void expresso::core::Response::sendFiles(const std::set<std::string> &paths,
                                          const std::string &zipFileName) {
-  this->headers.erase("Content-Length");
-  this->set("Transfer-Encoding", "chunked");
-  this->set("Content-Type", brewtils::os::file::getMimeType(zipFileName));
-  this->set("Content-Disposition", "inline; filename=\"" + zipFileName + "\"");
-  this->set("Accept-Ranges", "bytes");
+  this->headers.erase("content-length");
+  this->set("transfer-encoding", "chunked");
+  this->set("content-type", brewtils::os::file::getMimeType(zipFileName));
+  this->set("content-disposition", "inline; filename=\"" + zipFileName + "\"");
+  this->set("accept-ranges", "bytes");
   this->sendHeaders();
 
   zippuccino::Zipper zipper;
@@ -189,8 +190,8 @@ void expresso::core::Response::sendNotFound() {
 }
 
 void expresso::core::Response::sendInvalidRange() {
-  this->set("Content-Range", "bytes */");
-  this->set("Connection", "close");
+  this->set("content-range", "bytes */");
+  this->set("connection", "close");
   this->status(expresso::enums::STATUS_CODE::RANGE_NOT_SATISFIABLE)
       .send("Invalid Range")
       .end();
@@ -220,7 +221,7 @@ void expresso::core::Response::print() {
 }
 
 void expresso::core::Response::sendToClient() {
-  this->set("Content-Length", std::to_string(this->message.length()));
+  this->set("content-length", std::to_string(this->message.length()));
   this->sendHeaders();
   if (this->hasEnded) {
     return;
@@ -238,7 +239,7 @@ void expresso::core::Response::sendHeaders() {
     header += it.first + ": " + it.second + "\r\n";
   }
   for (Cookie *cookie : this->cookies) {
-    header += "Set-Cookie: " + cookie->serialize() + "\r\n";
+    header += "set-cookie: " + cookie->serialize() + "\r\n";
   }
   header += "\r\n";
   if (brewtils::sys::send(this->socket, header.c_str(), header.length(), 0) ==
