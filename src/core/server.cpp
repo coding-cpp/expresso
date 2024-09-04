@@ -99,7 +99,7 @@ void expresso::core::Server::handleConnection(int clientSocket) {
   charRequest.resize(totalBytesRead);
   std::string request(charRequest.data());
   Response *res = new Response(clientSocket);
-  res->set("Expresso", "v" + std::to_string(EXPRESSO_VERSION_MAJOR) + "." +
+  res->set("expresso", "v" + std::to_string(EXPRESSO_VERSION_MAJOR) + "." +
                            std::to_string(EXPRESSO_VERSION_MINOR) + "." +
                            std::to_string(EXPRESSO_VERSION_PATCH));
 

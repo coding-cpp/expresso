@@ -6,7 +6,7 @@ expresso::middleware::CookieParser::~CookieParser() { return; }
 
 bool expresso::middleware::CookieParser::use(expresso::core::Request &req,
                                              expresso::core::Response &res) {
-  std::string cookieString = req.headers["Cookie"];
+  std::string cookieString = req.headers["cookie"];
   if (cookieString.empty()) {
     return true;
   }

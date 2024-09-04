@@ -33,7 +33,7 @@ bool expresso::middleware::StaticServe::use(expresso::core::Request &req,
     }
 
     res.send(this->getFolderHTML(req, tempPath));
-    res.set("Content-Type", "text/html");
+    res.set("content-type", "text/html");
     res.status(expresso::enums::STATUS_CODE::OK);
     return false;
   }
