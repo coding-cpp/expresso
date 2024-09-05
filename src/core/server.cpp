@@ -18,6 +18,7 @@ expresso::core::Server::Server(size_t maxConnections, size_t maxThreads)
 
   this->address.sin_family = AF_INET;
   this->address.sin_addr.s_addr = INADDR_ANY;
+  this->setupMiddlewares();
 
   return;
 }
@@ -52,6 +53,10 @@ void expresso::core::Server::listen(int port, std::function<void()> callback) {
   this->acceptConnections();
 
   return;
+}
+
+void expresso::core::Server::setupMiddlewares() {
+  this->use(std::make_unique<middleware::Date>());
 }
 
 void expresso::core::Server::acceptConnections() {
