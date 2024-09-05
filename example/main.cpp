@@ -8,6 +8,7 @@
 
 // Personally, I don't encourange using namespaces, but, I left it here just so
 // that the code could be more readable ¯\_(ツ)_/¯
+using namespace std;
 using namespace expresso::core;
 using namespace expresso::enums;
 using namespace expresso::middleware;
@@ -66,18 +67,20 @@ int main(int argc, char **argv) {
   Server app = Server();
 
   // CORS middleware
-  Cors cors;
-  cors.allowOrigin("*");
-  cors.allowCredentials(true);
-  app.use(&cors);
+  unique_ptr<expresso::middleware::Cors> cors = make_unique<Cors>();
+  cors->allowOrigin("*");
+  cors->allowCredentials(true);
+  app.use(move(cors));
 
   // Cookie Parser
-  CookieParser cookieParser;
-  app.use(&cookieParser);
+  unique_ptr<expresso::middleware::CookieParser> cookieParser =
+      make_unique<CookieParser>();
+  app.use(move(cookieParser));
 
   // Static serve middleware
-  StaticServe staticServe("../assets");
-  app.use(&staticServe);
+  unique_ptr<expresso::middleware::StaticServe> staticServe =
+      make_unique<StaticServe>("../assets");
+  app.use(move(staticServe));
 
   // Route handling like normal
   app.get("/health", [](Request &req, Response &res) {
@@ -90,9 +93,10 @@ int main(int argc, char **argv) {
   app.use("/about", &router);
 
   // Listing directories
-  StaticServe pictureServe("../assets/github", true);
+  unique_ptr<expresso::middleware::StaticServe> pictureServe =
+      make_unique<StaticServe>("../assets/github", true);
   Router pictureRouter;
-  pictureRouter.use(&pictureServe);
+  pictureRouter.use(move(pictureServe));
   app.use("/pictures", &pictureRouter);
 
   // Sending multiple files as single zip
