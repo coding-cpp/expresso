@@ -5,13 +5,13 @@ namespace expresso {
 
 namespace middleware {
 
-class Expresso : public Middleware {
+class Version : public Middleware {
 private:
   std::string version;
 
 public:
-  Expresso();
-  ~Expresso();
+  Version();
+  ~Version();
 
   bool use(expresso::core::Request &request,
            expresso::core::Response &response) override;

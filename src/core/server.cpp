@@ -56,7 +56,7 @@ void expresso::core::Server::listen(int port, std::function<void()> callback) {
 }
 
 void expresso::core::Server::setupMiddlewares() {
-  this->use(std::make_unique<expresso::middleware::Expresso>());
+  this->use(std::make_unique<expresso::middleware::Version>());
   this->use(std::make_unique<expresso::middleware::Date>());
 }
 
