@@ -22,7 +22,7 @@ private:
   Router *paramRouter;
   std::string paramRouterParam;
 
-  std::vector<expresso::middleware::Middleware *> middlewares;
+  std::vector<std::unique_ptr<expresso::middleware::Middleware>> middlewares;
 
   bool handleMiddlewares(Request &request, Response &response);
 
@@ -44,7 +44,7 @@ public:
                void (*handler)(Request &request, Response &response));
 
   void use(std::string path, Router *router);
-  void use(expresso::middleware::Middleware *middleware);
+  void use(std::unique_ptr<expresso::middleware::Middleware> middleware);
 
   void handleRequest(Request &request, Response &response);
 };
