@@ -9,7 +9,7 @@
 #include <expresso/core/router.h>
 #include <expresso/enums/verbs.h>
 #include <expresso/middleware/date.h>
-#include <expresso/version.h>
+#include <expresso/middleware/version.h>
 
 namespace expresso {
 
