@@ -10,7 +10,7 @@ class Middleware {
 private:
 public:
   Middleware();
-  ~Middleware();
+  virtual ~Middleware() = default;
 
   virtual bool use(expresso::core::Request &req,
                    expresso::core::Response &res) = 0;
