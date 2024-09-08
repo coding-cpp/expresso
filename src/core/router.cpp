@@ -137,27 +137,27 @@ void expresso::core::Router::handleRequest(Request &request,
     request.tempPath = request.tempPath.substr(1, request.tempPath.size());
   }
 
-  if (request.method == "GET" &&
+  if (request.method == expresso::enums::method::GET &&
       this->getMap.find(request.tempPath) != this->getMap.end()) {
     this->getMap[request.tempPath](request, response);
     return;
-  } else if (request.method == "POST" &&
+  } else if (request.method == expresso::enums::method::POST &&
              this->postMap.find(request.tempPath) != this->postMap.end()) {
     this->postMap[request.tempPath](request, response);
     return;
-  } else if (request.method == "PUT" &&
+  } else if (request.method == expresso::enums::method::PUT &&
              this->putMap.find(request.tempPath) != this->putMap.end()) {
     this->putMap[request.tempPath](request, response);
     return;
-  } else if (request.method == "PATCH" &&
+  } else if (request.method == expresso::enums::method::PATCH &&
              this->patchMap.find(request.tempPath) != this->patchMap.end()) {
     this->patchMap[request.tempPath](request, response);
     return;
-  } else if (request.method == "DELETE" &&
+  } else if (request.method == expresso::enums::method::DELETE &&
              this->deleteMap.find(request.tempPath) != this->deleteMap.end()) {
     this->deleteMap[request.tempPath](request, response);
     return;
-  } else if (request.method == "OPTIONS" &&
+  } else if (request.method == expresso::enums::method::OPTIONS &&
              this->optionsMap.find(request.tempPath) !=
                  this->optionsMap.end()) {
     this->optionsMap[request.tempPath](request, response);

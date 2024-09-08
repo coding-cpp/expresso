@@ -126,13 +126,17 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
   std::getline(stream, line);
 
   std::vector<std::string> parts = brewtils::string::split(line, " ");
-  req.method = parts[0];
-  if (expresso::enums::VERBS.find(req.method) == expresso::enums::VERBS.end()) {
-    logger::error("Unsupported HTTP method: " + req.method,
+  const std::string method = brewtils::string::upper(parts[0]);
+  std::set<std::string>::const_iterator methodIter =
+      expresso::enums::methods.find(method);
+  if (methodIter == expresso::enums::methods.end()) {
+    logger::error("Unsupported HTTP method: " + method,
                   "expresso::core::Server::makeRequest(std::string &request) "
                   "noexcept(false)");
   }
 
+  req.method = static_cast<expresso::enums::method>(
+      std::distance(expresso::enums::methods.begin(), methodIter) - 1);
   req.path = parts[1];
   req.httpVersion = parts[2];
   if (req.httpVersion.substr(0, 5) != "HTTP/") {

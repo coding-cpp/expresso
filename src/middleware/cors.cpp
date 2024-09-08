@@ -2,9 +2,6 @@
 
 namespace expresso::middleware {
 
-const std::set<std::string> Cors::METHODS = {"GET", "POST", "PUT", "DELETE",
-                                             "OPTIONS"};
-
 const std::set<std::string> Cors::HEADERS = {
     "accept",
     "access-control-allow-credentials",
@@ -30,9 +27,9 @@ expresso::middleware::Cors::Cors()
     this->headers.insert(_header);
   }
 
-  this->allowMethod("GET");
-  this->allowMethod("POST");
-  this->allowMethod("OPTIONS");
+  this->allowMethod(expresso::enums::method::GET);
+  this->allowMethod(expresso::enums::method::POST);
+  this->allowMethod(expresso::enums::method::OPTIONS);
 
   return;
 }
@@ -53,10 +50,19 @@ void expresso::middleware::Cors::allowOrigin(std::string origin) {
 }
 
 void expresso::middleware::Cors::allowMethod(std::string method) {
-  if (this->METHODS.find(method) == this->METHODS.end()) {
+  std::set<std::string>::const_iterator methodIter =
+      expresso::enums::methods.find(method);
+  if (methodIter == expresso::enums::methods.end()) {
     logger::warning("Invalid CORS method: " + method);
   }
 
+  this->methods.insert(static_cast<expresso::enums::method>(
+      std::distance(expresso::enums::methods.begin(), methodIter) - 1));
+
+  return;
+}
+
+void expresso::middleware::Cors::allowMethod(expresso::enums::method method) {
   this->methods.insert(method);
 
   return;
@@ -108,8 +114,6 @@ bool expresso::middleware::Cors::use(expresso::core::Request &req,
 
   res.set("access-control-allow-credentials",
           this->credentials ? "true" : "false");
-  res.set("access-control-allow-methods",
-          brewtils::string::join(this->methods, ", "));
   res.set("access-control-allow-headers",
           brewtils::string::join(this->headers, ", "));
 
