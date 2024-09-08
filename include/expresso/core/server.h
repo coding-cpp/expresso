@@ -7,6 +7,8 @@
 #include <nexus/pool.h>
 
 #include <expresso/core/router.h>
+#include <expresso/middleware/date.h>
+#include <expresso/middleware/version.h>
 #include <expresso/version.h>
 
 namespace expresso {
@@ -19,6 +21,7 @@ private:
   size_t maxConnections;
   struct sockaddr_in address;
 
+  void setupMiddlewares();
   void acceptConnections();
   void handleConnection(int clientSocket);
 

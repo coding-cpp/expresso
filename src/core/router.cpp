@@ -122,8 +122,9 @@ void expresso::core::Router::use(std::string path, Router *router) {
   return;
 }
 
-void expresso::core::Router::use(expresso::middleware::Middleware *middleware) {
-  this->middlewares.push_back(middleware);
+void expresso::core::Router::use(
+    std::unique_ptr<expresso::middleware::Middleware> middleware) {
+  this->middlewares.push_back(std::move(middleware));
   return;
 }
 
@@ -202,7 +203,8 @@ void expresso::core::Router::handleRequest(Request &request,
 
 bool expresso::core::Router::handleMiddlewares(Request &request,
                                                Response &response) {
-  for (expresso::middleware::Middleware *middleware : this->middlewares) {
+  for (const std::unique_ptr<expresso::middleware::Middleware> &middleware :
+       this->middlewares) {
     if (!middleware->use(request, response)) {
       response.end();
       return false;

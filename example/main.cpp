@@ -1,5 +1,6 @@
 // Include necessary header files
 #include <expresso/core/server.h>
+#include <expresso/middleware/cacher.h>
 #include <expresso/middleware/cookie_parser.h>
 #include <expresso/middleware/cors.h>
 #include <expresso/middleware/static_serve.h>
@@ -65,19 +66,26 @@ int main(int argc, char **argv) {
 
   Server app = Server();
 
-  // CORS middleware
-  Cors cors;
-  cors.allowOrigin("*");
-  cors.allowCredentials(true);
-  app.use(&cors);
+  // CORS middleware, applied across all routes
+  std::unique_ptr<expresso::middleware::Cors> cors = std::make_unique<Cors>();
+  cors->allowOrigin("*");
+  cors->allowCredentials(true);
+  app.use(std::move(cors));
 
-  // Cookie Parser
-  CookieParser cookieParser;
-  app.use(&cookieParser);
+  // Cookie Parser, applied across all routes
+  std::unique_ptr<expresso::middleware::CookieParser> cookieParser =
+      std::make_unique<CookieParser>();
+  app.use(std::move(cookieParser));
+
+  // Cache middleware, applied across all routes
+  std::unique_ptr<expresso::middleware::Cacher> cacher =
+      std::make_unique<Cacher>(3600, false);
+  app.use(std::move(cacher));
 
   // Static serve middleware
-  StaticServe staticServe("../assets");
-  app.use(&staticServe);
+  std::unique_ptr<expresso::middleware::StaticServe> staticServe =
+      std::make_unique<StaticServe>("../assets");
+  app.use(std::move(staticServe));
 
   // Route handling like normal
   app.get("/health", [](Request &req, Response &res) {
@@ -90,9 +98,10 @@ int main(int argc, char **argv) {
   app.use("/about", &router);
 
   // Listing directories
-  StaticServe pictureServe("../assets/github", true);
+  std::unique_ptr<expresso::middleware::StaticServe> pictureServe =
+      std::make_unique<StaticServe>("../assets/github", true);
   Router pictureRouter;
-  pictureRouter.use(&pictureServe);
+  pictureRouter.use(std::move(pictureServe));
   app.use("/pictures", &pictureRouter);
 
   // Sending multiple files as single zip

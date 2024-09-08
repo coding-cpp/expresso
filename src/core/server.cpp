@@ -18,6 +18,7 @@ expresso::core::Server::Server(size_t maxConnections, size_t maxThreads)
 
   this->address.sin_family = AF_INET;
   this->address.sin_addr.s_addr = INADDR_ANY;
+  this->setupMiddlewares();
 
   return;
 }
@@ -52,6 +53,11 @@ void expresso::core::Server::listen(int port, std::function<void()> callback) {
   this->acceptConnections();
 
   return;
+}
+
+void expresso::core::Server::setupMiddlewares() {
+  this->use(std::make_unique<expresso::middleware::Version>());
+  this->use(std::make_unique<expresso::middleware::Date>());
 }
 
 void expresso::core::Server::acceptConnections() {
@@ -99,9 +105,6 @@ void expresso::core::Server::handleConnection(int clientSocket) {
   charRequest.resize(totalBytesRead);
   std::string request(charRequest.data());
   Response *res = new Response(clientSocket);
-  res->set("expresso", "v" + std::to_string(EXPRESSO_VERSION_MAJOR) + "." +
-                           std::to_string(EXPRESSO_VERSION_MINOR) + "." +
-                           std::to_string(EXPRESSO_VERSION_PATCH));
 
   try {
     Request req = this->makeRequest(request);
