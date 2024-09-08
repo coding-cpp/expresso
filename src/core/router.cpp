@@ -22,87 +22,45 @@ expresso::core::Router::~Router() {
   return;
 }
 
-void expresso::core::Router::del(std::string path,
-                                 void (*handler)(Request &request,
-                                                 Response &response)) {
-  if (path[0] != '/') {
-    logger::error("Router path must start with a '/', given: " + path,
-                  "void expresso::core::Router::del(std::string path, void "
-                  "(*handler)(Request &request, Response &response))");
-    return;
-  }
-
-  this->deleteMap[path.substr(1, path.size())] = handler;
-  return;
-}
-
 void expresso::core::Router::get(std::string path,
                                  void (*handler)(Request &request,
                                                  Response &response)) {
-  if (path[0] != '/') {
-    logger::error("Router path must start with a '/', given: " + path,
-                  "void expresso::core::Router::get(std::string path, void "
-                  "(*handler)(Request &request, Response &response))");
-    return;
-  }
-
-  this->getMap[path.substr(1, path.size())] = handler;
-  return;
-}
-
-void expresso::core::Router::options(std::string path,
-                                     void (*handler)(Request &request,
-                                                     Response &response)) {
-  if (path[0] != '/') {
-    logger::error("Router path must start with a '/', given: " + path,
-                  "void expresso::core::Router::options(std::string path, void "
-                  "(*handler)(Request &request, Response &response))");
-    return;
-  }
-
-  this->optionsMap[path.substr(1, path.size())] = handler;
-  return;
-}
-
-void expresso::core::Router::patch(std::string path,
-                                   void (*handler)(Request &request,
-                                                   Response &response)) {
-  if (path[0] != '/') {
-    logger::error("Router path must start with a '/', given: " + path,
-                  "void expresso::core::Router::patch(std::string path, void "
-                  "(*handler)(Request &request, Response &response))");
-    return;
-  }
-
-  this->patchMap[path.substr(1, path.size())] = handler;
+  this->addRoute(expresso::enums::method::GET, path, handler);
   return;
 }
 
 void expresso::core::Router::post(std::string path,
                                   void (*handler)(Request &request,
                                                   Response &response)) {
-  if (path[0] != '/') {
-    logger::error("Router path must start with a '/', given: " + path,
-                  "void expresso::core::Router::post(std::string path, void "
-                  "(*handler)(Request &request, Response &response))");
-    return;
-  }
-
-  this->postMap[path.substr(1, path.size())] = handler;
+  this->addRoute(expresso::enums::method::POST, path, handler);
   return;
 }
 
 void expresso::core::Router::put(std::string path,
                                  void (*handler)(Request &request,
                                                  Response &response)) {
-  if (path[0] != '/') {
-    logger::error("Router path must start with a '/', given: " + path,
-                  "void expresso::core::Router::put(std::string path, void "
-                  "(*handler)(Request &request, Response &response))");
-    return;
-  }
+  this->addRoute(expresso::enums::method::PUT, path, handler);
+  return;
+}
 
-  this->putMap[path.substr(1, path.size())] = handler;
+void expresso::core::Router::patch(std::string path,
+                                   void (*handler)(Request &request,
+                                                   Response &response)) {
+  this->addRoute(expresso::enums::method::PATCH, path, handler);
+  return;
+}
+
+void expresso::core::Router::del(std::string path,
+                                 void (*handler)(Request &request,
+                                                 Response &response)) {
+  this->addRoute(expresso::enums::method::DELETE, path, handler);
+  return;
+}
+
+void expresso::core::Router::options(std::string path,
+                                     void (*handler)(Request &request,
+                                                     Response &response)) {
+  this->addRoute(expresso::enums::method::OPTIONS, path, handler);
   return;
 }
 
@@ -138,31 +96,10 @@ void expresso::core::Router::handleRequest(Request &request,
     request.tempPath = request.tempPath.substr(1, request.tempPath.size());
   }
 
-  if (request.method == expresso::enums::method::GET &&
-      this->getMap.find(request.tempPath) != this->getMap.end()) {
-    this->getMap[request.tempPath](request, response);
-    return;
-  } else if (request.method == expresso::enums::method::POST &&
-             this->postMap.find(request.tempPath) != this->postMap.end()) {
-    this->postMap[request.tempPath](request, response);
-    return;
-  } else if (request.method == expresso::enums::method::PUT &&
-             this->putMap.find(request.tempPath) != this->putMap.end()) {
-    this->putMap[request.tempPath](request, response);
-    return;
-  } else if (request.method == expresso::enums::method::PATCH &&
-             this->patchMap.find(request.tempPath) != this->patchMap.end()) {
-    this->patchMap[request.tempPath](request, response);
-    return;
-  } else if (request.method == expresso::enums::method::DELETE &&
-             this->deleteMap.find(request.tempPath) != this->deleteMap.end()) {
-    this->deleteMap[request.tempPath](request, response);
-    return;
-  } else if (request.method == expresso::enums::method::OPTIONS &&
-             this->optionsMap.find(request.tempPath) !=
-                 this->optionsMap.end()) {
-    this->optionsMap[request.tempPath](request, response);
-    return;
+  std::map<std::string, void (*)(Request & request, Response & response)> &map =
+      this->fetchMapFromMethod(request.method);
+  if (map.find(request.tempPath) != map.end()) {
+    return map[request.tempPath](request, response);
   }
 
   for (const std::pair<std::string, Router *> &x : this->routerMap) {
@@ -212,4 +149,48 @@ bool expresso::core::Router::handleMiddlewares(Request &request,
   }
 
   return true;
+}
+
+std::map<std::string, void (*)(expresso::core::Request &request,
+                               expresso::core::Response &response)> &
+expresso::core::Router::fetchMapFromMethod(expresso::enums::method method) {
+  switch (method) {
+  case expresso::enums::method::GET:
+    return this->getMap;
+  case expresso::enums::method::POST:
+    return this->postMap;
+  case expresso::enums::method::PUT:
+    return this->putMap;
+  case expresso::enums::method::PATCH:
+
+    return this->patchMap;
+  case expresso::enums::method::DELETE:
+    return this->deleteMap;
+  case expresso::enums::method::OPTIONS:
+    return this->optionsMap;
+  default:
+    logger::error("Invalid method: " + std::to_string(static_cast<int>(method)),
+                  "std::map<std::string, void (*)(expresso::core::Request "
+                  "&request, expresso::core::Response &response)> "
+                  "&expresso::core::Router::fetchRouterFromMethod(expresso::"
+                  "enums::method method)");
+    return this->getMap;
+  }
+}
+
+void expresso::core::Router::addRoute(expresso::enums::method method,
+                                      std::string path,
+                                      void (*handler)(Request &request,
+                                                      Response &response)) {
+  if (path[0] != '/') {
+    logger::error("Router path must start with a '/', given: " + path,
+                  "void expresso::core::Router::put(std::string path, void "
+                  "(*handler)(Request &request, Response &response))");
+    return;
+  }
+
+  std::map<std::string, void (*)(Request & request, Response & response)> &map =
+      this->fetchMapFromMethod(method);
+  map[path.substr(1, path.size())] = handler;
+  return;
 }
