@@ -1,6 +1,6 @@
 #include <expresso/middleware/cacher.h>
 
-expresso::middleware::Cacher::Cacher(uint maxAge, bool isPrivate)
+expresso::middleware::Cacher::Cacher(uint32_t maxAge, bool isPrivate)
     : isPrivate(isPrivate), maxAge(maxAge) {
   this->serialized = "max-age=" + std::to_string(maxAge);
   if (isPrivate) {
