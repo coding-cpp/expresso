@@ -18,6 +18,14 @@ std::string expresso::helpers::getAvailableFile(const std::string &path) {
   return "";
 }
 
+const std::string expresso::helpers::generateETag(const std::string &data) {
+  const std::string availableFile = expresso::helpers::getAvailableFile(data);
+  uint32_t crc = zippuccino::crc::compute(availableFile);
+  std::ostringstream etag;
+  etag << "\"" << std::hex << std::setw(8) << std::setfill('0') << crc << "\"";
+  return etag.str();
+}
+
 bool expresso::helpers::sendChunkedData(const int &socket,
                                         const std::string &data) {
   std::ostringstream dataSizeHex;
