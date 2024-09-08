@@ -11,7 +11,7 @@ expresso::middleware::StaticServe::~StaticServe() { return; }
 
 bool expresso::middleware::StaticServe::use(expresso::core::Request &req,
                                             expresso::core::Response &res) {
-  if (req.method != "GET") {
+  if (req.method != expresso::enums::method::GET) {
     return true;
   }
 

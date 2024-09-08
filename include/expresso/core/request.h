@@ -17,7 +17,7 @@ public:
 
   std::string host;
   std::string hostname;
-  std::string method;
+  expresso::enums::method method;
   std::string path;
   std::string httpVersion;
 

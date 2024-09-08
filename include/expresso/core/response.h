@@ -10,6 +10,7 @@
 #include <zippuccino/zipper.h>
 
 #include <expresso/core/cookie.h>
+#include <expresso/enums/method.h>
 #include <expresso/enums/status_code.h>
 
 namespace expresso {

@@ -7,9 +7,9 @@
 #include <nexus/pool.h>
 
 #include <expresso/core/router.h>
-#include <expresso/enums/verbs.h>
 #include <expresso/middleware/date.h>
 #include <expresso/middleware/version.h>
+#include <expresso/version.h>
 
 namespace expresso {
 

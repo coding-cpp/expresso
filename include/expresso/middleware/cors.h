@@ -12,8 +12,8 @@ private:
   bool allowAllOrigins;
 
   std::set<std::string> origins;
-  std::set<std::string> methods;
   std::set<std::string> headers;
+  std::set<expresso::enums::method> methods;
 
 public:
   Cors();
@@ -21,6 +21,7 @@ public:
 
   void allowOrigin(std::string origin);
   void allowMethod(std::string method);
+  void allowMethod(expresso::enums::method method);
   void allowHeader(std::string header);
   void allowCredentials(bool credentials);
 
@@ -28,7 +29,6 @@ public:
            expresso::core::Response &res) override;
 
   static const std::string FORBIDDEN;
-  static const std::set<std::string> METHODS;
   static const std::set<std::string> HEADERS;
 };
 
