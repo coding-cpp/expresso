@@ -118,6 +118,7 @@ void expresso::core::Server::handleConnection(int clientSocket) {
     res->status(expresso::enums::STATUS_CODE::BAD_REQUEST).send("Bad Request");
   }
 
+  close(clientSocket);
   return;
 }
 
