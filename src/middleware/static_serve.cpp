@@ -51,9 +51,17 @@ expresso::middleware::StaticServe::getRange(const std::string &range) {
     const std::vector<std::string> rangeParts =
         brewtils::string::split(parts[1], "-");
     if (rangeParts.size() > 0) {
-      start = std::stoll(rangeParts[0]);
-      if (rangeParts.size() > 1) {
-        end = std::stoll(rangeParts[1]);
+      try {
+        start = std::stoll(rangeParts[0]);
+        if (rangeParts.size() > 1) {
+          try {
+            end = std::stoll(rangeParts[1]);
+          } catch (...) {
+            end = -1;
+          }
+        }
+      } catch (...) {
+        start = -1;
       }
     }
   }
