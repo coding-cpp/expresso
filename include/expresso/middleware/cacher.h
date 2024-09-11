@@ -9,12 +9,12 @@ namespace middleware {
 class Cacher : public Middleware {
 private:
   bool isPrivate;
-  uint maxAge;
+  uint32_t maxAge;
 
   std::string serialized;
 
 public:
-  Cacher(uint maxAge = 3600, bool isPrivate = false);
+  Cacher(uint32_t maxAge = 3600, bool isPrivate = false);
   ~Cacher();
 
   bool use(expresso::core::Request &req,

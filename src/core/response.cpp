@@ -4,6 +4,8 @@
 expresso::core::Response::Response(int clientSocket)
     : hasEnded(false), socket(clientSocket),
       statusCode(expresso::enums::STATUS_CODE::OK), message("") {
+  this->set("connection", "close");
+
   return;
 }
 
@@ -189,7 +191,6 @@ void expresso::core::Response::sendNotFound() {
 
 void expresso::core::Response::sendInvalidRange() {
   this->set("content-range", "bytes */");
-  this->set("connection", "close");
   this->status(expresso::enums::STATUS_CODE::RANGE_NOT_SATISFIABLE)
       .send("Invalid Range")
       .end();
