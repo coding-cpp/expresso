@@ -206,6 +206,11 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
     req.tempPath = req.tempPath.substr(0, req.tempPath.size() - 1);
   }
 
+  if (req.method == expresso::enums::method::GET ||
+      req.method == expresso::enums::method::HEAD) {
+    return req;
+  }
+
   // Setting the body
   std::string contentType = req.headers["content-type"];
   std::string body = request.substr(request.find("\r\n\r\n") + 4);
