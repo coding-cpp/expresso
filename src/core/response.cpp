@@ -91,6 +91,7 @@ void expresso::core::Response::sendFile(const std::string &path, int64_t start,
   this->set("content-type", brewtils::os::file::getMimeType(fileName));
   this->set("content-disposition", "inline; filename=\"" + fileName + "\"");
   this->set("accept-ranges", "bytes");
+  this->set("etag", expresso::helpers::generateETag(availableFile));
 
   if (!isPartial) {
     start = 0;
