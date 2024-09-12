@@ -207,7 +207,7 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
 
   if (req.method == expresso::enums::method::GET ||
       req.method == expresso::enums::method::HEAD) {
-    return;
+    return req;
   }
 
   // Setting the body
