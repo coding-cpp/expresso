@@ -25,6 +25,10 @@ private:
   std::vector<std::unique_ptr<expresso::middleware::Middleware>> middlewares;
 
   bool handleMiddlewares(Request &request, Response &response);
+  std::map<std::string, void (*)(Request &request, Response &response)> &
+  fetchMapFromMethod(expresso::enums::method method);
+  void addRoute(expresso::enums::method method, std::string path,
+                void (*handler)(Request &request, Response &response));
 
 public:
   Router();
