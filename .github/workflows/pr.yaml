@@ -7,23 +7,72 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  version_check:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           submodules: recursive
-      
+      - name: Extract version from version.h
+        id: extract_version_h_version
+        run: |
+          MAJOR_VERSION=$(grep -oP '(?<=#define EXPRESSO_VERSION_MAJOR )\d+' include/expresso/version.h)
+          MINOR_VERSION=$(grep -oP '(?<=#define EXPRESSO_VERSION_MINOR )\d+' include/expresso/version.h)
+          PATCH_VERSION=$(grep -oP '(?<=#define EXPRESSO_VERSION_PATCH )\d+' include/expresso/version.h)
+          echo "VERSION_H_VERSION=$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION" >> $GITHUB_ENV
+      - name: Extract version from CMakeLists.txt
+        id: extract_cmake_version
+        run: |
+          VERSION=$(grep -oP '(?<=project\(expresso VERSION )\d+\.\d+\.\d+' CMakeLists.txt)
+          echo "CMAKE_VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Check version consistency
+        run: |
+          if [[ "${{ env.VERSION_H_VERSION }}" != "${{ env.CMAKE_VERSION }}" ]]; then
+            echo "Version mismatch between version.h and CMakeLists.txt"
+            exit 1
+          fi
+      - name: Post success comment
+        if: ${{ success() }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Version consistency check successful! 🎉'
+            });
+      - name: Post failure comment
+        if: ${{ failure() }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Version consistency check failed! ❌'
+            });
+
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
       - name: Update and Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y cmake build-essential g++
-      
       - name: Build
         id: build
         run: |
@@ -31,7 +80,6 @@ jobs:
           cd build
           cmake ..
           make
-      
       - name: Post success comment
         if: ${{ success() }}
         uses: actions/github-script@v6
@@ -43,7 +91,6 @@ jobs:
               repo: context.repo.repo,
               body: 'Build successful! 🎉'
             });
-      
       - name: Post failure comment
         if: ${{ failure() }}
         uses: actions/github-script@v6
