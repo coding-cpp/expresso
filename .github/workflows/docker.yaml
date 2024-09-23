@@ -5,9 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/docker.yaml'
       - 'include/expresso/version.h'
-      - 'docker/build.dockerfile'
   workflow_dispatch:
 
 jobs:
