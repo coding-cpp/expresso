@@ -12,18 +12,15 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           submodules: recursive
-      
       - name: Update and Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y cmake build-essential g++
-      
       - name: Build
         id: build
         run: |
@@ -31,7 +28,6 @@ jobs:
           cd build
           cmake ..
           make
-      
       - name: Post success comment
         if: ${{ success() }}
         uses: actions/github-script@v6
@@ -43,7 +39,6 @@ jobs:
               repo: context.repo.repo,
               body: 'Build successful! 🎉'
             });
-      
       - name: Post failure comment
         if: ${{ failure() }}
         uses: actions/github-script@v6
