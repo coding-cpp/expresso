@@ -22,7 +22,7 @@ const std::string Cors::FORBIDDEN = "Forbidden";
 } // namespace expresso::middleware
 
 expresso::middleware::Cors::Cors()
-    : credentials(false), allowAllOrigins(false) {
+    : credentials(false), allowAllOrigins(false), allowedHeaders("") {
   for (std::string _header : this->HEADERS) {
     this->headers.insert(_header);
   }
@@ -30,7 +30,6 @@ expresso::middleware::Cors::Cors()
   this->allowMethod(expresso::enums::method::GET);
   this->allowMethod(expresso::enums::method::POST);
   this->allowMethod(expresso::enums::method::OPTIONS);
-
   return;
 }
 
@@ -41,11 +40,9 @@ void expresso::middleware::Cors::allowOrigin(std::string origin) {
     origin = "." + origin;
   }
   this->origins.insert(origin);
-
   if (origin == ".*") {
     this->allowAllOrigins = true;
   }
-
   return;
 }
 
@@ -58,25 +55,22 @@ void expresso::middleware::Cors::allowMethod(std::string method) {
 
   this->methods.insert(static_cast<expresso::enums::method>(
       std::distance(expresso::enums::methods.begin(), methodIter) - 1));
-
   return;
 }
 
 void expresso::middleware::Cors::allowMethod(expresso::enums::method method) {
   this->methods.insert(method);
-
   return;
 }
 
 void expresso::middleware::Cors::allowHeader(std::string header) {
   this->headers.insert(brewtils::string::lower(header));
-
+  this->allowedHeaders = brewtils::string::join(this->headers, ", ");
   return;
 }
 
 void expresso::middleware::Cors::allowCredentials(bool credentials) {
   this->credentials = credentials;
-
   return;
 }
 
@@ -87,7 +81,6 @@ bool expresso::middleware::Cors::use(expresso::core::Request &req,
   }
 
   std::string requestOrigin = req.headers["origin"];
-
   if (requestOrigin == "") {
     res.set("access-control-allow-origin", "null");
     res.status(expresso::enums::STATUS_CODE::FORBIDDEN)
@@ -96,7 +89,6 @@ bool expresso::middleware::Cors::use(expresso::core::Request &req,
   }
 
   bool isOriginPresent = false;
-
   for (std::string origin : this->origins) {
     if (std::regex_match(requestOrigin, std::regex(origin))) {
       res.set("access-control-allow-origin", origin.substr(1, origin.size()));
@@ -115,7 +107,6 @@ bool expresso::middleware::Cors::use(expresso::core::Request &req,
   res.set("access-control-allow-credentials",
           this->credentials ? "true" : "false");
   res.set("access-control-allow-headers",
-          brewtils::string::join(this->headers, ", "));
-
+          this->allowedHeaders == "" ? "*" : this->allowedHeaders);
   return true;
 }
