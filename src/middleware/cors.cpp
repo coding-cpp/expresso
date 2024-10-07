@@ -53,7 +53,10 @@ void expresso::middleware::Cors::allowMethod(std::string method) {
   std::set<std::string>::const_iterator methodIter =
       expresso::enums::methods.find(method);
   if (methodIter == expresso::enums::methods.end()) {
-    logger::warning("Invalid CORS method: " + method);
+    logger::error(
+        "Invalid CORS method: " + method,
+        "void expresso::middleware::Cors::allowMethod(std::string method)");
+    return;
   }
 
   this->methods.insert(static_cast<expresso::enums::method>(
