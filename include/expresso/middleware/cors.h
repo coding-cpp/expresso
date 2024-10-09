@@ -11,6 +11,8 @@ private:
   bool credentials;
   bool allowAllOrigins;
 
+  std::string allowedHeaders;
+
   std::set<std::string> origins;
   std::set<std::string> headers;
   std::set<expresso::enums::method> methods;
