@@ -29,9 +29,6 @@ public:
 
   bool use(expresso::core::Request &req,
            expresso::core::Response &res) override;
-
-  static const std::string FORBIDDEN;
-  static const std::set<std::string> HEADERS;
 };
 
 } // namespace middleware
