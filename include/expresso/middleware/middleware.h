@@ -1,6 +1,6 @@
 #pragma once
 
-#include <expresso/core/request.h>
+#include <expresso/messages/request.h>
 
 namespace expresso {
 
@@ -12,8 +12,8 @@ public:
   Middleware();
   virtual ~Middleware() = default;
 
-  virtual bool use(expresso::core::Request &req,
-                   expresso::core::Response &res) = 0;
+  virtual bool use(expresso::messages::Request &req,
+                   expresso::messages::Response &res) = 0;
 };
 
 } // namespace middleware

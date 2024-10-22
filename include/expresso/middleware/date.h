@@ -12,8 +12,8 @@ public:
   Date();
   ~Date();
 
-  bool use(expresso::core::Request &req,
-           expresso::core::Response &res) override;
+  bool use(expresso::messages::Request &req,
+           expresso::messages::Response &res) override;
 };
 
 } // namespace middleware

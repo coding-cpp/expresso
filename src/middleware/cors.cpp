@@ -57,8 +57,8 @@ void expresso::middleware::Cors::allowCredentials(bool credentials) {
   return;
 }
 
-bool expresso::middleware::Cors::use(expresso::core::Request &req,
-                                     expresso::core::Response &res) {
+bool expresso::middleware::Cors::use(expresso::messages::Request &req,
+                                     expresso::messages::Response &res) {
   if (this->allowAllOrigins) {
     return true;
   }

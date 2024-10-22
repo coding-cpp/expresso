@@ -1,13 +1,13 @@
-#include <expresso/core/request.h>
+#include <expresso/messages/request.h>
 
-expresso::core::Request::Request()
+expresso::messages::Request::Request()
     : xhr(false), res(nullptr), contentLength(0) {
   return;
 }
 
-expresso::core::Request::~Request() { return; }
+expresso::messages::Request::~Request() { return; }
 
-void expresso::core::Request::print() {
+void expresso::messages::Request::print() {
   logger::info("Request: ");
 
   logger::info("  host: " + this->host);
@@ -19,7 +19,7 @@ void expresso::core::Request::print() {
   logger::info(this->body.dumps(2, 2));
 
   logger::info("  cookies: ");
-  for (expresso::core::Cookie *cookie : this->cookies) {
+  for (expresso::messages::Cookie *cookie : this->cookies) {
     logger::info("    " + cookie->serialize());
   }
 

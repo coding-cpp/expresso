@@ -22,44 +22,44 @@ expresso::core::Router::~Router() {
   return;
 }
 
-void expresso::core::Router::get(std::string path,
-                                 void (*handler)(Request &request,
-                                                 Response &response)) {
+void expresso::core::Router::get(
+    std::string path, void (*handler)(expresso::messages::Request &request,
+                                      expresso::messages::Response &response)) {
   this->addRoute(expresso::enums::method::GET, path, handler);
   return;
 }
 
-void expresso::core::Router::post(std::string path,
-                                  void (*handler)(Request &request,
-                                                  Response &response)) {
+void expresso::core::Router::post(
+    std::string path, void (*handler)(expresso::messages::Request &request,
+                                      expresso::messages::Response &response)) {
   this->addRoute(expresso::enums::method::POST, path, handler);
   return;
 }
 
-void expresso::core::Router::put(std::string path,
-                                 void (*handler)(Request &request,
-                                                 Response &response)) {
+void expresso::core::Router::put(
+    std::string path, void (*handler)(expresso::messages::Request &request,
+                                      expresso::messages::Response &response)) {
   this->addRoute(expresso::enums::method::PUT, path, handler);
   return;
 }
 
-void expresso::core::Router::patch(std::string path,
-                                   void (*handler)(Request &request,
-                                                   Response &response)) {
+void expresso::core::Router::patch(
+    std::string path, void (*handler)(expresso::messages::Request &request,
+                                      expresso::messages::Response &response)) {
   this->addRoute(expresso::enums::method::PATCH, path, handler);
   return;
 }
 
-void expresso::core::Router::del(std::string path,
-                                 void (*handler)(Request &request,
-                                                 Response &response)) {
+void expresso::core::Router::del(
+    std::string path, void (*handler)(expresso::messages::Request &request,
+                                      expresso::messages::Response &response)) {
   this->addRoute(expresso::enums::method::DELETE, path, handler);
   return;
 }
 
-void expresso::core::Router::options(std::string path,
-                                     void (*handler)(Request &request,
-                                                     Response &response)) {
+void expresso::core::Router::options(
+    std::string path, void (*handler)(expresso::messages::Request &request,
+                                      expresso::messages::Response &response)) {
   this->addRoute(expresso::enums::method::OPTIONS, path, handler);
   return;
 }
@@ -86,8 +86,9 @@ void expresso::core::Router::use(
   return;
 }
 
-void expresso::core::Router::handleRequest(Request &request,
-                                           Response &response) {
+void expresso::core::Router::handleRequest(
+    expresso::messages::Request &request,
+    expresso::messages::Response &response) {
   if (!this->handleMiddlewares(request, response)) {
     return;
   }
@@ -96,7 +97,8 @@ void expresso::core::Router::handleRequest(Request &request,
     request.tempPath = request.tempPath.substr(1, request.tempPath.size());
   }
 
-  std::map<std::string, void (*)(Request & request, Response & response)> &map =
+  std::map<std::string, void (*)(expresso::messages::Request &request,
+                                 expresso::messages::Response &response)> &map =
       this->fetchMapFromMethod(request.method);
   if (map.find(request.tempPath) != map.end()) {
     return map[request.tempPath](request, response);
@@ -138,8 +140,9 @@ void expresso::core::Router::handleRequest(Request &request,
   return;
 }
 
-bool expresso::core::Router::handleMiddlewares(Request &request,
-                                               Response &response) {
+bool expresso::core::Router::handleMiddlewares(
+    expresso::messages::Request &request,
+    expresso::messages::Response &response) {
   for (const std::unique_ptr<expresso::middleware::Middleware> &middleware :
        this->middlewares) {
     if (!middleware->use(request, response)) {
@@ -151,8 +154,9 @@ bool expresso::core::Router::handleMiddlewares(Request &request,
   return true;
 }
 
-std::map<std::string, void (*)(expresso::core::Request &request,
-                               expresso::core::Response &response)> &
+std::map<std::string,
+         void (*)(expresso::messages::Request &request,
+                  expresso::messages::Response &response)> &
 expresso::core::Router::fetchMapFromMethod(expresso::enums::method method) {
   switch (method) {
   case expresso::enums::method::GET:
@@ -170,26 +174,29 @@ expresso::core::Router::fetchMapFromMethod(expresso::enums::method method) {
     return this->optionsMap;
   default:
     logger::error("Invalid method: " + std::to_string(static_cast<int>(method)),
-                  "std::map<std::string, void (*)(expresso::core::Request "
-                  "&request, expresso::core::Response &response)> "
+                  "std::map<std::string, void (*)(expresso::messages::Request "
+                  "&request, expresso::messages::Response "
+                  "&response)> "
                   "&expresso::core::Router::fetchRouterFromMethod(expresso::"
                   "enums::method method)");
     return this->getMap;
   }
 }
 
-void expresso::core::Router::addRoute(expresso::enums::method method,
-                                      std::string path,
-                                      void (*handler)(Request &request,
-                                                      Response &response)) {
+void expresso::core::Router::addRoute(
+    expresso::enums::method method, std::string path,
+    void (*handler)(expresso::messages::Request &request,
+                    expresso::messages::Response &response)) {
   if (path[0] != '/') {
     logger::error("Router path must start with a '/', given: " + path,
                   "void expresso::core::Router::put(std::string path, void "
-                  "(*handler)(Request &request, Response &response))");
+                  "(*handler)(expresso::messages::Request &request, Response "
+                  "&response))");
     return;
   }
 
-  std::map<std::string, void (*)(Request & request, Response & response)> &map =
+  std::map<std::string, void (*)(expresso::messages::Request &request,
+                                 expresso::messages::Response &response)> &map =
       this->fetchMapFromMethod(method);
   map[path.substr(1, path.size())] = handler;
   return;

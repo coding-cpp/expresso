@@ -1,14 +1,14 @@
-#include <expresso/core/cookie.h>
+#include <expresso/messages/cookie.h>
 
-expresso::core::Cookie::Cookie()
+expresso::messages::Cookie::Cookie()
     : secure(false), httpOnly(false), partitioned(false), name(""), value(""),
       domain(""), path(""), expires(""), maxAge(""), sameSite("") {
   return;
 }
 
-expresso::core::Cookie::~Cookie() { return; }
+expresso::messages::Cookie::~Cookie() { return; }
 
-std::string expresso::core::Cookie::serialize() {
+std::string expresso::messages::Cookie::serialize() {
   std::string cookieString =
       this->name + "=" + brewtils::url::encode(this->value);
   if (!this->domain.empty()) {

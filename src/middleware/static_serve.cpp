@@ -9,8 +9,8 @@ expresso::middleware::StaticServe::StaticServe(std::string dirname,
 
 expresso::middleware::StaticServe::~StaticServe() { return; }
 
-bool expresso::middleware::StaticServe::use(expresso::core::Request &req,
-                                            expresso::core::Response &res) {
+bool expresso::middleware::StaticServe::use(expresso::messages::Request &req,
+                                            expresso::messages::Response &res) {
   if (req.method != expresso::enums::method::GET) {
     return true;
   }
@@ -69,7 +69,7 @@ expresso::middleware::StaticServe::getRange(const std::string &range) {
 }
 
 std::string
-expresso::middleware::StaticServe::getFolderHTML(expresso::core::Request &req,
+expresso::middleware::StaticServe::getFolderHTML(expresso::messages::Request &req,
                                                  const std::string &localPath) {
   std::ostringstream oss;
   const std::string urlPath = req.path;

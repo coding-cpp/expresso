@@ -12,8 +12,8 @@ expresso::middleware::Cacher::Cacher(uint32_t maxAge, bool isPrivate)
 
 expresso::middleware::Cacher::~Cacher() { return; }
 
-bool expresso::middleware::Cacher::use(expresso::core::Request &req,
-                                       expresso::core::Response &res) {
+bool expresso::middleware::Cacher::use(expresso::messages::Request &req,
+                                       expresso::messages::Response &res) {
   res.set("cache-control", this->serialized);
   return true;
 }

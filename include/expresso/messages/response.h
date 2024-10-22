@@ -9,13 +9,13 @@
 #include <json/object.h>
 #include <zippuccino/zipper.h>
 
-#include <expresso/core/cookie.h>
 #include <expresso/enums/method.h>
 #include <expresso/enums/status_code.h>
+#include <expresso/messages/cookie.h>
 
 namespace expresso {
 
-namespace core {
+namespace messages {
 
 class Response {
 private:
@@ -54,6 +54,6 @@ public:
   void print();
 };
 
-} // namespace core
+} // namespace messages
 
 } // namespace expresso
