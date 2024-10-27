@@ -104,10 +104,10 @@ void expresso::core::Server::handleConnection(int clientSocket) {
 
   charRequest.resize(totalBytesRead);
   std::string request(charRequest.data());
-  Response *res = new Response(clientSocket);
+  expresso::messages::Response *res = new expresso::messages::Response(clientSocket);
 
   try {
-    Request req = this->makeRequest(request);
+    expresso::messages::Request req = this->makeRequest(request);
     req.res = res;
     this->handleRequest(req, *res);
     delete res;
@@ -122,9 +122,9 @@ void expresso::core::Server::handleConnection(int clientSocket) {
   return;
 }
 
-expresso::core::Request
+expresso::messages::Request
 expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
-  Request req;
+  expresso::messages::Request req;
   std::string line;
   std::istringstream stream(request);
   std::getline(stream, line);

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <expresso/core/response.h>
+#include <expresso/messages/response.h>
 
 namespace expresso {
 
-namespace core {
+namespace messages {
 
 class Request {
 private:
@@ -31,11 +31,11 @@ public:
   std::map<std::string, std::string> params;
   std::map<std::string, std::string> queries;
 
-  expresso::core::Response *res;
+  expresso::messages::Response *res;
 
   void print();
 };
 
-} // namespace core
+} // namespace messages
 
 } // namespace expresso

@@ -11,6 +11,7 @@
 // that the code could be more readable ¯\_(ツ)_/¯
 using namespace expresso::core;
 using namespace expresso::enums;
+using namespace expresso::messages;
 using namespace expresso::middleware;
 
 // Global variable, just for fun :)

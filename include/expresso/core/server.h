@@ -25,7 +25,7 @@ private:
   void acceptConnections();
   void handleConnection(int clientSocket);
 
-  expresso::core::Request makeRequest(std::string &request) noexcept(false);
+  expresso::messages::Request makeRequest(std::string &request) noexcept(false);
   nexus::pool threadPool;
 
 public:

@@ -6,7 +6,7 @@
 
 namespace expresso {
 
-namespace core {
+namespace messages {
 
 class Cookie {
 public:
@@ -28,6 +28,6 @@ public:
   std::string serialize();
 };
 
-} // namespace core
+} // namespace messages
 
 } // namespace expresso

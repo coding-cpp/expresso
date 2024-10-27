@@ -8,14 +8,23 @@ namespace core {
 
 class Router {
 private:
-  std::map<std::string, void (*)(Request &request, Response &response)> getMap;
-  std::map<std::string, void (*)(Request &request, Response &response)> postMap;
-  std::map<std::string, void (*)(Request &request, Response &response)> putMap;
-  std::map<std::string, void (*)(Request &request, Response &response)>
+  std::map<std::string, void (*)(expresso::messages::Request &request,
+                                 expresso::messages::Response &response)>
+      getMap;
+  std::map<std::string, void (*)(expresso::messages::Request &request,
+                                 expresso::messages::Response &response)>
+      postMap;
+  std::map<std::string, void (*)(expresso::messages::Request &request,
+                                 expresso::messages::Response &response)>
+      putMap;
+  std::map<std::string, void (*)(expresso::messages::Request &request,
+                                 expresso::messages::Response &response)>
       patchMap;
-  std::map<std::string, void (*)(Request &request, Response &response)>
+  std::map<std::string, void (*)(expresso::messages::Request &request,
+                                 expresso::messages::Response &response)>
       deleteMap;
-  std::map<std::string, void (*)(Request &request, Response &response)>
+  std::map<std::string, void (*)(expresso::messages::Request &request,
+                                 expresso::messages::Response &response)>
       optionsMap;
   std::map<std::string, Router *> routerMap;
 
@@ -24,33 +33,43 @@ private:
 
   std::vector<std::unique_ptr<expresso::middleware::Middleware>> middlewares;
 
-  bool handleMiddlewares(Request &request, Response &response);
-  std::map<std::string, void (*)(Request &request, Response &response)> &
+  bool handleMiddlewares(expresso::messages::Request &request,
+                         expresso::messages::Response &response);
+  std::map<std::string, void (*)(expresso::messages::Request &request,
+                                 expresso::messages::Response &response)> &
   fetchMapFromMethod(expresso::enums::method method);
   void addRoute(expresso::enums::method method, std::string path,
-                void (*handler)(Request &request, Response &response));
+                void (*handler)(expresso::messages::Request &request,
+                                expresso::messages::Response &response));
 
 public:
   Router();
   ~Router();
 
   void get(std::string path,
-           void (*handler)(Request &request, Response &response));
+           void (*handler)(expresso::messages::Request &request,
+                           expresso::messages::Response &response));
   void post(std::string path,
-            void (*handler)(Request &request, Response &response));
+            void (*handler)(expresso::messages::Request &request,
+                            expresso::messages::Response &response));
   void put(std::string path,
-           void (*handler)(Request &request, Response &response));
+           void (*handler)(expresso::messages::Request &request,
+                           expresso::messages::Response &response));
   void patch(std::string path,
-             void (*handler)(Request &request, Response &response));
+             void (*handler)(expresso::messages::Request &request,
+                             expresso::messages::Response &response));
   void del(std::string path,
-           void (*handler)(Request &request, Response &response));
+           void (*handler)(expresso::messages::Request &request,
+                           expresso::messages::Response &response));
   void options(std::string path,
-               void (*handler)(Request &request, Response &response));
+               void (*handler)(expresso::messages::Request &request,
+                               expresso::messages::Response &response));
 
   void use(std::string path, Router *router);
   void use(std::unique_ptr<expresso::middleware::Middleware> middleware);
 
-  void handleRequest(Request &request, Response &response);
+  void handleRequest(expresso::messages::Request &request,
+                     expresso::messages::Response &response);
 };
 
 } // namespace core

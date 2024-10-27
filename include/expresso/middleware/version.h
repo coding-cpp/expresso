@@ -13,8 +13,8 @@ public:
   Version();
   ~Version();
 
-  bool use(expresso::core::Request &request,
-           expresso::core::Response &response) override;
+  bool use(expresso::messages::Request &request,
+           expresso::messages::Response &response) override;
 };
 
 } // namespace middleware
