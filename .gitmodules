@@ -13,3 +13,6 @@
 [submodule "lib/zippuccino"]
 	path = lib/zippuccino
 	url = git@github.com:coding-cpp/zippuccino.git
+[submodule "lib/mochios"]
+	path = lib/mochios
+	url = git@github.com:coding-cpp/mochios

@@ -37,8 +37,8 @@ private:
                          expresso::messages::Response &response);
   std::map<std::string, void (*)(expresso::messages::Request &request,
                                  expresso::messages::Response &response)> &
-  fetchMapFromMethod(expresso::enums::method method);
-  void addRoute(expresso::enums::method method, std::string path,
+  fetchMapFromMethod(mochios::enums::method method);
+  void addRoute(mochios::enums::method method, std::string path,
                 void (*handler)(expresso::messages::Request &request,
                                 expresso::messages::Response &response));
 

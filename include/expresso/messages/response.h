@@ -7,9 +7,10 @@
 #include <brewtils/string.h>
 #include <brewtils/sys.h>
 #include <json/object.h>
+#include <mochios/enums/method.h>
+#include <mochios/messages/response.h>
 #include <zippuccino/zipper.h>
 
-#include <expresso/enums/method.h>
 #include <expresso/enums/status_code.h>
 #include <expresso/messages/cookie.h>
 
@@ -17,16 +18,14 @@ namespace expresso {
 
 namespace messages {
 
-class Response {
+class Response : public mochios::messages::Response {
 private:
   bool hasEnded;
 
   int socket;
-  expresso::enums::STATUS_CODE statusCode;
 
   std::string message;
   std::vector<Cookie *> cookies;
-  std::map<std::string, std::string> headers;
 
   void sendToClient();
   void sendHeaders();
@@ -51,7 +50,7 @@ public:
   void sendInvalidRange();
 
   void end();
-  void print();
+  void print() override;
 };
 
 } // namespace messages
