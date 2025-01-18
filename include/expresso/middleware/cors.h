@@ -15,7 +15,7 @@ private:
 
   std::set<std::string> origins;
   std::set<std::string> headers;
-  std::set<expresso::enums::method> methods;
+  std::set<mochios::enums::method> methods;
 
 public:
   Cors();
@@ -23,7 +23,7 @@ public:
 
   void allowOrigin(std::string origin);
   void allowMethod(std::string method);
-  void allowMethod(expresso::enums::method method);
+  void allowMethod(mochios::enums::method method);
   void allowHeader(std::string header);
   void allowCredentials(bool credentials);
 

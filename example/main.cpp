@@ -57,6 +57,13 @@ void about(Request &req, Response &res) {
   response["submodules"][4]["location"] = "lib/zippuccino";
   response["submodules"][4]["name"] = "Zippuccino";
 
+  json::object mochios;
+  mochios["repository"] = "https://github.com/coding-cpp/mochios";
+  mochios["work"] = "HTTP request library for C++";
+  mochios["location"] = "lib/mochios";
+  mochios["name"] = "Mochios";
+  response["submodules"].push_back(mochios);
+
   res.status(STATUS_CODE::OK).json(response).end();
   return;
 }

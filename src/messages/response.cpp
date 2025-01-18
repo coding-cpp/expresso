@@ -2,9 +2,9 @@
 #include <expresso/messages/response.h>
 
 expresso::messages::Response::Response(int clientSocket)
-    : hasEnded(false), socket(clientSocket),
-      statusCode(expresso::enums::STATUS_CODE::OK), message("") {
+    : hasEnded(false), socket(clientSocket), message("") {
   this->set("connection", "close");
+  this->statusCode = expresso::enums::STATUS_CODE::OK;
 
   return;
 }

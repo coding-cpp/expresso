@@ -40,4 +40,6 @@ target_include_directories(server
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/brewtils/include>
     $<INSTALL_INTERFACE:lib/zippuccino/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/zippuccino/include>
+    $<INSTALL_INTERFACE:lib/mochios/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/mochios/include>
 )

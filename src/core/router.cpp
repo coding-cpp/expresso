@@ -25,42 +25,42 @@ expresso::core::Router::~Router() {
 void expresso::core::Router::get(
     std::string path, void (*handler)(expresso::messages::Request &request,
                                       expresso::messages::Response &response)) {
-  this->addRoute(expresso::enums::method::GET, path, handler);
+  this->addRoute(mochios::enums::method::GET, path, handler);
   return;
 }
 
 void expresso::core::Router::post(
     std::string path, void (*handler)(expresso::messages::Request &request,
                                       expresso::messages::Response &response)) {
-  this->addRoute(expresso::enums::method::POST, path, handler);
+  this->addRoute(mochios::enums::method::POST, path, handler);
   return;
 }
 
 void expresso::core::Router::put(
     std::string path, void (*handler)(expresso::messages::Request &request,
                                       expresso::messages::Response &response)) {
-  this->addRoute(expresso::enums::method::PUT, path, handler);
+  this->addRoute(mochios::enums::method::PUT, path, handler);
   return;
 }
 
 void expresso::core::Router::patch(
     std::string path, void (*handler)(expresso::messages::Request &request,
                                       expresso::messages::Response &response)) {
-  this->addRoute(expresso::enums::method::PATCH, path, handler);
+  this->addRoute(mochios::enums::method::PATCH, path, handler);
   return;
 }
 
 void expresso::core::Router::del(
     std::string path, void (*handler)(expresso::messages::Request &request,
                                       expresso::messages::Response &response)) {
-  this->addRoute(expresso::enums::method::DELETE, path, handler);
+  this->addRoute(mochios::enums::method::DELETE, path, handler);
   return;
 }
 
 void expresso::core::Router::options(
     std::string path, void (*handler)(expresso::messages::Request &request,
                                       expresso::messages::Response &response)) {
-  this->addRoute(expresso::enums::method::OPTIONS, path, handler);
+  this->addRoute(mochios::enums::method::OPTIONS, path, handler);
   return;
 }
 
@@ -157,20 +157,20 @@ bool expresso::core::Router::handleMiddlewares(
 std::map<std::string,
          void (*)(expresso::messages::Request &request,
                   expresso::messages::Response &response)> &
-expresso::core::Router::fetchMapFromMethod(expresso::enums::method method) {
+expresso::core::Router::fetchMapFromMethod(mochios::enums::method method) {
   switch (method) {
-  case expresso::enums::method::GET:
+  case mochios::enums::method::GET:
     return this->getMap;
-  case expresso::enums::method::POST:
+  case mochios::enums::method::POST:
     return this->postMap;
-  case expresso::enums::method::PUT:
+  case mochios::enums::method::PUT:
     return this->putMap;
-  case expresso::enums::method::PATCH:
+  case mochios::enums::method::PATCH:
 
     return this->patchMap;
-  case expresso::enums::method::DELETE:
+  case mochios::enums::method::DELETE:
     return this->deleteMap;
-  case expresso::enums::method::OPTIONS:
+  case mochios::enums::method::OPTIONS:
     return this->optionsMap;
   default:
     logger::error("Invalid method: " + std::to_string(static_cast<int>(method)),
@@ -184,7 +184,7 @@ expresso::core::Router::fetchMapFromMethod(expresso::enums::method method) {
 }
 
 void expresso::core::Router::addRoute(
-    expresso::enums::method method, std::string path,
+    mochios::enums::method method, std::string path,
     void (*handler)(expresso::messages::Request &request,
                     expresso::messages::Response &response)) {
   if (path[0] != '/') {

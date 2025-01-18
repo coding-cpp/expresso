@@ -104,7 +104,8 @@ void expresso::core::Server::handleConnection(int clientSocket) {
 
   charRequest.resize(totalBytesRead);
   std::string request(charRequest.data());
-  expresso::messages::Response *res = new expresso::messages::Response(clientSocket);
+  expresso::messages::Response *res =
+      new expresso::messages::Response(clientSocket);
 
   try {
     expresso::messages::Request req = this->makeRequest(request);
@@ -124,7 +125,6 @@ void expresso::core::Server::handleConnection(int clientSocket) {
 
 expresso::messages::Request
 expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
-  expresso::messages::Request req;
   std::string line;
   std::istringstream stream(request);
   std::getline(stream, line);
@@ -132,16 +132,16 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
   std::vector<std::string> parts = brewtils::string::split(line, " ");
   const std::string method = brewtils::string::upper(parts[0]);
   std::set<std::string>::const_iterator methodIter =
-      expresso::enums::methods.find(method);
-  if (methodIter == expresso::enums::methods.end()) {
+      mochios::enums::methods.find(method);
+  if (methodIter == mochios::enums::methods.end()) {
     logger::error("Unsupported HTTP method: " + method,
                   "expresso::core::Server::makeRequest(std::string &request) "
                   "noexcept(false)");
   }
 
-  req.method = static_cast<expresso::enums::method>(
-      std::distance(expresso::enums::methods.begin(), methodIter) - 1);
-  req.path = parts[1];
+  expresso::messages::Request req(parts[1]);
+  req.method = static_cast<mochios::enums::method>(
+      std::distance(mochios::enums::methods.begin(), methodIter) - 1);
   req.httpVersion = parts[2];
   if (req.httpVersion.substr(0, 5) != "HTTP/") {
     logger::error("Invalid HTTP version: " + req.httpVersion,
@@ -206,8 +206,8 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
     req.tempPath = req.tempPath.substr(0, req.tempPath.size() - 1);
   }
 
-  if (req.method == expresso::enums::method::GET ||
-      req.method == expresso::enums::method::HEAD) {
+  if (req.method == mochios::enums::method::GET ||
+      req.method == mochios::enums::method::HEAD) {
     return req;
   }
 

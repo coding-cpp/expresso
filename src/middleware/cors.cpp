@@ -7,9 +7,9 @@ expresso::middleware::Cors::Cors()
     this->headers.insert(_header);
   }
 
-  this->allowMethod(expresso::enums::method::GET);
-  this->allowMethod(expresso::enums::method::POST);
-  this->allowMethod(expresso::enums::method::OPTIONS);
+  this->allowMethod(mochios::enums::method::GET);
+  this->allowMethod(mochios::enums::method::POST);
+  this->allowMethod(mochios::enums::method::OPTIONS);
   return;
 }
 
@@ -28,20 +28,20 @@ void expresso::middleware::Cors::allowOrigin(std::string origin) {
 
 void expresso::middleware::Cors::allowMethod(std::string method) {
   std::set<std::string>::const_iterator methodIter =
-      expresso::enums::methods.find(method);
-  if (methodIter == expresso::enums::methods.end()) {
+      mochios::enums::methods.find(method);
+  if (methodIter == mochios::enums::methods.end()) {
     logger::error(
         "Invalid CORS method: " + method,
         "void expresso::middleware::Cors::allowMethod(std::string method)");
     return;
   }
 
-  this->methods.insert(static_cast<expresso::enums::method>(
-      std::distance(expresso::enums::methods.begin(), methodIter) - 1));
+  this->methods.insert(static_cast<mochios::enums::method>(
+      std::distance(mochios::enums::methods.begin(), methodIter) - 1));
   return;
 }
 
-void expresso::middleware::Cors::allowMethod(expresso::enums::method method) {
+void expresso::middleware::Cors::allowMethod(mochios::enums::method method) {
   this->methods.insert(method);
   return;
 }

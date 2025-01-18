@@ -1,7 +1,8 @@
 #include <expresso/messages/request.h>
 
-expresso::messages::Request::Request()
-    : xhr(false), res(nullptr), contentLength(0) {
+expresso::messages::Request::Request(const std::string &path)
+    : xhr(false), res(nullptr), contentLength(0),
+      mochios::messages::Request(path) {
   return;
 }
 
