@@ -104,6 +104,11 @@ void expresso::core::Server::handleConnection(int clientSocket) {
 
   charRequest.resize(totalBytesRead);
   std::string request(charRequest.data());
+  if (totalBytesRead == 0 || request.empty()) {
+    close(clientSocket);
+    return;
+  }
+
   expresso::messages::Response *res =
       new expresso::messages::Response(clientSocket);
 
