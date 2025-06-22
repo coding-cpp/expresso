@@ -28,17 +28,17 @@ jobs:
           fetch-depth: 0
           # Use SSH key authentication for submodules
           submodules: 'recursive'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_WORKFLOW_PAT }}
 
       - name: Set up Git identity
         run: |
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "actions@github.com"
+          git config --global user.name "jadit19"
+          git config --global user.email "jadit19@gmail.com"
       
       - name: Check for existing PR
         id: check_pr
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_WORKFLOW_PAT }}
         run: |
           PR_EXISTS=$(gh pr list --head ${{ env.PR_BRANCH }} --state open --json number | jq 'length')
           echo "pr_exists=$PR_EXISTS" >> $GITHUB_OUTPUT
@@ -100,7 +100,7 @@ jobs:
       - name: Create pull request
         if: steps.check_updates.outputs.has_changes == 'true' && steps.check_pr.outputs.pr_exists == '0'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_WORKFLOW_PAT }}
         run: |
           CHANGES=$(cat submodule_changes.txt)
           PR_BODY="
@@ -120,7 +120,7 @@ jobs:
       - name: Update existing pull request
         if: steps.check_updates.outputs.has_changes == 'true' && steps.check_pr.outputs.pr_exists != '0'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_WORKFLOW_PAT }}
         run: |
           CHANGES=$(cat submodule_changes.txt)
           PR_BODY="
