@@ -89,7 +89,7 @@ jobs:
           fi
           
           # Add and commit changes
-          git add .
+          git add lib
           git commit -m "chore: update git submodules to latest version"
 
       - name: Push changes
