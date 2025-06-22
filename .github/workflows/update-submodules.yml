@@ -92,6 +92,11 @@ jobs:
           git add lib
           git commit -m "chore: update git submodules to latest version"
 
+      - name: Configure Git to use PAT for push
+        if: steps.check_updates.outputs.has_changes == 'true'
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GH_WORKFLOW_PAT }}@github.com/${{ github.repository }}
+
       - name: Push changes
         if: steps.check_updates.outputs.has_changes == 'true'
         run: |
