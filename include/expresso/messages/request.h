@@ -28,7 +28,7 @@ public:
 
   expresso::messages::Response *res;
 
-  void print() override;
+  const void print() const override;
 };
 
 } // namespace messages

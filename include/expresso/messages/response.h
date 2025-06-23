@@ -50,7 +50,7 @@ public:
   void sendInvalidRange();
 
   void end();
-  void print() override;
+  const void print() const override;
 };
 
 } // namespace messages

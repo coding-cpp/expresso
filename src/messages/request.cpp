@@ -8,7 +8,7 @@ expresso::messages::Request::Request(const std::string &path)
 
 expresso::messages::Request::~Request() { return; }
 
-void expresso::messages::Request::print() {
+const void expresso::messages::Request::print() const {
   logger::info("Request: ");
 
   logger::info("  host: " + this->host);
