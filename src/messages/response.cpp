@@ -210,7 +210,7 @@ void expresso::messages::Response::end() {
   return;
 }
 
-void expresso::messages::Response::print() {
+const void expresso::messages::Response::print() const {
   logger::info("Response: ");
   logger::info("  statusCode: " + std::to_string(this->statusCode));
   logger::info("  headers: ");
