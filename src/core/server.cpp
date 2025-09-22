@@ -1,7 +1,7 @@
 #include <expresso/core/server.h>
 
 expresso::core::Server::Server(size_t maxConnections, size_t maxThreads)
-    : maxConnections(maxConnections), threadPool(maxThreads) {
+  : maxConnections(maxConnections), threadPool(maxThreads) {
   signal(SIGPIPE, SIG_IGN);
   brewtils::sys::exitIf(SIGINT);
   brewtils::sys::exitIf(SIGTERM);
@@ -36,7 +36,7 @@ void expresso::core::Server::listen(int port, std::function<void()> callback) {
   pid_t pid = getpid();
   logger::info("Server started with PID " + std::to_string(pid));
 
-  if (brewtils::sys::bind(this->socket, (struct sockaddr *)&this->address,
+  if (brewtils::sys::bind(this->socket, (struct sockaddr*)&this->address,
                           sizeof(this->address)) < 0) {
     logger::error("Unable to bind socket!",
                   "void expresso::core::Server::run(int port)");
@@ -55,16 +55,18 @@ void expresso::core::Server::listen(int port, std::function<void()> callback) {
   return;
 }
 
-mochios::enums::method expresso::core::Server::getMethodFromString(const std::string &method) noexcept(false) {
-    if (method == "GET") return mochios::enums::method::GET;
-    else if (method == "POST") return mochios::enums::method::POST;
-    else if (method == "PUT") return mochios::enums::method::PUT;
-    else if (method == "PATCH") return mochios::enums::method::PATCH;
-    else if (method == "DELETE") return mochios::enums::method::DELETE;
-    else if (method == "OPTIONS") return mochios::enums::method::OPTIONS;
-    else if (method == "HEAD") return mochios::enums::method::HEAD;
-    else logger::error("Unsupported HTTP method: " + method, 
-        "expresso::core::Server::getMethodFromString(std::string &method) noexcept(false)");
+mochios::enums::method expresso::core::Server::getMethodFromString(
+    const std::string& method) noexcept(false) {
+  if (method == "GET") return mochios::enums::method::GET;
+  else if (method == "POST") return mochios::enums::method::POST;
+  else if (method == "PUT") return mochios::enums::method::PUT;
+  else if (method == "PATCH") return mochios::enums::method::PATCH;
+  else if (method == "DELETE") return mochios::enums::method::DELETE;
+  else if (method == "OPTIONS") return mochios::enums::method::OPTIONS;
+  else if (method == "HEAD") return mochios::enums::method::HEAD;
+  else
+    logger::error("Unsupported HTTP method: " + method,
+                  "expresso::core::Server::getMethodFromString(std::string &method) noexcept(false)");
 }
 
 void expresso::core::Server::setupMiddlewares() {
@@ -76,7 +78,7 @@ void expresso::core::Server::acceptConnections() {
   while (true) {
     struct sockaddr_in clientAddress;
     socklen_t clientAddressLength = sizeof(clientAddress);
-    int clientSocket = accept(this->socket, (struct sockaddr *)&clientAddress,
+    int clientSocket = accept(this->socket, (struct sockaddr*)&clientAddress,
                               &clientAddressLength);
     if (clientSocket < 0) {
       logger::error("Client connection not accepted!",
@@ -121,7 +123,7 @@ void expresso::core::Server::handleConnection(int clientSocket) {
     return;
   }
 
-  expresso::messages::Response *res =
+  expresso::messages::Response* res =
       new expresso::messages::Response(clientSocket);
 
   try {
@@ -129,7 +131,7 @@ void expresso::core::Server::handleConnection(int clientSocket) {
     req.res = res;
     this->handleRequest(req, *res);
     delete res;
-  } catch (const std::exception &e) {
+  } catch (const std::exception& e) {
     logger::error(
         e.what(),
         "void expresso::core::Server::handleConnection(int clientSocket)");
@@ -141,7 +143,7 @@ void expresso::core::Server::handleConnection(int clientSocket) {
 }
 
 expresso::messages::Request
-expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
+expresso::core::Server::makeRequest(std::string& request) noexcept(false) {
   std::string line;
   std::istringstream stream(request);
   std::getline(stream, line);
@@ -232,7 +234,7 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
     std::string key;
     std::string value;
     req.body = json::object(std::map<std::string, json::object>());
-    for (const std::string &str : parts) {
+    for (const std::string& str : parts) {
       key = brewtils::url::decode(brewtils::string::split(str, "=")[0]);
       value = brewtils::url::decode(brewtils::string::split(str, "=")[1]);
       req.body[key] = json::object(value);
@@ -246,7 +248,7 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
     std::string key;
     std::string value;
     req.body = json::object(std::map<std::string, json::object>());
-    for (const std::string &str : parts) {
+    for (const std::string& str : parts) {
       data = brewtils::string::split(str,
                                      "Content-Disposition: form-data; name=\"");
       if (data.size() == 2) {

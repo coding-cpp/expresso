@@ -25,7 +25,7 @@ private:
   int socket;
 
   std::string message;
-  std::vector<Cookie *> cookies;
+  std::vector<Cookie*> cookies;
 
   void sendToClient();
   void sendHeaders();
@@ -35,17 +35,17 @@ public:
   ~Response();
 
   void set(std::string headerName, std::string headerValue);
-  void setCookie(Cookie *cookie);
+  void setCookie(Cookie* cookie);
   std::string get(std::string headerName);
 
-  Response &status(expresso::enums::STATUS_CODE code);
-  Response &send(std::string response);
-  Response &json(std::string response);
-  Response &json(json::object response);
+  Response& status(expresso::enums::STATUS_CODE code);
+  Response& send(std::string response);
+  Response& json(std::string response);
+  Response& json(json::object response);
 
-  void sendFile(const std::string &path, int64_t start = -1, int64_t end = -1);
-  void sendFiles(const std::set<std::string> &paths,
-                 const std::string &zipFileName = "download.zip");
+  void sendFile(const std::string& path, int64_t start = -1, int64_t end = -1);
+  void sendFiles(const std::set<std::string>& paths,
+                 const std::string& zipFileName = "download.zip");
   void sendNotFound();
   void sendInvalidRange();
 

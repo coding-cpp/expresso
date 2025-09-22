@@ -2,7 +2,7 @@
 #include <expresso/middleware/cors.h>
 
 expresso::middleware::Cors::Cors()
-    : credentials(false), allowAllOrigins(false), allowedHeaders("") {
+  : credentials(false), allowAllOrigins(false), allowedHeaders("") {
   for (std::string _header : expresso::constants::cors::headers) {
     this->headers.insert(_header);
   }
@@ -37,7 +37,7 @@ void expresso::middleware::Cors::allowMethod(std::string method) {
   }
 
   this->methods.insert(static_cast<mochios::enums::method>(
-      std::distance(mochios::enums::methods.begin(), methodIter) - 1));
+    std::distance(mochios::enums::methods.begin(), methodIter) - 1));
   return;
 }
 
@@ -57,8 +57,8 @@ void expresso::middleware::Cors::allowCredentials(bool credentials) {
   return;
 }
 
-bool expresso::middleware::Cors::use(expresso::messages::Request &req,
-                                     expresso::messages::Response &res) {
+bool expresso::middleware::Cors::use(expresso::messages::Request& req,
+                                     expresso::messages::Response& res) {
   if (this->allowAllOrigins) {
     return true;
   }
@@ -67,7 +67,7 @@ bool expresso::middleware::Cors::use(expresso::messages::Request &req,
   if (requestOrigin == "") {
     res.set("access-control-allow-origin", "null");
     res.status(expresso::enums::STATUS_CODE::FORBIDDEN)
-        .send(expresso::constants::cors::forbidden);
+       .send(expresso::constants::cors::forbidden);
     return false;
   }
 
@@ -83,7 +83,7 @@ bool expresso::middleware::Cors::use(expresso::messages::Request &req,
   if (!isOriginPresent) {
     res.set("access-control-allow-origin", "null");
     res.status(expresso::enums::STATUS_CODE::FORBIDDEN)
-        .send(expresso::constants::cors::forbidden);
+       .send(expresso::constants::cors::forbidden);
     return false;
   }
 

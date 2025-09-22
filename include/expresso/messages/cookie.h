@@ -9,7 +9,7 @@ namespace messages {
 class Cookie : public mochios::messages::Cookie {
 public:
   Cookie();
-  Cookie(const std::string &data);
+  Cookie(const std::string& data);
   ~Cookie();
 };
 

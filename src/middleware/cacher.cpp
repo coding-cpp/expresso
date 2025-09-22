@@ -1,7 +1,7 @@
 #include <expresso/middleware/cacher.h>
 
 expresso::middleware::Cacher::Cacher(uint32_t maxAge, bool isPrivate)
-    : isPrivate(isPrivate), maxAge(maxAge) {
+  : isPrivate(isPrivate), maxAge(maxAge) {
   this->serialized = "max-age=" + std::to_string(maxAge);
   if (isPrivate) {
     this->serialized += ", private";
@@ -12,8 +12,8 @@ expresso::middleware::Cacher::Cacher(uint32_t maxAge, bool isPrivate)
 
 expresso::middleware::Cacher::~Cacher() { return; }
 
-bool expresso::middleware::Cacher::use(expresso::messages::Request &req,
-                                       expresso::messages::Response &res) {
+bool expresso::middleware::Cacher::use(expresso::messages::Request& req,
+                                       expresso::messages::Response& res) {
   res.set("cache-control", this->serialized);
   return true;
 }

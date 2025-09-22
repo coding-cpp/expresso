@@ -1,6 +1,6 @@
 #include <expresso/helpers/response.h>
 
-std::string expresso::helpers::getAvailableFile(const std::string &path) {
+std::string expresso::helpers::getAvailableFile(const std::string& path) {
   if (brewtils::os::file::exists(path)) {
     return path;
   }
@@ -18,7 +18,7 @@ std::string expresso::helpers::getAvailableFile(const std::string &path) {
   return "";
 }
 
-const std::string expresso::helpers::generateETag(const std::string &data) {
+const std::string expresso::helpers::generateETag(const std::string& data) {
   const std::string availableFile = expresso::helpers::getAvailableFile(data);
   uint32_t crc = zippuccino::crc::compute(availableFile);
   std::ostringstream etag;
@@ -26,8 +26,8 @@ const std::string expresso::helpers::generateETag(const std::string &data) {
   return etag.str();
 }
 
-bool expresso::helpers::sendChunkedData(const int &socket,
-                                        const std::string &data) {
+bool expresso::helpers::sendChunkedData(const int& socket,
+                                        const std::string& data) {
   std::ostringstream dataSizeHex;
   dataSizeHex << std::hex << data.length();
   std::string dataSize = dataSizeHex.str() + "\r\n";
@@ -45,8 +45,8 @@ bool expresso::helpers::sendChunkedData(const int &socket,
   return true;
 }
 
-bool expresso::helpers::sendFileInChunks(const int &socket,
-                                         const std::string &path) {
+bool expresso::helpers::sendFileInChunks(const int& socket,
+                                         const std::string& path) {
   std::fstream file(path, std::ios::in | std::ios::binary);
   char buffer[expresso::helpers::CHUNK_SIZE];
 
@@ -64,9 +64,9 @@ bool expresso::helpers::sendFileInChunks(const int &socket,
         return false;
       }
     }
-  } catch (const std::exception &e) {
+  } catch (const std::exception& e) {
     logger::error(e.what(), "bool sendFileInChunks(const int &socket, const "
-                            "std::string &path)");
+                  "std::string &path)");
     return false;
   }
   if (file.is_open()) {

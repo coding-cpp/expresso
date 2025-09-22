@@ -13,13 +13,13 @@ namespace helpers {
 
 static const short CHUNK_SIZE = 1024;
 
-std::string getAvailableFile(const std::string &path);
+std::string getAvailableFile(const std::string& path);
 
-const std::string generateETag(const std::string &data);
+const std::string generateETag(const std::string& data);
 
-bool sendChunkedData(const int &socket, const std::string &data);
+bool sendChunkedData(const int& socket, const std::string& data);
 
-bool sendFileInChunks(const int &socket, const std::string &path);
+bool sendFileInChunks(const int& socket, const std::string& path);
 
 } // namespace helpers
 

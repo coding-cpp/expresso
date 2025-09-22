@@ -9,8 +9,9 @@ expresso::middleware::Version::Version() {
 
 expresso::middleware::Version::~Version() { return; }
 
-bool expresso::middleware::Version::use(expresso::messages::Request &request,
-                                        expresso::messages::Response &response) {
+bool expresso::middleware::Version::use(expresso::messages::Request& request,
+                                        expresso::messages::Response&
+                                        response) {
   response.set("expresso", this->version);
   response.set("x-powered-by", "Expresso/" + this->version);
   return true;

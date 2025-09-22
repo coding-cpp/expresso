@@ -1,3 +1,5 @@
+#pragma once
+
 #include <expresso/middleware/middleware.h>
 #include <expresso/version.h>
 
@@ -13,8 +15,8 @@ public:
   Version();
   ~Version();
 
-  bool use(expresso::messages::Request &request,
-           expresso::messages::Response &response) override;
+  bool use(expresso::messages::Request& request,
+           expresso::messages::Response& response) override;
 };
 
 } // namespace middleware

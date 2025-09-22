@@ -21,13 +21,14 @@ private:
   size_t maxConnections;
   struct sockaddr_in address;
 
-  mochios::enums::method getMethodFromString(const std::string& method) noexcept(false);
+  mochios::enums::method getMethodFromString(
+      const std::string& method) noexcept(false);
 
   void setupMiddlewares();
   void acceptConnections();
   void handleConnection(int clientSocket);
 
-  expresso::messages::Request makeRequest(std::string &request) noexcept(false);
+  expresso::messages::Request makeRequest(std::string& request) noexcept(false);
   nexus::pool threadPool;
 
 public:

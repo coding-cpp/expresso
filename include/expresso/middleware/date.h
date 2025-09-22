@@ -1,3 +1,5 @@
+#pragma once
+
 #include <brewtils/date.h>
 
 #include <expresso/middleware/middleware.h>
