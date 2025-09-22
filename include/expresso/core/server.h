@@ -26,7 +26,7 @@ private:
 
   void setupMiddlewares();
   void acceptConnections();
-  void handleConnection(int clientSocket);
+  void handleConnection(int clientSocket) noexcept(false);
 
   expresso::messages::Request makeRequest(std::string& request) noexcept(false);
   nexus::pool threadPool;
