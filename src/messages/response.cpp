@@ -2,7 +2,7 @@
 #include <expresso/messages/response.h>
 
 expresso::messages::Response::Response(int clientSocket)
-    : hasEnded(false), socket(clientSocket), message("") {
+  : hasEnded(false), socket(clientSocket), message("") {
   this->set("connection", "close");
   this->statusCode = expresso::enums::STATUS_CODE::OK;
 
@@ -14,7 +14,7 @@ expresso::messages::Response::~Response() {
     this->sendToClient();
   }
 
-  for (expresso::messages::Cookie *cookie : this->cookies) {
+  for (expresso::messages::Cookie* cookie : this->cookies) {
     delete cookie;
   }
 
@@ -28,7 +28,7 @@ void expresso::messages::Response::set(std::string headerName,
   return;
 }
 
-void expresso::messages::Response::setCookie(Cookie *cookie) {
+void expresso::messages::Response::setCookie(Cookie* cookie) {
   this->cookies.push_back(cookie);
 
   return;
@@ -43,14 +43,14 @@ std::string expresso::messages::Response::get(std::string headerName) {
   }
 }
 
-expresso::messages::Response &
+expresso::messages::Response&
 expresso::messages::Response::status(expresso::enums::STATUS_CODE code) {
   this->statusCode = code;
 
   return *this;
 }
 
-expresso::messages::Response &
+expresso::messages::Response&
 expresso::messages::Response::send(std::string response) {
   this->message = brewtils::string::replace(response, "\n", "\r\n");
   this->message += "\r\n";
@@ -59,7 +59,7 @@ expresso::messages::Response::send(std::string response) {
   return *this;
 }
 
-expresso::messages::Response &
+expresso::messages::Response&
 expresso::messages::Response::json(std::string response) {
   this->message = response;
   this->set("content-type", "application/json");
@@ -67,7 +67,7 @@ expresso::messages::Response::json(std::string response) {
   return *this;
 }
 
-expresso::messages::Response &
+expresso::messages::Response&
 expresso::messages::Response::json(json::object response) {
   this->message = response.dumps(0);
   this->set("content-type", "application/json");
@@ -75,7 +75,7 @@ expresso::messages::Response::json(json::object response) {
   return *this;
 }
 
-void expresso::messages::Response::sendFile(const std::string &path,
+void expresso::messages::Response::sendFile(const std::string& path,
                                             int64_t start, int64_t end) {
   std::string availableFile = expresso::helpers::getAvailableFile(path);
   if (availableFile.empty() || !brewtils::os::file::exists(availableFile)) {
@@ -109,8 +109,8 @@ void expresso::messages::Response::sendFile(const std::string &path,
     this->status(expresso::enums::STATUS_CODE::PARTIAL_CONTENT);
     this->set("content-length", std::to_string(end - start + 1));
     this->set("content-range", "bytes " + std::to_string(start) + "-" +
-                                   std::to_string(end) + "/" +
-                                   std::to_string(fileSize));
+                               std::to_string(end) + "/" +
+                               std::to_string(fileSize));
   }
   this->sendHeaders();
 
@@ -130,9 +130,9 @@ void expresso::messages::Response::sendFile(const std::string &path,
         this->hasEnded = true;
       }
     }
-  } catch (const std::exception &e) {
+  } catch (const std::exception& e) {
     logger::error(e.what(), "void expresso::messages::Response::sendFile(const "
-                            "std::string &path, int64_t start, int64_t end)");
+                  "std::string &path, int64_t start, int64_t end)");
   }
   if (file.is_open()) {
     file.close();
@@ -141,8 +141,8 @@ void expresso::messages::Response::sendFile(const std::string &path,
   return;
 }
 
-void expresso::messages::Response::sendFiles(const std::set<std::string> &paths,
-                                             const std::string &zipFileName) {
+void expresso::messages::Response::sendFiles(const std::set<std::string>& paths,
+                                             const std::string& zipFileName) {
   this->headers.erase("content-length");
   this->set("transfer-encoding", "chunked");
   this->set("content-type", brewtils::os::file::getMimeType(zipFileName));
@@ -151,7 +151,7 @@ void expresso::messages::Response::sendFiles(const std::set<std::string> &paths,
   this->sendHeaders();
 
   zippuccino::Zipper zipper;
-  for (const std::string &path : paths) {
+  for (const std::string& path : paths) {
     zipper.add(path);
   }
   zipper.zip();
@@ -177,7 +177,7 @@ void expresso::messages::Response::sendFiles(const std::set<std::string> &paths,
     if (brewtils::sys::send(this->socket, "0\r\n\r\n", 5, 0) == -1) {
       this->hasEnded = true;
     }
-  } catch (const std::exception &e) {
+  } catch (const std::exception& e) {
     logger::error(e.what(),
                   "void expresso::messages::Response::sendFiles(const "
                   "std::set<std::string> &paths, const std::string "
@@ -214,7 +214,7 @@ const void expresso::messages::Response::print() const {
   logger::info("Response: ");
   logger::info("  statusCode: " + std::to_string(this->statusCode));
   logger::info("  headers: ");
-  for (const std::pair<const std::string, std::string> &header :
+  for (const std::pair<const std::string, std::string>& header :
        this->headers) {
     logger::info("    " + header.first + ": " + header.second);
   }
@@ -241,7 +241,7 @@ void expresso::messages::Response::sendHeaders() {
   for (std::pair<const std::string, std::string> it : this->headers) {
     header += it.first + ": " + it.second + "\r\n";
   }
-  for (Cookie *cookie : this->cookies) {
+  for (Cookie* cookie : this->cookies) {
     header += "set-cookie: " + cookie->serialize() + "\r\n";
   }
   header += "\r\n";

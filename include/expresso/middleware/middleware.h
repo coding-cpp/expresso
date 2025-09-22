@@ -12,8 +12,8 @@ public:
   Middleware();
   virtual ~Middleware() = default;
 
-  virtual bool use(expresso::messages::Request &req,
-                   expresso::messages::Response &res) = 0;
+  virtual bool use(expresso::messages::Request& req,
+                   expresso::messages::Response& res) = 0;
 };
 
 } // namespace middleware

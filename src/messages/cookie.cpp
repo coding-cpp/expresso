@@ -2,8 +2,8 @@
 
 expresso::messages::Cookie::Cookie() : mochios::messages::Cookie() { return; }
 
-expresso::messages::Cookie::Cookie(const std::string &data)
-    : mochios::messages::Cookie(data) {
+expresso::messages::Cookie::Cookie(const std::string& data)
+  : mochios::messages::Cookie(data) {
   return;
 }
 

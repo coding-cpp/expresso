@@ -7,7 +7,7 @@ expresso::core::Router::~Router() {
     delete this->paramRouter;
   }
 
-  for (const std::pair<std::string, Router *> &router : this->routerMap) {
+  for (const std::pair<std::string, Router*>& router : this->routerMap) {
     delete router.second;
   }
 
@@ -23,48 +23,48 @@ expresso::core::Router::~Router() {
 }
 
 void expresso::core::Router::get(
-    std::string path, void (*handler)(expresso::messages::Request &request,
-                                      expresso::messages::Response &response)) {
+    std::string path, void (*handler)(expresso::messages::Request& request,
+                                      expresso::messages::Response& response)) {
   this->addRoute(mochios::enums::method::GET, path, handler);
   return;
 }
 
 void expresso::core::Router::post(
-    std::string path, void (*handler)(expresso::messages::Request &request,
-                                      expresso::messages::Response &response)) {
+    std::string path, void (*handler)(expresso::messages::Request& request,
+                                      expresso::messages::Response& response)) {
   this->addRoute(mochios::enums::method::POST, path, handler);
   return;
 }
 
 void expresso::core::Router::put(
-    std::string path, void (*handler)(expresso::messages::Request &request,
-                                      expresso::messages::Response &response)) {
+    std::string path, void (*handler)(expresso::messages::Request& request,
+                                      expresso::messages::Response& response)) {
   this->addRoute(mochios::enums::method::PUT, path, handler);
   return;
 }
 
 void expresso::core::Router::patch(
-    std::string path, void (*handler)(expresso::messages::Request &request,
-                                      expresso::messages::Response &response)) {
+    std::string path, void (*handler)(expresso::messages::Request& request,
+                                      expresso::messages::Response& response)) {
   this->addRoute(mochios::enums::method::PATCH, path, handler);
   return;
 }
 
 void expresso::core::Router::del(
-    std::string path, void (*handler)(expresso::messages::Request &request,
-                                      expresso::messages::Response &response)) {
+    std::string path, void (*handler)(expresso::messages::Request& request,
+                                      expresso::messages::Response& response)) {
   this->addRoute(mochios::enums::method::DELETE, path, handler);
   return;
 }
 
 void expresso::core::Router::options(
-    std::string path, void (*handler)(expresso::messages::Request &request,
-                                      expresso::messages::Response &response)) {
+    std::string path, void (*handler)(expresso::messages::Request& request,
+                                      expresso::messages::Response& response)) {
   this->addRoute(mochios::enums::method::OPTIONS, path, handler);
   return;
 }
 
-void expresso::core::Router::use(std::string path, Router *router) {
+void expresso::core::Router::use(std::string path, Router* router) {
   if (path[0] != '/') {
     logger::error(
         "Router path must start with a '/', given: " + path,
@@ -87,8 +87,8 @@ void expresso::core::Router::use(
 }
 
 void expresso::core::Router::handleRequest(
-    expresso::messages::Request &request,
-    expresso::messages::Response &response) {
+    expresso::messages::Request& request,
+    expresso::messages::Response& response) {
   if (!this->handleMiddlewares(request, response)) {
     return;
   }
@@ -97,19 +97,19 @@ void expresso::core::Router::handleRequest(
     request.tempPath = request.tempPath.substr(1, request.tempPath.size());
   }
 
-  std::map<std::string, void (*)(expresso::messages::Request &request,
-                                 expresso::messages::Response &response)> &map =
+  std::map<std::string, void (*)(expresso::messages::Request& request,
+                                 expresso::messages::Response& response)>& map =
       this->fetchMapFromMethod(request.method);
   if (map.find(request.tempPath) != map.end()) {
     return map[request.tempPath](request, response);
   }
 
-  for (const std::pair<std::string, Router *> &x : this->routerMap) {
+  for (const std::pair<std::string, Router*>& x : this->routerMap) {
     if (request.tempPath.size() < x.first.size())
       continue;
 
     if ((request.tempPath + "/")
-            .compare(0, (x.first + "/").size(), (x.first + "/")) == 0) {
+        .compare(0, (x.first + "/").size(), (x.first + "/")) == 0) {
       if (request.tempPath == x.first) {
         request.tempPath = "";
       } else {
@@ -141,9 +141,9 @@ void expresso::core::Router::handleRequest(
 }
 
 bool expresso::core::Router::handleMiddlewares(
-    expresso::messages::Request &request,
-    expresso::messages::Response &response) {
-  for (const std::unique_ptr<expresso::middleware::Middleware> &middleware :
+    expresso::messages::Request& request,
+    expresso::messages::Response& response) {
+  for (const std::unique_ptr<expresso::middleware::Middleware>& middleware :
        this->middlewares) {
     if (!middleware->use(request, response)) {
       response.end();
@@ -155,38 +155,39 @@ bool expresso::core::Router::handleMiddlewares(
 }
 
 std::map<std::string,
-         void (*)(expresso::messages::Request &request,
-                  expresso::messages::Response &response)> &
+         void (*)(expresso::messages::Request& request,
+                  expresso::messages::Response& response)>&
 expresso::core::Router::fetchMapFromMethod(mochios::enums::method method) {
   switch (method) {
-  case mochios::enums::method::GET:
-    return this->getMap;
-  case mochios::enums::method::POST:
-    return this->postMap;
-  case mochios::enums::method::PUT:
-    return this->putMap;
-  case mochios::enums::method::PATCH:
+    case mochios::enums::method::GET:
+      return this->getMap;
+    case mochios::enums::method::POST:
+      return this->postMap;
+    case mochios::enums::method::PUT:
+      return this->putMap;
+    case mochios::enums::method::PATCH:
 
-    return this->patchMap;
-  case mochios::enums::method::DELETE:
-    return this->deleteMap;
-  case mochios::enums::method::OPTIONS:
-    return this->optionsMap;
-  default:
-    logger::error("Invalid method: " + std::to_string(static_cast<int>(method)),
-                  "std::map<std::string, void (*)(expresso::messages::Request "
-                  "&request, expresso::messages::Response "
-                  "&response)> "
-                  "&expresso::core::Router::fetchRouterFromMethod(expresso::"
-                  "enums::method method)");
-    return this->getMap;
+      return this->patchMap;
+    case mochios::enums::method::DELETE:
+      return this->deleteMap;
+    case mochios::enums::method::OPTIONS:
+      return this->optionsMap;
+    default:
+      logger::error(
+          "Invalid method: " + std::to_string(static_cast<int>(method)),
+          "std::map<std::string, void (*)(expresso::messages::Request "
+          "&request, expresso::messages::Response "
+          "&response)> "
+          "&expresso::core::Router::fetchRouterFromMethod(expresso::"
+          "enums::method method)");
+      return this->getMap;
   }
 }
 
 void expresso::core::Router::addRoute(
     mochios::enums::method method, std::string path,
-    void (*handler)(expresso::messages::Request &request,
-                    expresso::messages::Response &response)) {
+    void (*handler)(expresso::messages::Request& request,
+                    expresso::messages::Response& response)) {
   if (path[0] != '/') {
     logger::error("Router path must start with a '/', given: " + path,
                   "void expresso::core::Router::put(std::string path, void "
@@ -195,8 +196,8 @@ void expresso::core::Router::addRoute(
     return;
   }
 
-  std::map<std::string, void (*)(expresso::messages::Request &request,
-                                 expresso::messages::Response &response)> &map =
+  std::map<std::string, void (*)(expresso::messages::Request& request,
+                                 expresso::messages::Response& response)>& map =
       this->fetchMapFromMethod(method);
   map[path.substr(1, path.size())] = handler;
   return;

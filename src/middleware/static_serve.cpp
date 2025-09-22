@@ -3,14 +3,14 @@
 
 expresso::middleware::StaticServe::StaticServe(std::string dirname,
                                                bool showListing)
-    : dirname(std::move(dirname)), showListing(showListing) {
+  : dirname(std::move(dirname)), showListing(showListing) {
   return;
 }
 
 expresso::middleware::StaticServe::~StaticServe() { return; }
 
-bool expresso::middleware::StaticServe::use(expresso::messages::Request &req,
-                                            expresso::messages::Response &res) {
+bool expresso::middleware::StaticServe::use(expresso::messages::Request& req,
+                                            expresso::messages::Response& res) {
   if (req.method != mochios::enums::method::GET) {
     return true;
   }
@@ -25,8 +25,8 @@ bool expresso::middleware::StaticServe::use(expresso::messages::Request &req,
   }
 
   if (this->showListing && brewtils::os::dir::exists(brewtils::os::joinPath(
-                               this->dirname, filePath))) {
-    const std::string &tempPath =
+          this->dirname, filePath))) {
+    const std::string& tempPath =
         brewtils::os::joinPath(this->dirname, filePath);
     if (!brewtils::os::dir::exists(tempPath)) {
       return true;
@@ -42,7 +42,7 @@ bool expresso::middleware::StaticServe::use(expresso::messages::Request &req,
 }
 
 std::pair<int64_t, int64_t>
-expresso::middleware::StaticServe::getRange(const std::string &range) {
+expresso::middleware::StaticServe::getRange(const std::string& range) {
   int64_t start = -1;
   int64_t end = -1;
   const std::vector<std::string> parts =
@@ -69,23 +69,24 @@ expresso::middleware::StaticServe::getRange(const std::string &range) {
 }
 
 std::string
-expresso::middleware::StaticServe::getFolderHTML(expresso::messages::Request &req,
-                                                 const std::string &localPath) {
+expresso::middleware::StaticServe::getFolderHTML(
+    expresso::messages::Request& req,
+    const std::string& localPath) {
   std::ostringstream oss;
   const std::string urlPath = req.path;
 
   oss << "<html><head><title>Index of /" + urlPath +
-             "</title></head><body><h1>Index of /" +
-             brewtils::url::decode(urlPath) + "</h1><ul>";
+      "</title></head><body><h1>Index of /" +
+      brewtils::url::decode(urlPath) + "</h1><ul>";
   if (!req.tempPath.empty()) {
     oss << "<li><a href=\"/" + urlPath + "/..\">..</a></li>";
   }
 
   std::vector<std::string> files = brewtils::os::dir::list(localPath);
-  for (const std::string &file : files) {
+  for (const std::string& file : files) {
     std::string fileName = brewtils::string::split(file, "/").back();
     oss << "<li><a href=\"/" + brewtils::os::joinPath(urlPath, fileName) +
-               "\">" + fileName;
+        "\">" + fileName;
     if (brewtils::os::dir::exists(file)) {
       oss << "/";
     }
