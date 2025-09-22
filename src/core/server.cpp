@@ -55,6 +55,18 @@ void expresso::core::Server::listen(int port, std::function<void()> callback) {
   return;
 }
 
+mochios::enums::method expresso::core::Server::getMethodFromString(const std::string &method) noexcept(false) {
+    if (method == "GET") return mochios::enums::method::GET;
+    else if (method == "POST") return mochios::enums::method::POST;
+    else if (method == "PUT") return mochios::enums::method::PUT;
+    else if (method == "PATCH") return mochios::enums::method::PATCH;
+    else if (method == "DELETE") return mochios::enums::method::DELETE;
+    else if (method == "OPTIONS") return mochios::enums::method::OPTIONS;
+    else if (method == "HEAD") return mochios::enums::method::HEAD;
+    else logger::error("Unsupported HTTP method: " + method, 
+        "expresso::core::Server::getMethodFromString(std::string &method) noexcept(false)");
+}
+
 void expresso::core::Server::setupMiddlewares() {
   this->use(std::make_unique<expresso::middleware::Version>());
   this->use(std::make_unique<expresso::middleware::Date>());
@@ -136,17 +148,8 @@ expresso::core::Server::makeRequest(std::string &request) noexcept(false) {
 
   std::vector<std::string> parts = brewtils::string::split(line, " ");
   const std::string method = brewtils::string::upper(parts[0]);
-  std::set<std::string>::const_iterator methodIter =
-      mochios::enums::methods.find(method);
-  if (methodIter == mochios::enums::methods.end()) {
-    logger::error("Unsupported HTTP method: " + method,
-                  "expresso::core::Server::makeRequest(std::string &request) "
-                  "noexcept(false)");
-  }
-
   expresso::messages::Request req(parts[1]);
-  req.method = static_cast<mochios::enums::method>(
-      std::distance(mochios::enums::methods.begin(), methodIter) - 1);
+  req.method = this->getMethodFromString(method);
   req.httpVersion = parts[2];
   if (req.httpVersion.substr(0, 5) != "HTTP/") {
     logger::error("Invalid HTTP version: " + req.httpVersion,

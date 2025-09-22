@@ -43,3 +43,5 @@ target_include_directories(server
     $<INSTALL_INTERFACE:lib/mochios/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/mochios/include>
 )
+
+target_compile_options(server PRIVATE -Wno-return-type)

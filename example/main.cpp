@@ -119,6 +119,11 @@ int main(int argc, char **argv) {
     res.sendFiles(files, "assets.zip");
   });
 
+  app.post("/print", [](Request &req, Response &res) {
+    logger::info(req.body.dumps(2));
+    res.status(STATUS_CODE::OK).send("Successfully printed!");
+  });
+
   // Starting the server
   app.listen(port, []() {
     logger::success("Server is running on port " + std::to_string(port));

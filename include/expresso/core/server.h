@@ -21,6 +21,8 @@ private:
   size_t maxConnections;
   struct sockaddr_in address;
 
+  mochios::enums::method getMethodFromString(const std::string& method) noexcept(false);
+
   void setupMiddlewares();
   void acceptConnections();
   void handleConnection(int clientSocket);
