@@ -93,31 +93,49 @@ void expresso::core::Server::acceptConnections() {
   return;
 }
 
-void expresso::core::Server::handleConnection(int clientSocket) {
+void expresso::core::Server::handleConnection(
+    int clientSocket) noexcept(false) {
   constexpr size_t bufferSize = 4096;
   std::vector<char> charRequest;
   charRequest.resize(bufferSize, '\0');
-
   size_t totalBytesRead = 0;
-  size_t bytesRead;
 
-  do {
-    bytesRead = brewtils::sys::recv(
-        clientSocket, charRequest.data() + totalBytesRead, bufferSize - 1, 0);
-    if (bytesRead == static_cast<ssize_t>(-1)) {
-      logger::error(
-          "Failed to receive data from client!",
-          "void expresso::core::Server::handleConnection(int clientSocket)");
+  while (true) {
+    // sanity check
+    if (charRequest.size() - totalBytesRead < bufferSize) {
+      charRequest.resize(charRequest.size() + bufferSize, '\0');
+    }
+
+    ssize_t bytesRead = brewtils::sys::recv(
+        clientSocket,
+        charRequest.data() + totalBytesRead,
+        bufferSize,
+        0);
+
+    // miraculous happening
+    if (bytesRead < 0) {
       close(clientSocket);
+      logger::error("Failed to receive data from client!",
+                    "void expresso::core::Server::handleConnection(int clientSocket) noexcept(false)");
       return;
     }
 
+    // if client closed connection
+    if (bytesRead == 0) {
+      break;
+    }
+
     totalBytesRead += bytesRead;
-    charRequest.resize(totalBytesRead + bufferSize, '\0');
-  } while (bytesRead > 0 && charRequest[totalBytesRead - 1] != '\n');
+
+    // if end of headers reached
+    if (std::string(charRequest.data(), totalBytesRead).find("\r\n\r\n") !=
+        std::string::npos) {
+      break;
+    }
+  }
 
   charRequest.resize(totalBytesRead);
-  std::string request(charRequest.data());
+  std::string request(charRequest.data(), totalBytesRead);
   if (totalBytesRead == 0 || request.empty()) {
     close(clientSocket);
     return;
@@ -255,7 +273,7 @@ expresso::core::Server::makeRequest(std::string& request) noexcept(false) {
         key = brewtils::string::split(data[1], "\r\n")[0];
         key = key.substr(0, key.size() - 1);
         value = brewtils::string::split(data[1], "\r\n\r\n")[1];
-        value = value.substr(0, value.size() - 3);
+        value = brewtils::string::trim(value.substr(0, value.size() - 3));
         req.body[key] = json::object(value);
       }
     }

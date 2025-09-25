@@ -121,7 +121,11 @@ int main(int argc, char **argv) {
 
   app.post("/print", [](Request &req, Response &res) {
     logger::info(req.body.dumps(2));
-    res.status(STATUS_CODE::OK).send("Successfully printed!");
+    json::object responseJson;
+    responseJson["data"] = req.body;
+    responseJson["timestamp"] = brewtils::date::getCurrentUTC();
+    responseJson["printed"] = true;
+    res.status(STATUS_CODE::OK).json(responseJson);
   });
 
   // Starting the server
