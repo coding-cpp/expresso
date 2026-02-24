@@ -2,10 +2,14 @@
 
 A C++ backend framework designed for web applications. A few features include:
 
-- Simple and easy to use API ✨
-- Built-in HTTP server 🌐
-- Out of the box multi-threading support 🧵
-- Expandable custom middleware 🧩
+- 🚀 **Simple & intuitive API** – Get up and running in minutes
+- 🌐 **Built-in HTTP server** – No external setup required
+- 🧵 **Out-of-the-box multi-threading** – High performance by default
+- 🧩 **Extensible custom middleware** – Easily plug in your own logic
+- 🔄 **Complete JSON support** – Full parsing & stringification capabilities
+- 📦 **Native file downloads** – Serve individual files or zipped bundles seamlessly
+- 🎬 **Audio / Video parsing** – With smooth scrolling support
+- 🔗 **Seamless API integrations** – Effortless (axios-like) external API calling
 
 It is pretty straightforward and if you are familiar with the Express.js framework, you will feel right at home, as the API is very similar, which is my goal? 🎯
 
