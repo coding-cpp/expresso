@@ -1,0 +1,88 @@
+{
+  "port": 3210,
+  "load": {
+    "threads": 4,
+    "connections": 64,
+    "duration_seconds": 8,
+    "warmup_seconds": 2,
+    "trials": 3,
+    "connection_mode": "close",
+    "time_wait_threshold": 2000,
+    "time_wait_max_wait_seconds": 60,
+    "platform_overrides": {
+      "darwin": {
+        "duration_seconds": 2,
+        "warmup_seconds": 1,
+        "trials": 5
+      }
+    }
+  },
+  "frameworks": [
+    {
+      "name": "expresso",
+      "language": "C++",
+      "probe": null,
+      "cwd": "build",
+      "build": ["cmake", "--build", ".", "-j"],
+      "start": ["./server"]
+    },
+    {
+      "name": "node-http",
+      "language": "JavaScript (node)",
+      "probe": "node",
+      "cwd": "benchmark/servers/node-http",
+      "start": ["node", "server.js"]
+    },
+    {
+      "name": "express",
+      "language": "JavaScript (node)",
+      "probe": "node",
+      "cwd": "benchmark/servers/express",
+      "install": ["npm", "ci"],
+      "installed_marker": "node_modules",
+      "start": ["node", "server.js"]
+    },
+    {
+      "name": "node-http-bun",
+      "language": "JavaScript (bun)",
+      "probe": "bun",
+      "cwd": "benchmark/servers/node-http",
+      "start": ["bun", "server.js"]
+    },
+    {
+      "name": "node-http-deno",
+      "language": "JavaScript (deno)",
+      "probe": "deno",
+      "cwd": "benchmark/servers/node-http",
+      "start": ["deno", "run", "--allow-net", "--allow-read", "--allow-env", "server.js"]
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "health",
+      "description": "Tiny plain-text response; measures per-request framework overhead",
+      "method": "GET",
+      "path": "/health"
+    },
+    {
+      "name": "about-json",
+      "description": "~1 KB JSON serialization",
+      "method": "GET",
+      "path": "/about"
+    },
+    {
+      "name": "static-png",
+      "description": "1.4 MB static file; measures the file-serving path",
+      "method": "GET",
+      "path": "/coffee.png"
+    },
+    {
+      "name": "post-print",
+      "description": "JSON body parse + echo",
+      "method": "POST",
+      "path": "/print",
+      "body": "{\"benchmark\": true, \"suite\": \"expresso\"}",
+      "content_type": "application/json"
+    }
+  ]
+}

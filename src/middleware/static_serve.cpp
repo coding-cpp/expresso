@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include <expresso/helpers/response.h>
 #include <expresso/middleware/static_serve.h>
 

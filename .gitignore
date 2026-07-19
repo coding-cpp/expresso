@@ -36,6 +36,13 @@
 .idea
 build
 cmake-build-debug
+.cache
+
+# Benchmarking
+node_modules
+benchmark/results
+__pycache__
+**/package-lock.json
 
 # Secrets
 *.env

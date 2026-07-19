@@ -1,10 +1,8 @@
 #pragma once
 
-#include <sstream>
 #include <string>
 
 #include <brewtils/os.h>
-#include <brewtils/sys.h>
 #include <zippuccino/crc.h>
 
 namespace expresso {
@@ -17,9 +15,9 @@ std::string getAvailableFile(const std::string& path);
 
 const std::string generateETag(const std::string& data);
 
-bool sendChunkedData(const int& socket, const std::string& data);
+std::string makeChunkedData(const std::string& data);
 
-bool sendFileInChunks(const int& socket, const std::string& path);
+std::string readFileAsChunked(const std::string& path);
 
 } // namespace helpers
 
