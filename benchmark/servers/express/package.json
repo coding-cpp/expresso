@@ -1,0 +1,14 @@
+{
+  "name": "@expresso-bench/express",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Express.js mirror of example/main.cpp for benchmarking",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cookie-parser": "1.4.7",
+    "express": "5.1.0"
+  }
+}

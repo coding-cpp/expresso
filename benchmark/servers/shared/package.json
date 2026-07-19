@@ -1,0 +1,7 @@
+{
+  "name": "@expresso-bench/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Framework-agnostic fixtures shared by all benchmark servers so responses stay byte-comparable"
+}

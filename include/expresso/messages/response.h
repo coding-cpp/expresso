@@ -1,11 +1,11 @@
 #pragma once
 
-#include <netinet/in.h>
-#include <sstream>
+#include <set>
+#include <string>
+#include <vector>
 
 #include <brewtils/os.h>
 #include <brewtils/string.h>
-#include <brewtils/sys.h>
 #include <json/object.h>
 #include <mochios/enums/method.h>
 #include <mochios/messages/response.h>
@@ -13,25 +13,28 @@
 
 #include <expresso/enums/status_code.h>
 #include <expresso/messages/cookie.h>
+#include <expresso/messages/file_region.h>
 
 namespace expresso {
 
 namespace messages {
 
+// Responses are serialized into an in-memory payload (plus an optional file
+// region for zero-copy transfers) which the server's event loop writes to
+// the client socket. A Response never touches the socket itself.
 class Response : public mochios::messages::Response {
 private:
   bool hasEnded;
 
-  int socket;
-
   std::string message;
+  std::string data;
+  FileRegion file;
   std::vector<Cookie*> cookies;
 
-  void sendToClient();
-  void sendHeaders();
+  void serializeHeaders();
 
 public:
-  Response(int clientSocket);
+  Response();
   ~Response();
 
   void set(std::string headerName, std::string headerValue);
@@ -50,6 +53,8 @@ public:
   void sendInvalidRange();
 
   void end();
+  std::string takeData();
+  FileRegion takeFileRegion();
   const void print() const override;
 };
 

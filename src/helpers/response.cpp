@@ -1,3 +1,9 @@
+#include <fstream>
+#include <iomanip>
+#include <sstream>
+
+#include <logger/log.h>
+
 #include <expresso/helpers/response.h>
 
 std::string expresso::helpers::getAvailableFile(const std::string& path) {
@@ -26,52 +32,36 @@ const std::string expresso::helpers::generateETag(const std::string& data) {
   return etag.str();
 }
 
-bool expresso::helpers::sendChunkedData(const int& socket,
-                                        const std::string& data) {
-  std::ostringstream dataSizeHex;
-  dataSizeHex << std::hex << data.length();
-  std::string dataSize = dataSizeHex.str() + "\r\n";
-
-  if (brewtils::sys::send(socket, dataSize.c_str(), dataSize.length(), 0) ==
-      -1) {
-    return false;
-  }
-  if (brewtils::sys::send(socket, data.c_str(), data.length(), 0) == -1) {
-    return false;
-  }
-  if (brewtils::sys::send(socket, "\r\n", 2, 0) == -1) {
-    return false;
-  }
-  return true;
+std::string expresso::helpers::makeChunkedData(const std::string& data) {
+  std::ostringstream chunk;
+  chunk << std::hex << data.length() << "\r\n" << data << "\r\n";
+  return chunk.str();
 }
 
-bool expresso::helpers::sendFileInChunks(const int& socket,
-                                         const std::string& path) {
+std::string expresso::helpers::readFileAsChunked(const std::string& path) {
+  std::string chunks;
   std::fstream file(path, std::ios::in | std::ios::binary);
   char buffer[expresso::helpers::CHUNK_SIZE];
 
   try {
-    std::streamsize bytesRead = 0;
     while (true) {
       file.read(buffer, expresso::helpers::CHUNK_SIZE);
-      bytesRead = file.gcount();
+      std::streamsize bytesRead = file.gcount();
       if (bytesRead == 0) {
         break;
       }
-
-      if (!expresso::helpers::sendChunkedData(socket,
-                                              std::string(buffer, bytesRead))) {
-        return false;
-      }
+      chunks += expresso::helpers::makeChunkedData(
+          std::string(buffer, static_cast<size_t>(bytesRead)));
     }
   } catch (const std::exception& e) {
-    logger::error(e.what(), "bool sendFileInChunks(const int &socket, const "
+    logger::error(e.what(),
+                  "std::string expresso::helpers::readFileAsChunked(const "
                   "std::string &path)");
-    return false;
   }
+
   if (file.is_open()) {
     file.close();
   }
 
-  return true;
+  return chunks;
 }
